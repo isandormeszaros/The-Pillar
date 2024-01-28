@@ -1,10 +1,16 @@
-import React from 'react';
-import AllWatches from './component/AllWatches';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Menu from './components/Menu';
+import Home from './Pages/Home'
+
 
 function App() {
   return (
-   <AllWatches/>
+    <div className="App">
+      
+      <Menu/>
+      <Home/>
+    </div>
   );
 }
 
