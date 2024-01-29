@@ -20,9 +20,35 @@
     height: 50px;
 }
 
+.nav-link{
+    color: #000000;
+    opacity: 0.8;
+    font-weight: 600;
+    font-size: .95rem;
+}
+
+.navbar-toggler{
+    font-size: 1.7rem;
+    color: var(--dark-blue);
+    border: none;
+    outline: none;
+}
+
 .custom-navbar {
     background-color: var(--ultra-light-grey);
 }
+
+.pi-search, .pi-user, .pi-shopping-cart {
+    color: var(--background-dark-blue); 
+    font-size: 1.05rem;
+    cursor: pointer;
+}
+
+.nav-link:hover, .pi-search:hover, .pi-user:hover, .pi-shopping-cart:hover, .navbar-toggler:hover{
+    color: var(--bright-blue);
+    transition: .3s all ease;
+}
+  
 
 /* .bottom-bar {
     width: 100%;
