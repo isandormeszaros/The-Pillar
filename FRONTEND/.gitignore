@@ -1,0 +1,20 @@
+# Temporary files
+*.tmp
+*.temp
+
+# Translated codes
+*.o
+*.obj
+
+# System generaterd files
+.DS_Store
+Thumbs.db
+
+# Passwords and secret datas
+secrets.txt
+passwords.txt
+
+# Node modules
+/FRONTEND/node_modules
+/BACKEND/node_modules
+/node_modules

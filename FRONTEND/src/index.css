@@ -18,3 +18,33 @@ code {
     url("../src/fonts/Abril_Fatface/AbrilFatface-Regular.ttf") format("opentype");
   font-weight: normal;
 }
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('../src/fonts/Poppins/Poppins-ExtraLight.ttf') format('opentype');
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('../src/fonts/Poppins/Poppins-Light.ttf') format('opentype');
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('../src/fonts/Poppins/Poppins-Regular.ttf') format('opentype');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('../src/fonts/Poppins/Poppins-Medium.ttf') format('opentype');
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('../src/fonts/Poppins/Poppins-SemiBold.ttf') format('opentype');
+  font-weight: 600;
+}

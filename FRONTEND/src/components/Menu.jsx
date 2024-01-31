@@ -1,15 +1,16 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './Navbar';
-import Home from '../Pages/Home';
-import AllBrands from '../Pages/AllBrands';
-import Brands from '../Pages/Brands';
-import Edc from '../Pages/Edc';
-import Blogs from '../Pages/Blogs';
-import Contact from '../Pages/ContactUs';
-import About from '../Pages/AboutUs';
-import Faq from '../Pages/Faq';
-import NoPage from '../Pages/NoPage';
+import Home from '../pages/Home';
+import AllBrands from '../pages/AllBrands';
+import Brands from '../pages/Brands';
+import Edc from '../pages/Edc';
+import Blogs from '../pages/Blogs';
+import Contact from '../pages/ContactUs';
+import About from '../pages/AboutUs';
+import Faq from '../pages/Faq';
+import NoPage from '../pages/NoPage';
+import Footer from './Footer';
 
 function Menu() {
   return (
@@ -26,6 +27,7 @@ function Menu() {
         <Route path="/faq" element={<Faq />} />
         <Route path="*" element={<NoPage />} />
       </Routes>
+      <Footer/>
     </BrowserRouter>
   );
 }

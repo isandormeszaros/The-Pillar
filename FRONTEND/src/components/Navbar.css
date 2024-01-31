@@ -29,18 +29,27 @@
 
 .navbar-toggler{
     font-size: 1.7rem;
+    transition: transform 0.3s ease;
     color: var(--dark-blue);
     border: none;
     outline: none;
+}
+
+.navbar-toggler.open{
+  transform: rotate(90deg);
 }
 
 .custom-navbar {
     background-color: var(--ultra-light-grey);
 }
 
+.icon-size{
+    font-size: 1.3rem;
+    font-weight: 100;
+}
+
 .pi-search, .pi-user, .pi-shopping-cart {
     color: var(--background-dark-blue); 
-    font-size: 1.05rem;
     cursor: pointer;
 }
 
@@ -49,20 +58,34 @@
     transition: .3s all ease;
 }
   
-
-/* .bottom-bar {
-    width: 100%;
-    background-color: #f8f9fa;
-    padding: 10px 0;
-    text-align: center;
-    transition: transform 0.3s ease-in-out;
-    transform: translateY(100%);
+@keyframes slideIn {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
   }
   
-  .bottom-bar.visible {
-    transform: translateY(0);
-  } */
-
+  @keyframes slideOut {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(100%);
+    }
+  }
+  
+  .collapse.navbar-collapse {
+    animation-duration: 0.3s;
+    &.show {
+      animation-name: slideIn;
+    }
+    &.hide {
+      animation-name: slideOut;
+    }
+  }
+  
 
   
   

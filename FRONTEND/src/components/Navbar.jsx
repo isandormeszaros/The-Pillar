@@ -9,13 +9,12 @@ const Navbar = () => {
   const [prevScrollPos, setPrevScrollPos] = useState(window.pageYOffset);
   const [visible, setVisible] = useState(true);
 
-
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  const closeMenu = () => {
-    setIsOpen(false);
+  const closeMenu = (e) => {
+      setIsOpen(false);
   };
 
   useEffect(() => {
@@ -39,6 +38,11 @@ const Navbar = () => {
           <Link to="/" className="navbar-brand" onClick={closeMenu}>
             <img src={logo} alt="The Pillar" className='navbar-brand-logo' />
           </Link>
+          <div className="d-lg-flex d-lg-none ms-auto align-items-center button-container me-2">
+            <a className="me-3"><span className="pi pi-search icon-size"></span></a>
+            <a className='me-3'><span className="pi pi-user icon-size"></span></a>
+            <a><span className="pi pi-shopping-cart icon-size"></span></a>
+          </div>
           <button
             className="navbar-toggler"
             type="button"
@@ -70,7 +74,7 @@ const Navbar = () => {
                 <Link to="/faq" className="nav-link" onClick={closeMenu}>GYAK</Link>
               </li>
             </ul>
-            <div className="d-flex ms-auto align-items-center button-container">
+            <div className="d-none d-lg-flex ms-auto align-items-center button-container">
               <a className="me-3"><span className="pi pi-search"></span></a>
               <a className="me-3"><span className="pi pi-user"></span></a>
               <a><span className="pi pi-shopping-cart"></span></a>

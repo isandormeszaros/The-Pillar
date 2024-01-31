@@ -1,14 +1,10 @@
 import React from "react";
+import TopProducts from "../components/TopProducts";
 
 function AllBrands() {
   return (
-    <div
-      style={{
-        textAlign: "center",
-        paddingTop: "300px",
-      }}
-    >
-      <h1>AllBrands</h1>
+    <div>
+      <TopProducts />
     </div>
   );
 }
