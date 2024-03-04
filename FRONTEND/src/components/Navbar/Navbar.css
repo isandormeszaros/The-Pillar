@@ -1,0 +1,84 @@
+.navbar-brand-logo {
+  width: 128px;
+  height: 50px;
+}
+
+.nav-link {
+  color: var(--black);
+  opacity: 0.8;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: black;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.3s linear;
+}
+
+.navbar-toggler {
+  font-size: 1.4rem;
+  transition: transform 0.3s ease;
+  color: var(--black);
+  border: none;
+  outline: none;
+}
+
+.navbar-toggler.open {
+  transform: rotate(90deg);
+}
+
+.custom-navbar {
+  background-color: var(--ultra-light-grey);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.icon-size {
+  font-size: 1.1rem;
+  font-weight: 100;
+}
+
+.pi-search,
+.pi-user,
+.pi-shopping-cart {
+  color: var(--background-dark-blue);
+  cursor: pointer;
+}
+
+.nav-link:hover,
+.pi-search:hover,
+.pi-user:hover,
+.pi-shopping-cart:hover,
+.navbar-toggler:hover {
+  color: var(--dark-gold);
+  transition: 0.3s all ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.collapse.navbar-collapse {
+  animation-duration: 0.3s;
+  &.show {
+    animation-name: slideIn;
+  }
+  &.hide {
+    animation-name: slideOut;
+  }
+}

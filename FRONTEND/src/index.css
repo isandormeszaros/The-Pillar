@@ -1,50 +1,259 @@
+:root {
+  /*========== Colors ==========*/
+  --dark-gold: #f0a500;
+  --ultra-light-grey: #f4f4f4;
+  --background-dark-blue: #001f33;
+  --font-color: #2c2c2c;
+  --paragraph-color: #4b4b4b;
+  --white: #fff;
+  --light-grey: #d3d3d3;
+  --dark-blue: #43766c;
+  --black: #000;
+  --error: #bd0000;
+  --success: #33ab1f;
+  --anim-ease-out: cubic-bezier(0.32, 0.71, 0.42, 0.94);
+
+  /*========== Typography ==========*/
+  --biggest-font-size: 2.5rem;
+  --h1-font-size: 1.5rem;
+  --h2-font-size: 1.25rem;
+  --h3-font-size: 1rem;
+  --normal-font-size: 0.938rem;
+  --small-font-size: 0.813rem;
+  --smaller-font-size: 0.75rem;
+
+  @media screen and (min-width: 968px) {
+    :root {
+      --biggest-font-size: 4rem;
+      --h1-font-size: 2.25rem;
+      --h2-font-size: 1.75rem;
+      --h3-font-size: 1.25rem;
+      --normal-font-size: 1rem;
+      --small-font-size: 0.875rem;
+      --smaller-font-size: 0.813rem;
+    }
+  }
+}
+
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: "Montserrat-Medium" !important;
+  line-height: 1.9 !important;
+  font-weight: 400 !important;
+  font-size: 15px !important;
+  color: var(--font-color) !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
+/*========== Custom Font Faces  ==========*/
+/* PlayFair Display */
 @font-face {
-  font-family: "AbrilFatface-Regular";
-  src: local("AbrilFatface-Regular"),
-    url("../src/fonts/Abril_Fatface/AbrilFatface-Regular.ttf") format("opentype");
+  font-family: "PlayfairDisplay";
+  src: url("../src/fonts/PlayfairDisplay/static/PlayfairDisplay-ExtraBold.ttf")
+    format("opentype");
   font-weight: normal;
 }
 
+/* Montserrats */
 @font-face {
-  font-family: 'Poppins';
-  src: url('../src/fonts/Poppins/Poppins-ExtraLight.ttf') format('opentype');
+  font-family: "Montserrat-Thin";
+  src: url("../src/fonts/Montserrat/Montserrat-Thin.ttf") format("opentype");
+  font-weight: 100;
+}
+
+@font-face {
+  font-family: "Montserrat-ExtraLight";
+  src: url("../src/fonts/Montserrat/Montserrat-ExtraLight.ttf")
+    format("opentype");
   font-weight: 200;
 }
 
 @font-face {
-  font-family: 'Poppins';
-  src: url('../src/fonts/Poppins/Poppins-Light.ttf') format('opentype');
+  font-family: "Montserrat-Light";
+  src: url("../src/fonts/Montserrat/Montserrat-Light.ttf") format("opentype");
   font-weight: 300;
 }
 
 @font-face {
-  font-family: 'Poppins';
-  src: url('../src/fonts/Poppins/Poppins-Regular.ttf') format('opentype');
+  font-family: "Montserrat-Regular";
+  src: url("../src/fonts/Montserrat/Montserrat-Regular.ttf") format("opentype");
   font-weight: 400;
 }
 
 @font-face {
-  font-family: 'Poppins';
-  src: url('../src/fonts/Poppins/Poppins-Medium.ttf') format('opentype');
+  font-family: "Montserrat-Medium";
+  src: url("../src/fonts/Montserrat/Montserrat-Medium.ttf") format("opentype");
   font-weight: 500;
 }
 
 @font-face {
-  font-family: 'Poppins';
-  src: url('../src/fonts/Poppins/Poppins-SemiBold.ttf') format('opentype');
+  font-family: "Montserrat-SemiBold";
+  src: url("../src/fonts/Montserrat/Montserrat-SemiBold.ttf") format("opentype");
   font-weight: 600;
+}
+
+/*========== Fonts ==========*/
+.custom-heading-font {
+  font-family: "PlayfairDisplay";
+  font-size: var(--biggest-font-size);
+  color: var(--beige);
+}
+
+.custom-p-font {
+  font-family: "Montserrat-Medium";
+  line-height: 1.9;
+  font-weight: 400;
+  font-size: var(--small-font-size);
+  color: var(--paragraph-color);
+}
+
+.text-justify {
+  text-align: justify;
+}
+
+.smaller {
+  font-size: 2rem;
+}
+
+.small {
+  font-size: 0.8rem;
+}
+
+.dark-gold {
+  color: var(--dark-gold);
+}
+
+/*========== Button ==========*/
+.default-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  min-width: 230px;
+  padding: 18px 50px 18px 23px;
+  padding: 18px 20px;
+  background-color: var(--black);
+  color: var(--white);
+  font-weight: 300;
+  font-size: 12px;
+  text-align: left;
+  line-height: 1.2;
+  letter-spacing: 0.2em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: none;
+  text-decoration: none;
+  transition: all 0.3s linear;
+  box-sizing: border-box !important;
+  cursor: pointer;
+}
+
+.filter-btn,
+.filter-title {
+  font-weight: 300;
+  font-size: var(--smaller-font-size);
+  line-height: 1.2;
+  letter-spacing: 0.2em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.filter-title {
+  font-size: var(--normal-font-size);
+}
+
+.default-button:hover {
+  color: var(--dark-gold);
+  cursor: pointer;
+}
+
+/*========== Colors ==========*/
+.black {
+  background-color: var(--black);
+  color: var(--black);
+}
+
+/*========== Cursor ==========*/
+.pointer {
+  cursor: pointer;
+}
+
+/*========== Effects ==========*/
+.black-and-white {
+  filter: grayscale(100%);
+  transition: 0.6s all ease;
+  -webkit-transition: filter 0.6s ease;
+}
+
+.black-and-white:hover {
+  filter: grayscale(0%);
+  transition: filter 0.6s ease;
+  -webkit-transition: filter 0.6s ease;
+}
+
+.zoom-in {
+  transform: scale(1.01);
+  transition: transform 0.3s ease;
+  -webkit-transition: transform 0.6s ease;
+}
+
+.image-shadow {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0) 20%
+  );
+}
+
+/* .dotted-bg{
+  background-image: radial-gradient(circle at 1px 1px, var(--dark-gold) 1px, transparent 0);
+  background-size: 40px 40px;
+  z-index: 1;
+  position: relative;
+} */
+
+.card-img-container {
+  position: relative;
+}
+
+.dotted-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    var(--paragraph-color) 1px,
+    transparent 0
+  );
+  background-size: 20px 20px;
+  z-index: 1;
+}
+
+.card-img-top {
+  position: relative;
+  z-index: 0;
+}
+
+.search-form-control {
+  border-radius: 0;
+  font-size: 0.9rem;
+  padding: 10px;
+  border: 0.6px solid var(--black);
+}
+.search-form-control:focus {
+  border-color: var(--dark-gold);
+  box-shadow: 0 0 0 0.2rem rgba(236, 177, 89, 0.25);
+}
+
+/*========== Carouser ==========*/
+.carouser-img {
+  height: 540px;
+  object-fit: cover;
 }

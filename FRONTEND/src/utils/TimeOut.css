@@ -1,0 +1,18 @@
+.timeout-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  filter: grayscale(100%);
+  background-image: url("http://localhost:8080/images/timeout/timeout.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.timeout-content {
+  text-align: center;
+}
+
+.timeout-content h1 {
+  margin-bottom: 20px;
+}

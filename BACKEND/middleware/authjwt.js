@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const config = require('../db/authconfig');
+const config = require('../config/authconfig');
 
 verifyAdmin = (req, res, next) =>{
 

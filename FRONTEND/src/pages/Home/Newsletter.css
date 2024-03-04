@@ -1,0 +1,18 @@
+.email-form{
+    border-radius: 0;
+    font-size: 0.9rem;
+    padding: 10px;
+    border: .6px solid var(--black);
+}
+
+.email-form:focus, .accordion-button:focus{
+    border-color: var(--dark-gold);
+    box-shadow: 0 0 0 0.2rem rgba(236, 177, 89, 0.25);
+}
+
+.footer-link:hover{
+    color: var(--dark-gold);
+    transition: all 0.3s linear;
+    cursor: pointer;
+}
+

@@ -1,0 +1,33 @@
+.name-form-control,
+.email-form-control,
+.password-form-control,
+.confirm-password-form-control,
+.phone-password-form-control {
+  border-radius: 0;
+  font-size: 0.9rem;
+  padding: 10px;
+  border: 0.6px solid var(--black);
+}
+
+.name-form-control:focus,
+.email-form-control:focus,
+.password-form-control:focus,
+.confirm-password-form-control:focus,
+.phone-password-form-control:focus {
+  border-color: var(--dark-gold);
+  box-shadow: 0 0 0 0.2rem rgba(236, 177, 89, 0.25);
+}
+
+.selected-flag {
+  background-color: var(--white);
+}
+
+.input-phone-number input:focus {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.flag-dropdown {
+  border: none !important;
+}

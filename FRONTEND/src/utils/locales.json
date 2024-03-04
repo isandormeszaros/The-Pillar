@@ -1,0 +1,10 @@
+{
+    "en-US": {
+      "currencyFormat": {
+        "style": "currency",
+        "currency": "USD",
+        "minimumFractionDigits": 0
+      }
+    }
+  }
+  

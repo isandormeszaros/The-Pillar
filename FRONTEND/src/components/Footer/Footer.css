@@ -1,0 +1,19 @@
+.accordion-button:not(.collapsed) {
+  background-color: var(--ultra-light-grey);
+  border: none;
+}
+
+.copy-footer {
+  background-color: var(--ultra-light-grey);
+}
+
+.footer-li-link:hover {
+  color: var(--dark-gold);
+  transition: 0.3s all ease;
+}
+
+/* .footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;} */
+
