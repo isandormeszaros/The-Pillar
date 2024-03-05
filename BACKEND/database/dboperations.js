@@ -334,37 +334,46 @@ async function createUser(name, email, password, phone) {
 }
 
 async function placeOrder(data) {
-  const { cart, orderDate, shippingDate, status, paymentId, userAddress } = data;
+  const { cart, orderDate, shippingDate, status, paymentId, userAddress } =
+    data;
 
   try {
-    const orderId = 123; // Megfelelő módon állítsd be az orderId értékét
-
     await pool.query("START TRANSACTION");
 
-    // Beszúrás az orderconnbase táblába
-    for (const item of cart) {
-      await pool.query(
-        "INSERT INTO orderconnbase (orderId, productId, quantity, price) VALUES (?, ?, ?, ?)",
-        [orderId, item.id, item.quantity, item.price]
-      );
-    }
-
     // Beszúrás az orders táblába
-    const result = await pool.query(
+    const insertOrderResult = await pool.query(
       "INSERT INTO orders (orderDate, shippingDate, status, paymentId, userAddress) VALUES (?, ?, ?, ?, ?)",
       [orderDate, shippingDate, status, paymentId, userAddress]
     );
 
+    const orderId = insertOrderResult.insertId; // Az új rendelés azonosítója
+
+    const insertOrderQuery =
+      "INSERT INTO orderconnbase (orderId, productId, quantity, price) VALUES (?, ?, ?, ?)";
+
+      const productValues = cart.map(item => [item.productId, orderId, item.quantity, item.price]);
+
+
+    await pool.query(insertOrderQuery, [productValues])
+      
+    // // Beszúrás az orderconnbase táblába
+    // for (const item of cart) {
+    //   await pool.query(
+    //     "INSERT INTO orderconnbase (productId,, orderId, quantity, price) VALUES (?, ?, ?, ?)",
+    //     [item.productId, orderId, item.quantity, item.price]
+    //   );
+    // }
+    // console.log("Succes Y");
+
     await pool.query("COMMIT");
     console.log("Megrendelés sikeresen rögzítve!");
-    return result.insertId; // Visszaadhatjuk az új megrendelés azonosítóját
+    return orderId; // Visszaadjuk az új rendelés azonosítóját
   } catch (error) {
     await pool.query("ROLLBACK");
     console.error("Hiba a megrendelés rögzítése közben:", error);
     throw error;
   }
 }
-
 
 //2.	GET		/filmek/3		- Egy film adatai
 async function selectFilmekId(id) {

@@ -15,6 +15,13 @@ const getFiltered = (szur) => {
   return http.get(`/allwatches/filter/${szur}`);
 };
 
+// SEARCH INPUT FILTER
+const getDetailedFiltered = JS => {
+  console.log(JS)
+  return http.post(`/allwatches/filter`, JS);
+
+};
+
 // SORT BY PRICE ASC
 const sortByPriceAsc = () => {
   return http.get("/allwatches/sort/asc");
@@ -103,6 +110,7 @@ const WatchesServices = {
   getAll,
   get,
   getFiltered,
+  getDetailedFiltered,
   sortByPriceAsc,
   sortByPriceDesc,
   getPage,

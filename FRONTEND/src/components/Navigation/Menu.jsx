@@ -24,7 +24,9 @@ import Separator from "../../utils/Separator";
 import Cart from "../Cart/Cart";
 import TimeOut from "../../utils/TimeOut";
 import CheckOut from "../CheckOut/CheckOut";
+import Results from "../Hooks/Results";
 import { ToastContainer } from "react-toastify";
+import FilterSection from "../Context/FilterSection";
 
 const SearchResultPage = () => {
   const { sText } = useParams();
@@ -33,6 +35,7 @@ const SearchResultPage = () => {
 
 function Menu() {
   const [islogged, setIslogged] = useState(false);
+  const [isLefut, setIsLefut] = useState(false);
   const [cart, setCart] = useState([]); // A KOSÁR TARTALMA
 
 
@@ -85,35 +88,37 @@ function Menu() {
   const removeAllItems = () => {
     const shouldRemove = window.confirm("are you sure you want to delete?")
 
-    if (shouldRemove){
+    if (shouldRemove) {
       setCart([]);
     }
   }
-
-
-
-
 
   useEffect(() => {
     const log = sessionStorage.getItem("islogged");
     if (log) {
       setIslogged(true);
     }
-  }, []);
+    console.log("Is logged:", islogged);
+  }, [islogged]);
 
   console.log("Cart:", cart);
 
-  console.log(islogged);
-
   return (
     <BrowserRouter>
-      <ScrollToTop />
       <Navbar cart={cart} />
       <Separator />
       <Routes>
         <Route path="/home" element={<Home />} />
         <Route path="/" element={<Navigate to="/home" />} />
-        <Route path="/allbrands" element={<ProductList addToCartFunction={addToCartFunction} />} />
+        <Route
+  path="/allbrands"
+  element={
+    <div>
+      <FilterSection setIsLefut={setIsLefut} />
+      <ProductList addToCartFunction={addToCartFunction} />
+    </div>
+  }
+/>
         <Route path="/registration" element={<Registration />} />
         {islogged ? (
           <Route
@@ -142,6 +147,7 @@ function Menu() {
 
         <Route path="/timeout" element={<TimeOut />} />
         <Route path="/checkout" element={<CheckOut cart={cart} />} />
+        <Route path="/allbrands/detailed" element={<Results isLefut={isLefut} />} />
         <Route path="*" element={<NoPage />} />
       </Routes>
       <Footer />

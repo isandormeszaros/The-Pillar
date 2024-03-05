@@ -121,7 +121,7 @@ router.post("/orders", (req, res) => {
         success: true,
         message: "Megrendelés sikeresen rögzítve",
         orderId: result,
-      }); // Visszaküldünk egy sikeres választ a kliensnek, és átadjuk az orderId-t
+      }); 
     })
     .catch((error) => {
       console.log(orders);
@@ -142,7 +142,7 @@ router.post("/orders", (req, res) => {
       console.error("Hiba a megrendelés rögzítése közben:", error);
       res
         .status(500)
-        .json({ success: false, error: "Hiba a megrendelés rögzítése közben" }); // Visszaküldünk egy hibaüzenetet a kliensnek, ha valami hiba történik
+        .json({ success: false, error: "Hiba a megrendelés rögzítése közben" }); 
     });
 });
 

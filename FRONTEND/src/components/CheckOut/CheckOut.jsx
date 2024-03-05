@@ -1,8 +1,75 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import locales from "../../utils/locales.json";
-import axios from 'axios'; // Axios importálása
+import { loadStripe } from '@stripe/stripe-js';
+import axios from 'axios';
+
 
 function Checkout({ cart }) {
+
+    const makePayment = async () => {
+        const stripe = await loadStripe("pk_test_51OqjCM01VYY1Q06qzRZJ5ftluZMxe6FN1iZZpf7agPSgsZNoe8OqTxnc0wO0DDJfIZgzpIygQIJVcx4JQzsCv4vV00JpYY0CUo");
+
+        const body = {
+            products: cart
+        }
+
+        const headers = {
+            "Content-Type": "application/json"
+        }
+
+        try {
+            const response = await fetch("http://localhost:8080/auth/create-checkout-session", {
+                method: "POST",
+                headers: headers,
+                body: JSON.stringify(body)
+            });
+
+
+            const session = await response.json();
+
+            const result = stripe.redirectToCheckout({
+                sessionId: session.id
+            });
+
+
+            console.log(response);
+        }
+        catch (error) {
+            console.log("Alma");
+            console.log(error);
+        }
+
+
+
+
+    }
+
+    //  const lineItems = cart.map((item) => {
+    //      return {
+    //          price_data: {
+    //              currency: 'usd',
+    //              product_data: {
+    //                  name: item.product.watchName
+    //              },
+    //              unit_amount: item.product.price * 100
+    //          },
+    //          quantity: item.quantity
+    //      };
+    //  });
+
+    // console.log(lineItems)
+
+    // const { data } = await axios.post('http://localhost:8080/auth/create-checkout-session', { lineItems });
+    // const stripe = await stripePromise
+    // await stripe.redirectToCheckout({ sessionId: data.id });
+
+
+
+
+
+
+
+
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -25,7 +92,7 @@ function Checkout({ cart }) {
             // Fizetési adatok elküldése az API-nak
             const response = await axios.post('http://localhost:8080/allwatches/orders', {
                 cart: cart.map(item => ({
-                    product: item.product,
+                    product: item.watchName,
                     quantity: item.quantity
                 })),
                 userAddress: formData.address, // Módosítva: userAddress
@@ -42,7 +109,7 @@ function Checkout({ cart }) {
             // Hiba esetén kezelés, pl. hibaüzenet megjelenítése a felhasználónak
         }
     };
-    console.log(handleInputChange)
+
 
     return (
         <div className="container mt-5">
@@ -73,6 +140,7 @@ function Checkout({ cart }) {
 
                         {/* További input mezők */}
                         <button type="submit" className="btn btn-primary">Fizetés</button>
+                        <button onClick={makePayment}>Stripe</button>
                     </form>
                 </div>
             </div>
