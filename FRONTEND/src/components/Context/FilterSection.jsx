@@ -546,12 +546,12 @@ function FilterSection({ setIsLefut, lefut }) {
 
     const queryStringParams = queryString.stringify(searchParams);
 
-    // Handle search based on "lefut" state
     if (lefut) {
-      navigate(`?${queryStringParams}`); // Navigate with query parameters
+      navigate(`?${queryStringParams}`)
+      setIsLefut(true);
     } else {
-      setIsLefut(true); // Set "lefut" state upon completion
-      navigate(`/allbrands/detailed/?${queryStringParams}`); // Navigate to detailed page with query parameters
+      // setIsLefut(true); // Set "lefut" state immediately
+      navigate(`/allbrands/detailed/?${queryStringParams}`);
     }
   };
 

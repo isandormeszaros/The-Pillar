@@ -10,7 +10,7 @@ const crypto = require("crypto");
 const stripe = require("stripe")("sk_test_51OqjCM01VYY1Q06qZfwWtRUeaK7MLymRQpNnkBNiUferRL3QYxJMYJKLByKSzsBfIPoslTYtoH0KnJBkQwywdqWZ003w8byPBd")
 
 
-router.use(cors);
+router.use(cors());
 
 // User
 router.post("/login", function (req, res, next) {

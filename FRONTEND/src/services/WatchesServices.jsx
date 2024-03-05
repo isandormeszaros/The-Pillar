@@ -17,9 +17,7 @@ const getFiltered = (szur) => {
 
 // SEARCH INPUT FILTER
 const getDetailedFiltered = JS => {
-  console.log(JS)
   return http.post(`/allwatches/filter`, JS);
-
 };
 
 // SORT BY PRICE ASC
@@ -38,59 +36,59 @@ const getPage = (page) => {
 };
 
 // GET PAGES FOR COMPOUND FILTERS
-const getBrands = () =>{
+const getBrands = () => {
   return http.get("/allwatches/all/brands");
 };
 
 // GET DIALCOLORS FOR COMPOUND FILTERS
-const getDialColors = () =>{
+const getDialColors = () => {
   return http.get("/allwatches/all/dialcolors");
 };
 
 // GET DATES FOR COMPOUND FILTERS
-const getDates = () =>{
+const getDates = () => {
   return http.get("/allwatches/all/dates");
 };
 
 // GET CASEMATERIALS FOR COMPOUND FILTERS
-const getCaseMaterials = () =>{
+const getCaseMaterials = () => {
   return http.get("/allwatches/all/casematerials");
 };
 
 // GET STRAPMATERIALS FOR COMPOUND FILTERS
-const getStrapMaterials = () =>{
+const getStrapMaterials = () => {
   return http.get("/allwatches/all/strapmaterials");
 };
 
 // GET MOVEMENTS FOR COMPOUND FILTERS
-const getMovements = () =>{
+const getMovements = () => {
   return http.get("/allwatches/all/movements");
 };
 
 // GET RESISTANCES FOR COMPOUND FILTERS
-const getResistances = () =>{
+const getResistances = () => {
   return http.get("/allwatches/all/resistances");
 };
 
 // GET BANDWIDTHES FOR COMPOUND FILTERS
-const getBandWidthes = () =>{
+const getBandWidthes = () => {
   return http.get("/allwatches/all/bandwidthes");
 };
 
 // GET DIALMATERIALS FOR COMPOUND FILTERS
-const getDialMaterials = () =>{
+const getDialMaterials = () => {
   return http.get("/allwatches/all/dialmaterials");
 };
 
-const postSearch = (filter) =>{
-  return http.post(`/products/filter`,filter)
+const postSearch = (filter) => {
+  return http.post(`/products/filter`, filter)
 };
 
-const getEmails = () =>{
+const getEmails = () => {
   return http.get("/auth/validemaillist");
 };
 
-const getOtp = () =>{
+const getOtp = () => {
   return http.get("/auth/otp");
 };
 

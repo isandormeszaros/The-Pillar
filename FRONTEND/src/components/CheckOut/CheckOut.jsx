@@ -10,7 +10,7 @@ function Checkout({ cart }) {
         const stripe = await loadStripe("pk_test_51OqjCM01VYY1Q06qzRZJ5ftluZMxe6FN1iZZpf7agPSgsZNoe8OqTxnc0wO0DDJfIZgzpIygQIJVcx4JQzsCv4vV00JpYY0CUo");
 
         const body = {
-            products: cart
+            cart: cart
         }
 
         const headers = {
@@ -21,18 +21,17 @@ function Checkout({ cart }) {
             const response = await fetch("http://localhost:8080/auth/create-checkout-session", {
                 method: "POST",
                 headers: headers,
+                mode: "cors",
                 body: JSON.stringify(body)
             });
 
-
             const session = await response.json();
 
-            const result = stripe.redirectToCheckout({
-                sessionId: session.id
+            const result = await stripe.redirectToCheckout({
+                sessionId: session.id // Use session ID returned from server
             });
 
-
-            console.log(response);
+            console.log(result);
         }
         catch (error) {
             console.log("Alma");

@@ -230,7 +230,7 @@ async function selectByBandWidthes() {
 async function selectByDialMaterials() {
   return new Promise((resolve, reject) => {
     pool.query(
-      "SELECT material, watch_count FROM watches.alldialmaterialcount;",
+      "SELECT `material`, `watch_count` FROM `watches.alldialmaterialcount`",
       (error, elements) => {
         if (error) {
           reject(error);
@@ -242,7 +242,7 @@ async function selectByDialMaterials() {
   });
 }
 
-async function selectProductWhere(whereConditions) {
+async function selectProductWhere(whereConditions, pool) {
   let whereClause = "WHERE "; // Inicializáljuk a whereClause változót
   let values = [];
 
@@ -277,6 +277,7 @@ async function selectProductWhere(whereConditions) {
     });
   });
 }
+
 
 //4. post bejelentkezés /login
 async function getSignIn(email, password) {
@@ -351,11 +352,15 @@ async function placeOrder(data) {
     const insertOrderQuery =
       "INSERT INTO orderconnbase (orderId, productId, quantity, price) VALUES (?, ?, ?, ?)";
 
-      const productValues = cart.map(item => [item.productId, orderId, item.quantity, item.price]);
+    const productValues = cart.map((item) => [
+      item.productId,
+      orderId,
+      item.quantity,
+      item.price,
+    ]);
 
+    await pool.query(insertOrderQuery, [productValues]);
 
-    await pool.query(insertOrderQuery, [productValues])
-      
     // // Beszúrás az orderconnbase táblába
     // for (const item of cart) {
     //   await pool.query(
