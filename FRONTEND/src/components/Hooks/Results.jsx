@@ -1,29 +1,44 @@
 import React, { useState, useEffect } from "react";
 import WatchesServices from "../../services/WatchesServices";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import FilterSection from "../Context/FilterSection";
 
 const Results = ({ isLefut }) => {
     const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
+    // console.log(location)
 
     const [data, setData] = useState([]);
     const [error, setError] = useState("");
-    const [lefut, setLefut] = useState(false);
+
+    const [queryParams, setQueryParams] = useState({});
+    console.log(queryParams);
+
+    const [lefut, setLefut] = useState(false); // Kezdetben nem futott le a keresés
 
     useEffect(() => {
-        const szures = Object.fromEntries(queryParams.entries());
+        const params = new URLSearchParams(location.search);
+        const query = Object.fromEntries(params.entries());
+        setQueryParams(query);
+    }, [location.search]);
 
-        WatchesServices.getDetailedFiltered(szures)
-            .then((res) => {
-                setData(res.data);
-                setLefut(true);
-            })
-            .catch((err) => {
-                setError(err);
-            });
 
-    }, [queryParams]);
+    useEffect(() => {
+    console.log(queryParams);
+    WatchesServices.getDetailedFiltered(queryParams)
+        .then(response => {
+            // Filter the data based on watchName and queryParams
+            const filteredData = response.data.filter(item => item.watchName && item.watchName.includes(queryParams));
+            
+            // Set the filtered data state
+            setData(filteredData);
+            console.log(filteredData);
+            setLefut(true);
+        })
+        .catch((err) => {
+            console.error("Error fetching data:", err);
+            setError("Error fetching data. Please try again later.");
+        });
+}, [queryParams]);
 
 
     return (
@@ -40,8 +55,9 @@ const Results = ({ isLefut }) => {
                                             <div className="mask rgba-white-slight"></div>
                                         </a>
                                         <div className="card-body">
-                                            <h4 className="custom-card-title">{item.product.watchName}</h4>
-                                            <p className="card-text text-muted">ID: {item.product.id}</p>
+                                            <h4 className="custom-card-title">Name: {item.product && item.product.watchName}</h4>
+                                            <p className="card-text text-muted">ID: {item.product && item.product.id}</p>
+
                                         </div>
                                         <div
                                             style={{

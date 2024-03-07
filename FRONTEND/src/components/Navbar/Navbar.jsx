@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "primeicons/primeicons.css";
 import "./Navbar.css";
-import { PrimeReactProvider, PrimeReactContext } from 'primereact/api';
 
 const Navbar = ({ cart }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -49,7 +48,7 @@ const Navbar = ({ cart }) => {
           <a href="/login" className="me-3">
             <span className="pi pi-user icon-size"></span>
           </a>
-          <a href="cart">
+          <a href="cart" className="text-decoration-none">
             <span className="pi pi-shopping-cart icon-size"></span>
             {cart.length > 0 && (
               <span className="cart-badge">{cart.length}</span>
@@ -107,10 +106,10 @@ const Navbar = ({ cart }) => {
             <a href="/login" className="me-3">
               <span className="pi pi-user"></span>
             </a>
-            <a href="cart">
+            <a href="cart" className="text-decoration-none">
               <span className="pi pi-shopping-cart"></span>
               {cart.length > 0 && (
-                <span badge={cart.length}></span>
+                <span className="cart-badge">{cart.length}</span>
               )}
             </a>
           </div>

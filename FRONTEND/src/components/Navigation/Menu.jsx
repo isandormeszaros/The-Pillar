@@ -6,7 +6,7 @@ import Home from "../../pages/Home/Home";
 import Blogs from "../../pages/Layout/Blogs";
 import Contact from "../../pages/Layout/ContactUs";
 import About from "../../pages/Layout/AboutUs";
-// import Faq from "../../pages/Login/FaqLogin";
+import Faq from "../../pages/Layout/Faq"
 import NoPage from "../../pages/NoPage/NoPage";
 import Footer from "../Footer/Footer";
 import ProductDisplay from "../Context/ProductDisplay";
@@ -27,15 +27,20 @@ import CheckOut from "../CheckOut/CheckOut";
 import Results from "../Hooks/Results";
 import { ToastContainer } from "react-toastify";
 import FilterSection from "../Context/FilterSection";
+import NotFound from "../../utils/NotFound";
+
+
 
 const SearchResultPage = () => {
   const { sText } = useParams();
   return <ProductListFiltered szuro={sText} />;
 };
 
+
+
 function Menu() {
   const [islogged, setIslogged] = useState(false);
-  const [isLefut, setIsLefut] = useState(false);
+  const [isLefut, setIsLefut] = useState(false);  
   const [cart, setCart] = useState([]); // A KOSÁR TARTALMA
 
 
@@ -111,14 +116,14 @@ function Menu() {
         <Route path="/home" element={<Home />} />
         <Route path="/" element={<Navigate to="/home" />} />
         <Route
-  path="/allbrands"
-  element={
-    <div>
-      <FilterSection setIsLefut={setIsLefut} />
-      <ProductList addToCartFunction={addToCartFunction} />
-    </div>
-  }
-/>
+          path="/allbrands"
+          element={
+            <div>
+              <FilterSection setIsLefut={setIsLefut} />
+              <ProductList addToCartFunction={addToCartFunction} />
+            </div>
+          }
+        />
         <Route path="/registration" element={<Registration />} />
         {islogged ? (
           <Route
@@ -142,13 +147,13 @@ function Menu() {
         {/* <Route path="/blogs" element={<InfiniteScroll />} /> */}
         {/* <Route path="/contact" element={<Contact />} /> */}
         {/* <Route path="/contact" element={<Gallery />} /> */}
-        {/* <Route path="/faq" element={<Faq />} /> */}
+        <Route path="/faq" element={<Faq />} />
         <Route path="/cart" element={<Cart cart={cart} setCart={setCart} updateQuantity={updateQuantity} removeAllItems={removeAllItems} removeFromCart={removeFromCart} />} />
 
         <Route path="/timeout" element={<TimeOut />} />
         <Route path="/checkout" element={<CheckOut cart={cart} />} />
-        <Route path="/allbrands/detailed" element={<Results isLefut={isLefut} />} />
-        <Route path="*" element={<NoPage />} />
+        <Route path="/allbrands/detailed" element={<Results isLefut={isLefut}  />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
       <ToastContainer />

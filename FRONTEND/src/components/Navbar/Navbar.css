@@ -41,7 +41,8 @@
 
 .pi-search,
 .pi-user,
-.pi-shopping-cart {
+.pi-shopping-cart,
+.cart-badge {
   color: var(--background-dark-blue);
   cursor: pointer;
 }
@@ -53,6 +54,11 @@
 .navbar-toggler:hover {
   color: var(--dark-gold);
   transition: 0.3s all ease;
+}
+
+.cart-badge {
+  font-size: 12px;
+  padding: 0 0 20px 1px;
 }
 
 @keyframes slideIn {

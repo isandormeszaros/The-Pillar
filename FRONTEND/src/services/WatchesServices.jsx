@@ -17,6 +17,7 @@ const getFiltered = (szur) => {
 
 // SEARCH INPUT FILTER
 const getDetailedFiltered = JS => {
+  console.log(JS);
   return http.post(`/allwatches/filter`, JS);
 };
 

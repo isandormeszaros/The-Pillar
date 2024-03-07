@@ -112,7 +112,7 @@ router.get("/all/dialmaterials", (req, res) => {
 
 router.post("/orders", (req, res) => {
   const orders = req.body;
-  
+
   db.placeOrder(orders)
     .then((result) => {
       console.log(orders);
@@ -121,7 +121,7 @@ router.post("/orders", (req, res) => {
         success: true,
         message: "Megrendelés sikeresen rögzítve",
         orderId: result,
-      }); 
+      });
     })
     .catch((error) => {
       console.log(orders);
@@ -142,7 +142,7 @@ router.post("/orders", (req, res) => {
       console.error("Hiba a megrendelés rögzítése közben:", error);
       res
         .status(500)
-        .json({ success: false, error: "Hiba a megrendelés rögzítése közben" }); 
+        .json({ success: false, error: "Hiba a megrendelés rögzítése közben" });
     });
 });
 

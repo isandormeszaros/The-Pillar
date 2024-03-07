@@ -1,0 +1,50 @@
+.border-color {
+  border: 0.8px solid var(--light-grey);
+  border-radius: 1.5px;
+}
+
+.faq-button {
+  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  column-gap: 5px;
+  text-decoration: none;
+  color: var(--dark-gold);
+  text-transform: uppercase;
+}
+
+.faq-button i {
+  transition: transform 0.4s;
+  font-size: 0.8rem;
+}
+
+.faq-button i:hover {
+  transform: translateX(0.25rem);
+}
+
+.faq-button:hover {
+  transition: all 0.4s ease;
+}
+
+.faq-header,
+.breadcrumb-item {
+  color: white;
+}
+
+.faq-header,
+.breadcrumb,
+.faq-header-support {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.breadcrumb {
+  top: 30%;
+}
+
+.active-pills {
+  color: white;
+  background-color: var(--dark-gold);
+}

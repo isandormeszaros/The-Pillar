@@ -7,8 +7,9 @@ var DB = require("../database/dboperations");
 const authJwt = require("../middleware/authjwt");
 var authUtils = require("../utils/authUtils");
 const crypto = require("crypto");
-const stripe = require("stripe")("sk_test_51OqjCM01VYY1Q06qZfwWtRUeaK7MLymRQpNnkBNiUferRL3QYxJMYJKLByKSzsBfIPoslTYtoH0KnJBkQwywdqWZ003w8byPBd")
-
+const stripe = require("stripe")(
+  "sk_test_51OqjCM01VYY1Q06qZfwWtRUeaK7MLymRQpNnkBNiUferRL3QYxJMYJKLByKSzsBfIPoslTYtoH0KnJBkQwywdqWZ003w8byPBd"
+);
 
 router.use(cors());
 
@@ -31,14 +32,14 @@ router.post("/login", function (req, res, next) {
 
 router.get("/userprofile", [authJwt.verifyToken], (req, res) => {
   DB.getUserProfile(req.userParams.email)
-    .then((adat) => res.json(adat))
+    .then((data) => res.json(data))
     .catch((error) => res.send(error));
 });
 
 router.post("/register", (req, res) => {
   const { name, email, password, phone } = req.body;
   DB.createUser(name, email, password, phone)
-    .then((adat) => res.json(adat))
+    .then((data) => res.json(data))
     .catch((error) => {
       if (error.code === "ER_DUP_ENTRY") {
         res.status(409).json({ error: "Az e-mail cím már regisztrálva van." });
@@ -85,46 +86,43 @@ router.get("/otp", (req, res) => {
 });
 
 router.post("/create-checkout-session", async (req, res) => {
-    try {
-        const { cart } = req.body;
+  try {
+    const { cart } = req.body;
 
-        // Check if cart is empty
-        if (!cart || cart.length === 0) {
-            return res.status(400).json({ error: "Cart is empty" });
-        }
-
-        const lineItems = cart.map((item) => {
-            return {
-                price_data: {
-                    currency: 'usd',
-                    product_data: {
-                        name: item.product.watchName,
-                    },
-                    unit_amount: Math.round(item.product.price * 100), // Convert to cents
-                },
-                quantity: item.quantity,
-            };
-        });
-
-        console.log("x")
-
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ["card"],
-            line_items: lineItems,
-            mode: "payment",
-            success_url: "http://localhost:3000/home",
-            cancel_url: "http://localhost:3000/cart", // Redirect to cart if payment is canceled
-        });
-
-        res.json({ id: session.id });
-
-    } catch (error) {
-        console.error("Error creating checkout session:", error);
-        res.status(500).json({ error: "Internal server error" });
+    // Check if cart is empty
+    if (!cart || cart.length === 0) {
+      return res.status(400).json({ error: "Cart is empty" });
     }
+
+    const lineItems = cart.map((item) => {
+      return {
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: item.product.watchName,
+          },
+          unit_amount: Math.round(item.product.price * 100),
+        },
+        quantity: item.quantity,
+      };
+    });
+
+    console.log("x");
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: lineItems,
+      mode: "payment",
+      success_url: "http://localhost:3000/home",
+      cancel_url: "http://localhost:3000/cart",
+    });
+
+    res.json({ id: session.id });
+  } catch (error) {
+    console.error("Error creating checkout session:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
-
-
 
 router.get(
   "/test",

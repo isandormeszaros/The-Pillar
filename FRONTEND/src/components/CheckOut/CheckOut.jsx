@@ -10,7 +10,7 @@ function Checkout({ cart }) {
         const stripe = await loadStripe("pk_test_51OqjCM01VYY1Q06qzRZJ5ftluZMxe6FN1iZZpf7agPSgsZNoe8OqTxnc0wO0DDJfIZgzpIygQIJVcx4JQzsCv4vV00JpYY0CUo");
 
         const body = {
-            cart: cart
+            cart
         }
 
         const headers = {
@@ -28,7 +28,7 @@ function Checkout({ cart }) {
             const session = await response.json();
 
             const result = await stripe.redirectToCheckout({
-                sessionId: session.id // Use session ID returned from server
+                sessionId: session.id
             });
 
             console.log(result);
@@ -42,29 +42,6 @@ function Checkout({ cart }) {
 
 
     }
-
-    //  const lineItems = cart.map((item) => {
-    //      return {
-    //          price_data: {
-    //              currency: 'usd',
-    //              product_data: {
-    //                  name: item.product.watchName
-    //              },
-    //              unit_amount: item.product.price * 100
-    //          },
-    //          quantity: item.quantity
-    //      };
-    //  });
-
-    // console.log(lineItems)
-
-    // const { data } = await axios.post('http://localhost:8080/auth/create-checkout-session', { lineItems });
-    // const stripe = await stripePromise
-    // await stripe.redirectToCheckout({ sessionId: data.id });
-
-
-
-
 
 
 
@@ -113,6 +90,14 @@ function Checkout({ cart }) {
     return (
         <div className="container mt-5">
             <h2>Checkout</h2>
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/home">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/cart">Kosár</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+                </ol>
+            </nav>
             <div className="row">
                 <div className="col-md-6">
                     {cart.map((item, index) => (

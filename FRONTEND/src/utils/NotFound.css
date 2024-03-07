@@ -1,0 +1,21 @@
+.notfound-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-image: url("http://localhost:8080/images/notfound/notfound.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.notfound-content {
+  text-align: center;
+}
+
+.notfound-content h1 {
+  margin-bottom: 20px;
+}
+
+@media screen {
+    
+}

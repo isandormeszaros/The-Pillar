@@ -515,19 +515,16 @@
 
 // export default FilterSection;
 
-
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import WatchesServices from "../../services/WatchesServices";
 import queryString from "query-string";
-import { useNavigate } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 function FilterSection({ setIsLefut, lefut }) {
   const [brands, setBrands] = useState([]);
   const [selectedBrand, setSelectedBrand] = useState("");
   const navigate = useNavigate();
 
-  // CUSTOM HOOK FOR GETBRANDS (optional, remove if not needed)
   useEffect(() => {
     WatchesServices.getBrands()
       .then((response) => setBrands(response.data))
@@ -536,7 +533,6 @@ function FilterSection({ setIsLefut, lefut }) {
       );
   }, []);
 
-  // HANDLE SEARCH
   const handleSearch = () => {
     const searchParams = {};
 
@@ -545,13 +541,12 @@ function FilterSection({ setIsLefut, lefut }) {
     }
 
     const queryStringParams = queryString.stringify(searchParams);
-
-    if (lefut) {
-      navigate(`?${queryStringParams}`)
+    if(lefut) {
+      navigate(`?${queryStringParams}`);
+    }
+    else {   
       setIsLefut(true);
-    } else {
-      // setIsLefut(true); // Set "lefut" state immediately
-      navigate(`/allbrands/detailed/?${queryStringParams}`);
+      navigate(`/allbrands/detailed?${queryStringParams}`);     
     }
   };
 
@@ -561,14 +556,14 @@ function FilterSection({ setIsLefut, lefut }) {
       <div>
         <div>
           <h3>Brands</h3>
-          {brands.map((brand) => (
-            <div key={brand.id}>
+          {brands.map((brand, index) => (
+            <div key={index}>
               <input
                 type="checkbox"
                 id={brand.id}
-                value={brand.brand} // Use brand name or ID
-                checked={selectedBrand === brand.brand} // Set checkbox state
-                onChange={(event) => setSelectedBrand(event.target.value)} // Update state on change
+                value={brand.brand}
+                checked={selectedBrand === brand.brand}
+                onChange={(event) => setSelectedBrand(event.target.value)}
               />
               <label htmlFor={brand.id}>
                 {brand.brand} ({brand.watch_count})

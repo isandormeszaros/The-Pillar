@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import WatchesServices from "../../services/WatchesServices";
+import SearchComponent from "./searchComponent";
 
 const SearchResultsComponent = () => {
   const location = useLocation();
@@ -34,6 +35,7 @@ const SearchResultsComponent = () => {
 
   return (
     <div>
+      <SearchComponent/>
       <h2>Keresési eredmények:</h2>
       {loading ? (
         <p>Betöltés...</p>

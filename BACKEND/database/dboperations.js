@@ -242,24 +242,26 @@ async function selectByDialMaterials() {
   });
 }
 
-async function selectProductWhere(whereConditions, pool) {
-  let whereClause = "WHERE "; // Inicializáljuk a whereClause változót
+async function selectProductWhere(whereConditions) {
+  let whereClause = ""; // Kezdetben üres string
   let values = [];
 
   if (whereConditions.watchName) {
-    whereClause += " watchName LIKE ?";
+    whereClause += "WHERE watchName LIKE ?";
     values.push("%" + whereConditions.watchName + "%");
   }
 
   if (whereConditions.dialMaterial) {
-    if (values.length > 0) {
+    if (whereClause !== "") {
       whereClause += " AND";
+    } else {
+      whereClause += "WHERE"; // Ha még nem volt feltétel, akkor WHERE-t kell hozzáadni
     }
     whereClause += " dialMaterial LIKE ?";
     values.push("%" + whereConditions.dialMaterial + "%");
   }
 
-  // SQL lekérdezés összeállítása
+  // SQL lekérdezés összeállítása csak akkor, ha van feltétel
   const sqlQuery = `SELECT * FROM watches.alltablesview ${whereClause}`;
 
   console.log(values);
