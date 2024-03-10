@@ -5,7 +5,7 @@ import WatchesServices from '../../services/WatchesServices';
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import './Registration.css'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 const Registration = () => {
@@ -16,6 +16,7 @@ const Registration = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [showPass, setShowPass] = useState(false)
   const [showConfirmPass, setShowConfirmPass] = useState(false)
+  const navigate = useNavigate();
   const images = "http://localhost:8080/images/register/"
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -61,6 +62,8 @@ const Registration = () => {
           .then((response) => {
             if (response.status === 200) {
               toast.success("Sikeres regisztráció! " + name);
+              navigate("/login");
+              toast.success("Kérjük jelentkezzen be!");
             } else {
               toast.error("Hiba a regisztráció során: Nem sikerült feldolgozni a választ.");
             }

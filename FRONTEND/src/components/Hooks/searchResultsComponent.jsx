@@ -44,13 +44,6 @@ const SearchResultsComponent = () => {
       ) : (
         <div>
           <h2>Szűrt termékek</h2>
-          {/* <ul>
-            {filteredProducts.map((product) => (
-              <li key={product.id}>
-                {product.watchName} - {product.price}
-              </li>
-            ))}
-          </ul> */}
           <div className="container">
           <div className="row">
             <div className="d-flex flex-row-reverse bd-highlight">

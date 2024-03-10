@@ -44,12 +44,13 @@ function Faq() {
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item "><a href="/home" className="text-decoration-none text-white">Home</a></li>
+              <li class="breadcrumb-item "><a href="/home" className="text-decoration-none text-white">Szolgáltatlások</a></li>
               <li class="breadcrumb-item"><a href="/faq" className="text-decoration-none text-white">GYAK</a></li>
             </ol>
           </nav>
 
           {/* GYAK */}
-          <h1 className="text-center custom-heading-font faq-header ">GYAK</h1>
+          <h1 className="text-center custom-heading-font faq-header">GYAK</h1>
           <div className="faq-container container custom-p-font text-start">
             <div className="row justify-content-center align-items-center">
               <div className="border-color col-lg-5 pb-4 p-3 m-2">

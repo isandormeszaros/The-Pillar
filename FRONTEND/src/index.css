@@ -173,6 +173,10 @@ body {
   cursor: pointer;
 }
 
+.default-delete-button:hover{
+  color: var(--error);
+}
+
 /*========== Colors ==========*/
 .black {
   background-color: var(--black);

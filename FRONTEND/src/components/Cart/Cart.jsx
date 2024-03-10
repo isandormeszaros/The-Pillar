@@ -23,23 +23,25 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
     };
 
     const applyCoupon = () => {
-        // Ellenőrizze, hogy van-e érvényes kuponkód
+        // Check if there is a valid coupon code
         if (couponCode === "teleki2024") {
-            // Számítsa ki a kedvezményes végösszeget
-            const discountedPrice = totalPrice * 0.9; // 10%-os kedvezmény
+            // Calculate the discounted total price
+            const discountedPrice = totalPrice * 0.9; // 10% discount
+            const discountAmount = totalPrice - discountedPrice; // Calculate the discount amount
             return {
                 originalPrice: totalPrice.toLocaleString("en-US", locales["en-US"].currencyFormat),
-                discountedPrice: discountedPrice.toLocaleString("en-US", locales["en-US"].currencyFormat)
+                discountedPrice: discountedPrice.toLocaleString("en-US", locales["en-US"].currencyFormat),
+                discountAmount: discountAmount.toLocaleString("en-US", locales["en-US"].currencyFormat) // Include the discount amount in the return value
             };
         } else {
-            // Ha nincs érvényes kuponkód, térjen vissza az eredeti végösszeggel
+            // If there is no valid coupon code, return the original total price without discount
             return {
                 originalPrice: totalPrice.toLocaleString("en-US", locales["en-US"].currencyFormat),
-                discountedPrice: totalPrice.toLocaleString("en-US", locales["en-US"].currencyFormat)
+                discountedPrice: totalPrice.toLocaleString("en-US", locales["en-US"].currencyFormat),
+                discountAmount: '0' // Set the discount amount to 0 if no coupon is applied
             };
         }
     };
-
 
 
 
@@ -132,25 +134,15 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
                                     </p>
                                     {couponCode === "teleki2024" && (
                                         <p className="font-weight-bold">
-                                            Kedvezmény: {totalPrice - applyCoupon().discountedPrice}
+                                            Kedvezmény: {applyCoupon().discountAmount}
                                         </p>
                                     )}
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
 
-
-
                     <button className="pi pi-times" onClick={removeAllItems}></button>
-
-
-
-
-
-
                     <a href="/allbrands" className="default-button">Vissza</a>
                     <a href="/checkout" onClick={handleCheckOut} className="default-button float-right">Checkout</a>
                 </div>

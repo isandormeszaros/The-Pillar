@@ -523,6 +523,9 @@ import queryString from "query-string";
 function FilterSection({ setIsLefut, lefut }) {
   const [brands, setBrands] = useState([]);
   const [selectedBrand, setSelectedBrand] = useState("");
+  const [selectedDialColors, setSelectedDialColors] = useState("");
+  const [selectedDates, setSelectedDates] = useState("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -535,20 +538,31 @@ function FilterSection({ setIsLefut, lefut }) {
 
   const handleSearch = () => {
     const searchParams = {};
-
+  
+    // Hozzáadjuk a kiválasztott márkát a szűrőfeltételekhez
     if (selectedBrand !== "") {
       searchParams["brand"] = selectedBrand;
     }
-
-    const queryStringParams = queryString.stringify(searchParams);
-    if(lefut) {
-      navigate(`?${queryStringParams}`);
+  
+    // Hozzáadjuk az összes többi kiválasztott szűrőt is
+    if (selectedDialColors.length > 0) {
+      searchParams["dialColors"] = selectedDialColors;
     }
-    else {   
+    if (selectedDates.length > 0) {
+      searchParams["dates"] = selectedDates;
+    }
+    // Itt folytathatod a többi szűrőfeltétel hozzáadását
+  
+    const queryStringParams = queryString.stringify(searchParams);
+    if (lefut) {
+      navigate(`?${queryStringParams}`);
+    } else {
       setIsLefut(true);
-      navigate(`/allbrands/detailed?${queryStringParams}`);     
+      navigate(`/allbrands/detailed?${queryStringParams}`);
     }
   };
+  
+  
 
   return (
     <section id="filter-section" className="col-lg-3 col-md-4 text-justify">

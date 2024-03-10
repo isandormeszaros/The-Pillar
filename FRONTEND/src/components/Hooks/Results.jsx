@@ -26,12 +26,10 @@ const Results = ({ isLefut }) => {
     console.log(queryParams);
     WatchesServices.getDetailedFiltered(queryParams)
         .then(response => {
-            // Filter the data based on watchName and queryParams
-            const filteredData = response.data.filter(item => item.watchName && item.watchName.includes(queryParams));
             
             // Set the filtered data state
-            setData(filteredData);
-            console.log(filteredData);
+            setData(response.data);
+            console.log(response.data);
             setLefut(true);
         })
         .catch((err) => {

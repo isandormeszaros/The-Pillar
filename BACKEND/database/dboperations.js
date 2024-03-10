@@ -1,6 +1,7 @@
 var config = require("./dbconfig");
 const mysql = require("mysql");
 let pool = mysql.createPool(config);
+const cryto = require("crypto");
 
 // GET /brands - Az összes elérhető óramárka lekérdezése
 async function selectBrands() {
@@ -280,7 +281,6 @@ async function selectProductWhere(whereConditions) {
   });
 }
 
-
 //4. post bejelentkezés /login
 async function getSignIn(email, password) {
   console.log(email, password);
@@ -335,6 +335,85 @@ async function createUser(name, email, password, phone) {
     );
   });
 }
+
+async function deleteUser(id) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      "DELETE FROM watches.users WHERE id = ?",
+      [id],
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+}
+
+async function patchUser(id, userData) {
+  return new Promise((resolve, reject) => {
+    let hasPreviousField = false;
+    let sql = "UPDATE users SET";
+    let values = [];
+
+    if (userData && userData.name) {
+      if (hasPreviousField) sql += ",";
+      sql += " name=?";
+      values.push(userData.name);
+      hasPreviousField = true;
+    }
+
+    if (userData && userData.userEmail) {
+      if (hasPreviousField) sql += ",";
+      sql += " userEmail=?";
+      values.push(userData.userEmail);
+      hasPreviousField = true;
+    }
+
+    if (userData && userData.password) {
+      if (hasPreviousField) sql += ",";
+      sql += " password=SHA2(?,256)";
+      const hashedPassword = crypto.createHash("sha256").update(userData.password).digest("hex");
+      values.push(hashedPassword);
+      hasPreviousField = true;
+    }
+
+    if (userData && userData.userPhone) {
+      if (hasPreviousField) sql += ",";
+      sql += " userPhone=?";
+      values.push(userData.userPhone);
+      hasPreviousField = true;
+    }
+
+    if (userData && userData.userAddress !== undefined && userData.userAddress !== null) {
+      if (hasPreviousField) sql += ",";
+      sql += " userAddress=?";
+      values.push(userData.userAddress);
+      hasPreviousField = true;
+    }
+
+    if (!hasPreviousField) {
+      resolve(0); // No fields to update
+      return;
+    }
+
+    sql += " WHERE id=?";
+    values.push(id);
+
+    pool.query(sql, values, (error, result) => {
+      if (error) {
+        console.error("Error executing query: ", error);
+        reject(error);
+      } else {
+        console.log("Update successful. Rows affected: ", result.affectedRows);
+        resolve(result.affectedRows);
+      }
+    });
+  });
+}
+
 
 async function placeOrder(data) {
   const { cart, orderDate, shippingDate, status, paymentId, userAddress } =
@@ -543,6 +622,8 @@ module.exports = {
   getSignIn: getSignIn,
   getUserProfile: getUserProfile,
   createUser: createUser,
+  deleteUser: deleteUser,
+  patchUser: patchUser,
   placeOrder: placeOrder,
   selectFilmekId: selectFilmekId,
   insertFilmek: insertFilmek,

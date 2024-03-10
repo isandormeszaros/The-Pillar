@@ -49,6 +49,36 @@ router.post("/register", (req, res) => {
     });
 });
 
+router.delete("/delete/:id", (req, res) => {
+  const userId = req.params.id;
+  DB.deleteUser(userId)
+    .then((data) => {
+      if (data.affectedRows == 0)
+        res.status(404).send("Nincs ilyen rekord: " + userId);
+      else return res.json(data);
+    })
+    .catch((error) => {
+      res.send(error);
+    });
+});
+
+router.patch("/patch/:id", (req, res) => {
+  const id = req.params.id;
+  const { user } = req.body;
+
+  DB.patchUser(id, user)
+    .then(affectedRows => {
+      if (affectedRows === 0) {
+        res.status(404).send("Nincs ilyen rekord: " + id);
+      } else {
+        res.json({ success: true });
+      }
+    })
+    .catch(error => {
+      res.status(500).send(error.message);
+    });
+});
+
 // GET /validEmailList.txt - Az email listát tartalmazó fájl elérése
 router.get("/validemaillist", (req, res) => {
   const filePath = path.join(__dirname, "..", "public", "validEmailList.txt");
