@@ -57,39 +57,38 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
                     </div>
                 </>
             ) : (
-                <div>
-                    <hr />
 
-                    <nav aria-label="breadcrumb">
-                        <ol className="breadcrumb">
-                            <li className="breadcrumb-item"><a href="/home">Home</a></li>
-                            <li className="breadcrumb-item active" aria-current="page">Kosár</li>
-                        </ol>
-                    </nav>
-
+                <div className="container p-3">
                     <h3 className="custom-heading-font">Kosár tartalma <span className="dark-gold">({cart.length})</span></h3>
                     <div className="row">
                         <div className="col-lg-9 custom-p-font">
+                            <div class="d-flex flex-row-reverse">
+                                <div class="pt-2 error g-5"><i className="pi pi-trash"></i> Összes törlése</div>
+                            </div>
                             <ul className="list-unstyled">
                                 {cart.map((item, index) => (
                                     <li key={index}>
-                                        <p>{item.product.watchName}</p>
-                                        <p>
-                                            Price:{" "}
-                                            {item.product.price.toLocaleString("en-US", locales["en-US"].currencyFormat)}
-                                        </p>
-                                        <p>
-                                            <button className="pi pi-times" onClick={() => removeFromCart(item.product)}></button>
-                                        </p>
-                                        <button onClick={() => updateQuantity(item.product, -1)}>
-                                            <i className="pi pi-minus"></i>
-                                        </button>
-                                        {item.quantity}
-                                        <button onClick={() => updateQuantity(item.product, 1)}>
-                                            <i className="pi pi-plus"></i>
-                                        </button>
-                                        <p>Mennyiség: {item.quantity}</p>
                                         <hr />
+                                        <div class="d-flex justify-content-between">
+                                            <div class="fw-bolder cart-item-font-size">{item.product.watchName}</div>
+                                            <div class="fw-bolder cart-item-font-size">{item.product.price.toLocaleString("en-US", locales["en-US"].currencyFormat)}</div>
+                                        </div>
+
+                                        <p>
+                                            <button className="pi pi-times-circle" onClick={() => removeFromCart(item.product)}></button>
+                                        </p>
+                                        <div className="quantity-checker">
+                                            <button onClick={() => updateQuantity(item.product, -1)} className="quantity-chercker-button">
+                                                <i className="pi pi-minus"></i>
+                                            </button>
+                                            <span className="px-2">{item.quantity}</span>
+                                            <button onClick={() => updateQuantity(item.product, 1)} className="quantity-chercker-button">
+                                                <i className="pi pi-plus"></i>
+                                            </button>
+                                        </div>
+
+                                        <p>Mennyiség: {item.quantity}</p>
+
                                     </li>
                                 ))}
                             </ul>
@@ -104,19 +103,37 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
                                 <div className="col-4 pr-lg-0">
                                     {totalPrice}
                                 </div>
+
                             </div>
+
                             <div className="d-flex justify-content-center align-items-center cart-total-summary">
                                 <div className="col-8 pl-lg-0">
-                                    <input
-                                        type="text"
-                                        value={couponCode}
-                                        onChange={(e) => setCouponCode(e.target.value)}
-                                        placeholder="Kuponkód"
-                                    />
+                                    <div className="col-4 pr-lg-0">
+                                        <input
+                                            type="text"
+                                            value={couponCode}
+                                            onChange={(e) => setCouponCode(e.target.value)}
+                                            placeholder="Kuponkód"
+                                        />
+                                    </div>
                                 </div>
-                                <div className="col-4 pr-lg-0">
+                            </div>
+
+                            <div className="d-flex justify-content-center align-items-center cart-total-summary">
+                                <div className="col-8 pl-lg-0">
+                                    <div className="col-4 pr-lg-0">
+                                        <div className="col-8 pl-lg-0">
+                                            <p className="text-uppercase custom-heading-font small">Végösszeg</p>
+                                        </div>
+                                        <div className="col-4 pr-lg-0">
+                                            <p className="font-weight-bold">
+                                                Eredeti ár: {applyCoupon().originalPrice}
+                                            </p>
+                                        </div>
+                                    </div>
 
                                 </div>
+
                             </div>
                             <hr />
                             <div className="d-flex justify-content-center align-items-center cart-total-summary">

@@ -14,6 +14,25 @@ button:focus {
   border-radius: 50%;
 }
 
+.cart-item-font-size {
+  font-size: var(--h3-font-size);
+}
+
+.quantity-checker {
+  background-color: transparent;
+  border: 0.8px solid var(--light-grey);
+  width: 85px;
+  text-align: center;
+  padding: 5px;
+}
+
+.quantity-chercker-button {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
 @media only screen and (max-width: 1023px) {
   .empty-cart-mobile {
     display: flex;

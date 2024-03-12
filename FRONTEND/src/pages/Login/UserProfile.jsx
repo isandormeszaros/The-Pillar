@@ -10,6 +10,12 @@ function UserProfile({ islogged, setIslogged }) {
   const [response, setResponse] = useState({});
   const [openModal, setOpenModal] = useState(false);
   const [userIdToDelete, setUserIdToDelete] = useState(null); // Store the id of the user to delete
+  const [userUpdate, setUserUpdate] = useState({
+    name: "",
+    userEmail: "",
+    userPhone: "",
+    userAddress: ""
+  })
   const [msg, setMsg] = useState("");
   const navigate = useNavigate();
   const images = "http://localhost:8080/images/user/";
@@ -49,6 +55,51 @@ function UserProfile({ islogged, setIslogged }) {
       }
     }
   }, []);
+
+  const handleUserUpdate = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const userId = response.data[0].id;
+      http.patch(`/auth/patch/${userId}`, userUpdate, {
+        headers: { "x-access-token": token },
+      })
+        .then((response) => {
+          if (response.status === 200) {
+            toast.success("Felhasználói adatok sikeresen frissítve");
+            // Válasz alapján lehet esetleg további műveleteket végezni, például frissíteni a felhasználói adatokat a frontend oldalon
+          } else {
+            toast.error("Hiba történt az adatok frissítése során");
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            toast.error(error.response.data.message);
+          } else {
+            toast.error("Hiba a szerverrel való kommunikáció során");
+          }
+        });
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUserUpdate(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handleModifyClick = () => {
+    handleUserUpdate();
+  };
+
+  const handleInputBlur = (e) => {
+    const { name, value } = e.target;
+    setUserUpdate(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -110,29 +161,34 @@ function UserProfile({ islogged, setIslogged }) {
         </div>
       ) : (
         <div className="profile p-0">
-          <nav className="nav justify-content-center">
-            <a className="nav-link active" aria-current="page" href="#">Profil</a>
-            <a className="nav-link" href="#">Megrendeléseim</a>
-            <a className="nav-link" href="#">Kedvenceim</a>
-          </nav>
+
 
           {Array.isArray(response.data) ? (
             response.data.map((user) => (
               <div key={user.id}>
+
+                <nav className="nav justify-content-center p-2">
+                  <a className="nav-link active" aria-current="page" href="#">Profil</a>
+                  <a className="nav-link" href="#">Megrendeléseim</a>
+                  <a className="nav-link" href="#">Kedvenceim</a>
+                  <a onClick={() => handleDeleteConfirmation(user.id)} className="delete-btn nav-link">Fiók törlése </a>
+                </nav>
+
+
                 <div className="container px-5">
                   <div className="row justify-content-center text-start">
                     <div className="col-lg-4 p-0 text-start custom-p-font">
                       <div className="p-2 custom-border">
                         <p className="m-0">Teljes név</p>
-                        <input className="border border-white" type="text" value={user.name} name="name" id="email" />
+                        <input className="border border-white placeholder-info" type="text" placeholder={user.name} value={userUpdate.name} onChange={handleInputChange} onBlur={handleInputBlur} name="name" id="email" />
                       </div>
                       <div className="p-2 custom-border">
                         <p className="m-0">Email cím</p>
-                        <input className="border border-white" type="email" value={user.userEmail} name="email" id="email" />
+                        <input className="border border-white" type="email" value={user.userEmail} disabled name="userEmail" id="email" />
                       </div>
                       <div className="p-2 custom-border">
                         <p className="m-0">Telefonszám</p>
-                        <input className="border border-white" type="tel" value={user.userPhone} name="phone" id="phone" />
+                        <input className="border border-white placeholder-info" type="tel" placeholder={user.userPhone} value={userUpdate.userPhone} onChange={handleInputChange} onBlur={handleInputBlur} name="userPhone" id="phone" />
                       </div>
 
                     </div>
@@ -140,12 +196,12 @@ function UserProfile({ islogged, setIslogged }) {
                       <div className="p-2 custom-border">
                         <p className="m-0">Cím</p>
                         <input
-                          className="border border-white placeholder"
+                          className="border border-white placeholder-error"
                           type="text"
-                          value={user.userAddress}
-                          name="name"
-                          id="email"
-                          placeholder="Kérem töltse ki a mezőt!"
+                          value={userUpdate.userAddress} onChange={handleInputChange} onBlur={handleInputBlur}
+                          name="userAddress"
+                          id="address"
+                          placeholder={!userUpdate.userAddress ? "Kérem adja meg a címet" : userUpdate.userAddress}
                         />
                       </div>
                       <div className="p-2 custom-border">
@@ -166,17 +222,17 @@ function UserProfile({ islogged, setIslogged }) {
                       </div>
                     </div>
                   </div>
-                  <div className="row">
-                  
-                  <div className="profile-buttons-gap pt-5">
-                      <button onClick={() => handleDeleteConfirmation(user.id)} className="delete-btn default-button">Törlés</button>
-                      <button onClick={handleLogout} className="logOut default-button">Kijelentkezés</button>
+                  <div className="row gx-5 m-a pt-3 pb-5 justify-content-center">
+                    <div className="col-lg-4 col-md-12 d-flex p-2 justify-content-center justify-content-lg-start">
+                      <button onClick={handleModifyClick} className="logOut default-button modify-button setting-default-button w-100 w-lg-65"><i className="pi pi-user-edit"></i>Módosítás</button>
+
+
+                    </div>
+                    <div className="col-lg-4 col-md-12 d-flex p-2 justify-content-center justify-content-lg-end">
+                      <button onClick={handleLogout} id="log-out" className="default-button setting-default-button w-100 w-lg-65">Kijelentkezés<i className="pi pi-sign-out"></i></button>
                     </div>
                   </div>
                 </div>
-
-
-
 
                 {openModal && userIdToDelete === user.id && (
                   <div className="modal-background">

@@ -128,6 +128,7 @@ function Checkout({ cart }) {
                     </form>
                 </div>
             </div>
+            <button className='default-button'>Vissza</button>
         </div>
     );
 }

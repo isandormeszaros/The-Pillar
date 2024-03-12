@@ -183,6 +183,10 @@ body {
   color: var(--black);
 }
 
+.error{
+  color: var(--error);
+}
+
 /*========== Cursor ==========*/
 .pointer {
   cursor: pointer;

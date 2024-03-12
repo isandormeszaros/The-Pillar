@@ -64,19 +64,25 @@ router.delete("/delete/:id", (req, res) => {
 
 router.patch("/patch/:id", (req, res) => {
   const id = req.params.id;
-  const { user } = req.body;
+  const userData = req.body;
 
-  DB.patchUser(id, user)
-    .then(affectedRows => {
-      if (affectedRows === 0) {
-        res.status(404).send("Nincs ilyen rekord: " + id);
-      } else {
-        res.json({ success: true });
-      }
-    })
-    .catch(error => {
-      res.status(500).send(error.message);
-    });
+  if (!userData || Object.keys(userData).length === 0) {
+    res.status(400).send("Nincs updatelhető mező");
+    console.log(userData);
+  } else {
+    DB.patchUser(id, userData)
+      .then((affectedRows) => {
+        if (affectedRows === 0) {
+          res.status(404).send("Ez az id nem létezik: " + id);
+        } else {
+          res.json({ success: true });
+        }
+      })
+      .catch((error) => {
+        console.error("Hiba a felhasználói adatok módosítása közben:", error);
+        res.status(500).send("Hiba a felhasználó módosításakor");
+      });
+  }
 });
 
 // GET /validEmailList.txt - Az email listát tartalmazó fájl elérése

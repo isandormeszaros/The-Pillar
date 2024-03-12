@@ -365,18 +365,10 @@ async function patchUser(id, userData) {
       hasPreviousField = true;
     }
 
-    if (userData && userData.userEmail) {
-      if (hasPreviousField) sql += ",";
-      sql += " userEmail=?";
-      values.push(userData.userEmail);
-      hasPreviousField = true;
-    }
-
     if (userData && userData.password) {
       if (hasPreviousField) sql += ",";
       sql += " password=SHA2(?,256)";
-      const hashedPassword = crypto.createHash("sha256").update(userData.password).digest("hex");
-      values.push(hashedPassword);
+      values.push(userData.password);
       hasPreviousField = true;
     }
 
@@ -395,7 +387,7 @@ async function patchUser(id, userData) {
     }
 
     if (!hasPreviousField) {
-      resolve(0); // No fields to update
+      resolve(0); 
       return;
     }
 
@@ -404,10 +396,10 @@ async function patchUser(id, userData) {
 
     pool.query(sql, values, (error, result) => {
       if (error) {
-        console.error("Error executing query: ", error);
+        console.error("Error: ", error);
         reject(error);
       } else {
-        console.log("Update successful. Rows affected: ", result.affectedRows);
+        console.log("Sikeres módosítás. Rows affected: ", result.affectedRows);
         resolve(result.affectedRows);
       }
     });

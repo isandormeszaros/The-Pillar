@@ -14,17 +14,18 @@
   border: none;
 }
 
-.col > .border > input:enabled {
-  background: wheat;
-}
-
 input:focus {
   border-color: var(--dark-gold);
   box-shadow: 0 0 0 0.2rem rgba(236, 177, 89, 0.25);
 }
 
-.placeholder::placeholder {
+.placeholder-error::placeholder {
   color: red;
+  opacity: 1;
+}
+
+.placeholder-info::placeholder {
+  color: var(--background-dark-blue);
   opacity: 1;
 }
 
@@ -33,14 +34,9 @@ input:focus {
 }
 
 .delete-btn {
-  background-color: #b80000;
-}
-
-.profile-buttons-gap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 250px;
+  color: #b80000;
+  cursor: pointer;
+  text-decoration: none;
 }
 
 .modal-background {
@@ -91,9 +87,14 @@ input:focus {
   outline: none;
 }
 
-.modal-close-btn button:hover {
+.modal-close-btn button:hover,
+.modify-button:hover {
   color: var(--dark-gold);
   transition: all 0.3s linear;
+}
+
+.modify-button:hover {
+  border: 0.8px solid var(--dark-gold);
 }
 
 .title-close-btn button {
@@ -124,6 +125,22 @@ input:focus {
   margin: 10px;
 }
 
+.default-button {
+  gap: 7px;
+}
+
+.setting-default-button {
+  background-color: transparent;
+  color: black;
+  border: 0.8px solid var(--light-grey);
+}
+
+#log-out:hover {
+  transition: all 0.3s linear;
+  color: #b80000;
+  border: 0.8px solid #b80000;
+}
+
 #cancel-btn {
   background-color: crimson;
 }
@@ -141,8 +158,10 @@ input:focus {
   .default-button {
     min-width: 160px;
   }
+}
 
-  .profile-buttons-gap {
-    gap: 10px;
+@media (min-width: 992px) {
+  .w-lg-65 {
+    max-width: 65% !important;
   }
 }
