@@ -45,6 +45,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+button {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
 /*========== Custom Font Faces  ==========*/
 /* PlayFair Display */
 @font-face {
@@ -173,7 +180,7 @@ body {
   cursor: pointer;
 }
 
-.default-delete-button:hover{
+.default-delete-button:hover {
   color: var(--error);
 }
 
@@ -183,7 +190,7 @@ body {
   color: var(--black);
 }
 
-.error{
+.error {
   color: var(--error);
 }
 
@@ -262,6 +269,11 @@ body {
 .search-form-control:focus {
   border-color: var(--dark-gold);
   box-shadow: 0 0 0 0.2rem rgba(236, 177, 89, 0.25);
+}
+
+.form-control:focus {
+  border-color: var(--dark-gold) !important;
+  box-shadow: 0 0 0 0.2rem rgba(236, 177, 89, 0.25) !important;
 }
 
 /*========== Carouser ==========*/

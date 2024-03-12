@@ -33,6 +33,46 @@ button:focus {
   box-shadow: none;
 }
 
+.coupon-input {
+  color: var(--paragraph-color);
+  height: 40px;
+  border-radius: 0;
+  font-size: 0.9rem;
+  padding: 10px;
+  border: 0.6px solid var(--black);
+}
+
+.delete-all-items {
+  display: flex;
+  cursor: pointer;
+  gap: 6px;
+  align-items: center;
+}
+
+.delete {
+  transition: all 0.3s linear;
+  cursor: pointer;
+}
+
+.delete:hover {
+  color: var(--error);
+}
+
+.breadcrumb-anchor-cart {
+  color: var(--paragraph-color) !important;
+  text-decoration: none !important;
+}
+
+.breadcrumb-item.active {
+  color: var(--dark-gold) !important;
+}
+
+.cart-items-container {
+  height: 400px;
+  overflow-y: auto;
+  position: relative;
+}
+
 @media only screen and (max-width: 1023px) {
   .empty-cart-mobile {
     display: flex;

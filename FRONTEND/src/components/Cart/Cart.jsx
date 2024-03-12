@@ -2,46 +2,43 @@ import { useEffect, useState } from "react";
 import locales from "../../utils/locales.json";
 import "./Cart.css"
 
-// import { Dialog } from 'primereact/dialog';
-
-// Increase, decrease quantity
-// Delete one item
-// Delete all item from the cart
-
 const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
-    const [visible, setVisible] = useState(false);
     const [couponCode, setCouponCode] = useState("");
 
     const totalPrice = cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
-
-    useEffect(() => {
-        console.log('cart:', cart);
-    }, [cart]);
 
     const handleCheckOut = () => {
         console.log(cart)
     };
 
     const applyCoupon = () => {
-        // Check if there is a valid coupon code
         if (couponCode === "teleki2024") {
-            // Calculate the discounted total price
-            const discountedPrice = totalPrice * 0.9; // 10% discount
-            const discountAmount = totalPrice - discountedPrice; // Calculate the discount amount
+            const discountedPrice = totalPrice * 0.9;
+            const shippingPrice = totalPrice * 0.01;
+            const discountAmount = totalPrice - discountedPrice;
+            const totalWithShipping = discountedPrice + shippingPrice;
+
             return {
                 originalPrice: totalPrice.toLocaleString("en-US", locales["en-US"].currencyFormat),
                 discountedPrice: discountedPrice.toLocaleString("en-US", locales["en-US"].currencyFormat),
-                discountAmount: discountAmount.toLocaleString("en-US", locales["en-US"].currencyFormat) // Include the discount amount in the return value
+                discountAmount: discountAmount.toLocaleString("en-US", locales["en-US"].currencyFormat),
+                shippingPrice: shippingPrice.toLocaleString("en-US", locales["en-US"].currencyFormat),
+                totalPriceWithShipping: totalWithShipping.toLocaleString("en-US", locales["en-US"].currencyFormat)
             };
         } else {
-            // If there is no valid coupon code, return the original total price without discount
+            const shippingPrice = totalPrice * 0.01;
+            const totalWithShipping = totalPrice + shippingPrice;
+
             return {
                 originalPrice: totalPrice.toLocaleString("en-US", locales["en-US"].currencyFormat),
                 discountedPrice: totalPrice.toLocaleString("en-US", locales["en-US"].currencyFormat),
-                discountAmount: '0' // Set the discount amount to 0 if no coupon is applied
+                discountAmount: (0).toLocaleString("en-US", locales["en-US"].currencyFormat),
+                shippingPrice: shippingPrice.toLocaleString("en-US", locales["en-US"].currencyFormat),
+                totalPriceWithShipping: totalWithShipping.toLocaleString("en-US", locales["en-US"].currencyFormat)
             };
         }
     };
+
 
 
 
@@ -58,110 +55,117 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
                 </>
             ) : (
 
+
                 <div className="container p-3">
-                    <h3 className="custom-heading-font">Kosár tartalma <span className="dark-gold">({cart.length})</span></h3>
+                    <nav aria-label="breadcrumb custom-p-font">
+                        <ol className="breadcrumb justify-content-center justify-content-lg-start">
+                            <li className="breadcrumb-item custom-p-font"><a href="/home" className="breadcrumb-anchor-cart">Nyitóoldal</a></li>
+                            <li className="breadcrumb-item custom-p-font"><a href="/allbrands" className="breadcrumb-anchor-cart">Órák</a></li>
+                            <li className="breadcrumb-item custom-p-font active" aria-current="page">Kosár</li>
+                        </ol>
+                    </nav>
+                    <h3 className="custom-heading-font pb-3">Kosár tartalma <span className="dark-gold">({cart.length})</span></h3>
                     <div className="row">
-                        <div className="col-lg-9 custom-p-font">
-                            <div class="d-flex flex-row-reverse">
-                                <div class="pt-2 error g-5"><i className="pi pi-trash"></i> Összes törlése</div>
+                        <div className="col-lg-9 custom-p-font cart-items-container">
+                            <div className="d-flex flex-row-reverse">
+                                <div onClick={removeAllItems} className="pt-2 error delete-all-items"><i className="pi pi-trash"></i> Összes törlése</div>
                             </div>
                             <ul className="list-unstyled">
                                 {cart.map((item, index) => (
                                     <li key={index}>
                                         <hr />
-                                        <div class="d-flex justify-content-between">
-                                            <div class="fw-bolder cart-item-font-size">{item.product.watchName}</div>
-                                            <div class="fw-bolder cart-item-font-size">{item.product.price.toLocaleString("en-US", locales["en-US"].currencyFormat)}</div>
+                                        <div className="d-flex justify-content-between">
+                                            <div className="fw-bolder cart-item-font-size">{item.product.watchName}</div>
+                                            <div className="fw-bolder cart-item-font-size">{(item.product.price * item.quantity).toLocaleString("en-US", locales["en-US"].currencyFormat)}</div>
                                         </div>
-
-                                        <p>
-                                            <button className="pi pi-times-circle" onClick={() => removeFromCart(item.product)}></button>
-                                        </p>
-                                        <div className="quantity-checker">
-                                            <button onClick={() => updateQuantity(item.product, -1)} className="quantity-chercker-button">
-                                                <i className="pi pi-minus"></i>
-                                            </button>
-                                            <span className="px-2">{item.quantity}</span>
-                                            <button onClick={() => updateQuantity(item.product, 1)} className="quantity-chercker-button">
-                                                <i className="pi pi-plus"></i>
-                                            </button>
+                                        <div className="d-flex justify-content-between">
+                                            <div className="fw-bolder cart-item-font-size">{item.product.price.toLocaleString("en-US", locales["en-US"].currencyFormat)}</div>
                                         </div>
-
-                                        <p>Mennyiség: {item.quantity}</p>
-
+                                        <div className="p-4"></div>
+                                        <div className="d-flex justify-content-between">
+                                            <div className="quantity-checker">
+                                                <button onClick={() => updateQuantity(item.product, -1)} className="quantity-chercker-button">
+                                                    <i className="pi pi-minus"></i>
+                                                </button>
+                                                <span className="px-2">{item.quantity}</span>
+                                                <button onClick={() => updateQuantity(item.product, 1)} className="quantity-chercker-button">
+                                                    <i className="pi pi-plus"></i>
+                                                </button>
+                                            </div>
+                                            <div>
+                                                <button className="delete" onClick={() => removeFromCart(item.product)}>
+                                                    Törlés
+                                                </button>
+                                            </div>
+                                        </div>
                                     </li>
                                 ))}
                             </ul>
                         </div>
 
 
-                        <div className="col-lg-3">
+
+                        <div className="col-lg-3 custom-p-font pt-lg-0 pt-5">
                             <div className="d-flex justify-content-center align-items-center cart-total-summary">
                                 <div className="col-8 pl-lg-0">
-                                    <p>Teljes összeg</p>
+                                    <p className="my-1 text-start">Teljes összeg</p>
                                 </div>
                                 <div className="col-4 pr-lg-0">
-                                    {totalPrice}
-                                </div>
-
-                            </div>
-
-                            <div className="d-flex justify-content-center align-items-center cart-total-summary">
-                                <div className="col-8 pl-lg-0">
-                                    <div className="col-4 pr-lg-0">
-                                        <input
-                                            type="text"
-                                            value={couponCode}
-                                            onChange={(e) => setCouponCode(e.target.value)}
-                                            placeholder="Kuponkód"
-                                        />
-                                    </div>
+                                    <p className="my-1 text-end">{applyCoupon().originalPrice}</p>
                                 </div>
                             </div>
-
+                            <hr />
+                            <div className="d-flex align-items-center cart-total-summary">
+                                <div className="col-12 pl-lg-0">
+                                    <input className="my-1 form-control  coupon-input"
+                                        type="text"
+                                        value={couponCode}
+                                        onChange={(e) => setCouponCode(e.target.value)}
+                                        placeholder="Kuponkód"
+                                    />
+                                    <p className="m-0 p-0 small text-muted text-start">10% kedvezmény</p>
+                                </div>
+                            </div>
+                            <hr />
                             <div className="d-flex justify-content-center align-items-center cart-total-summary">
                                 <div className="col-8 pl-lg-0">
-                                    <div className="col-4 pr-lg-0">
-                                        <div className="col-8 pl-lg-0">
-                                            <p className="text-uppercase custom-heading-font small">Végösszeg</p>
-                                        </div>
-                                        <div className="col-4 pr-lg-0">
-                                            <p className="font-weight-bold">
-                                                Eredeti ár: {applyCoupon().originalPrice}
-                                            </p>
-                                        </div>
-                                    </div>
-
+                                    <p className="my-1 text-start">Kedvezmény</p>
+                                </div>
+                                <div className="col-4 pr-lg-0">
+                                    {couponCode === "teleki2024" ? (
+                                        <p className="my-1 text-end">
+                                            {applyCoupon().discountAmount}
+                                        </p>
+                                    ) : (<p className="my-1 text-end">{applyCoupon().discountAmount}</p>)}
                                 </div>
 
                             </div>
                             <hr />
                             <div className="d-flex justify-content-center align-items-center cart-total-summary">
                                 <div className="col-8 pl-lg-0">
-                                    <p className="text-uppercase custom-heading-font small">Végösszeg</p>
+                                    <p className="my-1 text-start">Szállítási díj</p>
                                 </div>
                                 <div className="col-4 pr-lg-0">
-                                    <p className="font-weight-bold">
-                                        Eredeti ár: {applyCoupon().originalPrice}
+                                    <p className="my-1 text-end">
+                                        {applyCoupon().shippingPrice}
                                     </p>
-                                </div>
-                                <div className="col-4 pr-lg-0">
-                                    <p className="font-weight-bold">
-                                        Kedvezményes ár: {applyCoupon().discountedPrice}
-                                    </p>
-                                    {couponCode === "teleki2024" && (
-                                        <p className="font-weight-bold">
-                                            Kedvezmény: {applyCoupon().discountAmount}
-                                        </p>
-                                    )}
+
                                 </div>
                             </div>
+                            <hr />
+                            <div className="d-flex justify-content-center align-items-center cart-total-summary pb-4">
+                                <div className="col-8 pl-lg-0">
+                                    <p className="my-1 text-start">Végösszeg</p>
+                                </div>
+                                <div className="col-4 pr-lg-0">
+                                    <p className="my-1 text-end">
+                                        {applyCoupon().totalPriceWithShipping}
+                                    </p>
+                                </div>
+                            </div>
+                            <a href="/checkout" onClick={handleCheckOut} className="default-button d-flex ">Checkout</a>
                         </div>
                     </div>
-
-                    <button className="pi pi-times" onClick={removeAllItems}></button>
-                    <a href="/allbrands" className="default-button">Vissza</a>
-                    <a href="/checkout" onClick={handleCheckOut} className="default-button float-right">Checkout</a>
                 </div>
             )}
         </div>
