@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const SearchComponent = () => {
+const SearchComponent = ({setSearchTrigger}) => {
   const [keyword, setKeyword] = useState("");
   const navigate = useNavigate();
+  
 
   const handleSearch = () => {
     // Átirányítás a keresési eredmények oldalára
+    setSearchTrigger(prev => prev + 1);
     navigate(`/search?keyword=${keyword}`);
   };
 

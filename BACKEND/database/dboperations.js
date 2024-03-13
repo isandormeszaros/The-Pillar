@@ -2,6 +2,8 @@ var config = require("./dbconfig");
 const mysql = require("mysql");
 let pool = mysql.createPool(config);
 const cryto = require("crypto");
+const { Portal } = require("@chakra-ui/react");
+const { error } = require("console");
 
 // GET /brands - Az összes elérhető óramárka lekérdezése
 async function selectBrands() {
@@ -352,6 +354,19 @@ async function deleteUser(id) {
   });
 }
 
+async function getEmail(email){
+  return new Promise((resolve, reject) =>{
+    pool.query("SELECT email FROM validemail", [email], (error, result) => {
+      if(error){
+        reject (error);
+      }
+      else{
+        resolve(result)
+      }
+    })
+  })
+}
+
 async function patchUser(id, userData) {
   return new Promise((resolve, reject) => {
     let hasPreviousField = false;
@@ -362,6 +377,13 @@ async function patchUser(id, userData) {
       if (hasPreviousField) sql += ",";
       sql += " name=?";
       values.push(userData.name);
+      hasPreviousField = true;
+    }
+
+    if (userData && userData.userEmail) {
+      if (hasPreviousField) sql += ",";
+      sql += " userEmail=?";
+      values.push(userData.userEmail);
       hasPreviousField = true;
     }
 
@@ -615,6 +637,7 @@ module.exports = {
   getUserProfile: getUserProfile,
   createUser: createUser,
   deleteUser: deleteUser,
+  getEmail : getEmail,
   patchUser: patchUser,
   placeOrder: placeOrder,
   selectFilmekId: selectFilmekId,

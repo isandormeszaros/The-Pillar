@@ -85,8 +85,8 @@ const postSearch = (filter) => {
   return http.post(`/products/filter`, filter)
 };
 
-const getEmails = () => {
-  return http.get("/auth/validemaillist");
+const getEmail = () => {
+  return http.get("/auth/validemail");
 };
 
 const getOtp = () => {
@@ -122,7 +122,7 @@ const WatchesServices = {
   getResistances,
   getBandWidthes,
   getDialMaterials,
-  getEmails,
+  getEmail,
   getOtp,
   postSearch,
   create,

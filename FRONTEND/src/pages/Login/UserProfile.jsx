@@ -180,11 +180,11 @@ function UserProfile({ islogged, setIslogged }) {
                     <div className="col-lg-4 p-0 text-start custom-p-font">
                       <div className="p-2 custom-border">
                         <p className="m-0">Teljes név</p>
-                        <input className="border border-white placeholder-info" type="text" placeholder={user.name} value={userUpdate.name} onChange={handleInputChange} onBlur={handleInputBlur} name="name" id="email" />
+                        <input className="border border-white placeholder-info" type="text" placeholder={user.name} value={userUpdate.name} onChange={handleInputChange} onBlur={handleInputBlur} name="name" id="name" />
                       </div>
                       <div className="p-2 custom-border">
                         <p className="m-0">Email cím</p>
-                        <input className="border border-white" type="email" value={user.userEmail} disabled name="userEmail" id="email" />
+                        <input className="border border-white placeholder-info" type="email" placeholder={user.userEmail} value={userUpdate.userEmail} onChange={handleInputChange} onBlur={handleInputBlur} name="userEmail" id="email" />
                       </div>
                       <div className="p-2 custom-border">
                         <p className="m-0">Telefonszám</p>
@@ -201,7 +201,7 @@ function UserProfile({ islogged, setIslogged }) {
                           value={userUpdate.userAddress} onChange={handleInputChange} onBlur={handleInputBlur}
                           name="userAddress"
                           id="address"
-                          placeholder={!userUpdate.userAddress ? "Kérem adja meg a címet" : userUpdate.userAddress}
+                          placeholder={!userUpdate.userAddress ? "Kérem adja meg a szállítási címet " : userUpdate.userAddress}
                         />
                       </div>
                       <div className="p-2 custom-border">

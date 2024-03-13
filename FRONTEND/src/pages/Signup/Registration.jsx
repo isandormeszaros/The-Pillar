@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import http from "../../http-common";
 import { toast } from 'react-toastify';
 import WatchesServices from '../../services/WatchesServices';
-import PhoneInput from 'react-phone-input-2'
-import 'react-phone-input-2/lib/style.css'
-import './Registration.css'
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
+import './Registration.css';
 import { Link, useNavigate } from "react-router-dom";
 
 
@@ -14,14 +14,13 @@ const Registration = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [showPass, setShowPass] = useState(false)
-  const [showConfirmPass, setShowConfirmPass] = useState(false)
+  const [showPass, setShowPass] = useState(false);
+  const [showConfirmPass, setShowConfirmPass] = useState(false);
   const navigate = useNavigate();
-  const images = "http://localhost:8080/images/register/"
+  const images = "http://localhost:8080/images/register/";
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}/;
-
 
   const handleRegistration = (event) => {
     event.preventDefault();
@@ -32,8 +31,8 @@ const Registration = () => {
     }
 
     if (password !== confirmPassword) {
-      toast.error("A jelszó nem egyezik, kérem próbálja meg újra!")
-      return
+      toast.error("A jelszó nem egyezik, kérem próbálja meg újra!");
+      return;
     }
 
     if (!emailRegex.test(email)) {
@@ -41,15 +40,28 @@ const Registration = () => {
       return;
     }
 
-    WatchesServices.getEmails()
-      .then((response) => {
-        const validEmails = response.data.split('\n').map(email => email.trim());
-        const domain = email.split('@')[1];
-
-        if (!validEmails.includes(domain)) {
-          toast.error("A megadott email cím nem engedélyezett!");
-          return;
+    WatchesServices.getEmail()
+    .then((response) => {
+      const validEmails = response.data;
+      const atIndex = email.indexOf('@');
+      const inputDomain = email.slice(atIndex + 1);
+      console.log(inputDomain);
+  
+      let isValid = false;
+  
+      validEmails.forEach(entry => {
+        if (entry.email.includes(inputDomain)) {
+          isValid = true;
         }
+      });
+  
+      if (!isValid) {
+        toast.error("A megadott email cím nem engedélyezett!");
+        toast.info("Céges email cím esetén vegye fel velünk a kapcsolatot!");
+        return;
+      }
+
+
 
         if (!passwordRegex.test(password)) {
           toast.error("A jelszónak minimum 8 karakternek kell lennie, kis- és nagybetűket, számot és speciális karaktert kell tartalmaznia.");
@@ -83,7 +95,8 @@ const Registration = () => {
       });
   };
 
-console.log(phoneNumber.slice(2))
+  console.log(phoneNumber.slice(2))
+
   return (
     <section className="registration-section">
       <div className="container-fluid">

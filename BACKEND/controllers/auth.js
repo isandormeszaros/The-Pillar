@@ -85,23 +85,31 @@ router.patch("/patch/:id", (req, res) => {
   }
 });
 
-// GET /validEmailList.txt - Az email listát tartalmazó fájl elérése
-router.get("/validemaillist", (req, res) => {
-  const filePath = path.join(__dirname, "..", "public", "validEmailList.txt");
+router.get("/validemail", (req, res) => {
+  const email = req.body.email;
 
-  // Fájl olvasása
-  fs.readFile(filePath, "utf8", (err, data) => {
-    if (err) {
-      // Ha hiba történik az olvasás közben, 500-as hibaüzenetet küldünk
-      console.error(err);
-      res.status(500).send("Hiba történt a fájl olvasása közben.");
-      return;
-    }
-
-    // Sikeres olvasás esetén elküldjük a fájl tartalmát a válaszban
-    res.send(data);
-  });
+  DB.getEmail(email)
+    .then((data) => res.json(data))
+    .catch((error) => res.send(error));
 });
+
+// // GET /validEmailList.txt - Az email listát tartalmazó fájl elérése
+// router.get("/validemaillist", (req, res) => {
+//   const filePath = path.join(__dirname, "..", "public", "validEmailList.txt");
+
+//   // Fájl olvasása
+//   fs.readFile(filePath, "utf8", (err, data) => {
+//     if (err) {
+//       // Ha hiba történik az olvasás közben, 500-as hibaüzenetet küldünk
+//       console.error(err);
+//       res.status(500).send("Hiba történt a fájl olvasása közben.");
+//       return;
+//     }
+
+//     // Sikeres olvasás esetén elküldjük a fájl tartalmát a válaszban
+//     res.send(data);
+//   });
+// });
 
 // Az OTP generálása a /otp útvonalon
 function generateOTP() {
