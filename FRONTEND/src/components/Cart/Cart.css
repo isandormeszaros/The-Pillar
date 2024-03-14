@@ -81,3 +81,131 @@ button:focus {
     align-items: center;
   }
 }
+
+/* CART */
+.modal-background {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.25);
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+
+.modal-container {
+  width: 400px;
+  max-width: 90%;
+  background-color: var(--ultra-light-grey);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  display: flex;
+  flex-direction: column;
+  padding: 25px;
+}
+
+.modal-container .modal-title {
+  display: inline-block;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.modal-title h1 {
+  font-size: 32px;
+}
+
+.modal-close-btn {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.profile-icon-button {
+  column-gap: 10px;
+}
+
+.modal-close-btn button {
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.modal-close-btn button:hover,
+.modify-button:hover {
+  color: var(--dark-gold);
+  transition: all 0.3s linear;
+}
+
+.modify-button:hover {
+  border: 0.8px solid var(--dark-gold);
+}
+
+.title-close-btn button {
+  background-color: transparent;
+  border: none;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.modal-container .modal-body {
+  flex: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.7rem;
+  text-align: center;
+}
+
+.modal-container .modal-footer {
+  flex: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-container .modal-footer button {
+  min-width: 150px;
+  margin: 10px;
+}
+
+.default-button {
+  gap: 7px;
+}
+
+.setting-default-button {
+  background-color: transparent;
+  color: black;
+  border: 0.8px solid var(--light-grey);
+}
+
+#log-out:hover {
+  transition: all 0.3s linear;
+  color: #b80000;
+  border: 0.8px solid #b80000;
+}
+
+#cancel-btn {
+  background-color: crimson;
+}
+
+@media only screen and (max-width: 768px) {
+  .modal-container .modal-footer button {
+    min-width: 120px;
+    margin: 10px;
+  }
+
+  .modal-container {
+    height: 340px;
+  }
+
+  .default-button {
+    min-width: 160px;
+  }
+}
+
+@media (min-width: 992px) {
+  .w-lg-65 {
+    max-width: 65% !important;
+  }
+}

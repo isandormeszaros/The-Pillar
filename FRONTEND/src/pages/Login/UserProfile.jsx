@@ -110,7 +110,6 @@ function UserProfile({ islogged, setIslogged }) {
   };
 
   const handleDeleteConfirmation = (id) => {
-    // Set the userIdToDelete and open the modal
     setUserIdToDelete(id);
     setOpenModal(true);
   }
@@ -251,7 +250,7 @@ function UserProfile({ islogged, setIslogged }) {
                           onClick={() => {
                             setOpenModal(false);
                           }}
-                          id="cancelBtn"
+                          id="cancelBtn" w
                         >
                           <i className="pi pi-arrow-left"></i>Mégse
                         </button>

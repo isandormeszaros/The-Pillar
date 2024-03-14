@@ -5,7 +5,7 @@ import http from "../../http-common";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-function FaqLogin({ islogged, setIslogged }) {
+function Login({ islogged, setIslogged }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
@@ -125,4 +125,4 @@ function FaqLogin({ islogged, setIslogged }) {
   );
 }
 
-export default FaqLogin;
+export default Login;

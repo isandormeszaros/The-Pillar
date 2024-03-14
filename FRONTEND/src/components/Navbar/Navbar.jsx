@@ -32,7 +32,7 @@ const Navbar = ({ cart }) => {
 
   return (
     // <nav className={`navbar navbar-expand-lg custom-navbar fixed-top ${isScrolledDown ? "scrolled-down" : ""}`}>
-    <nav className={`navbar navbar-expand-lg custom-navbar ${isScrolledDown ? "scrolled-down" : ""}`}>
+    <nav className={`navbar navbar-expand-lg custom-navbar ${isScrolledDown ? "scrolled-down" : ""}`}>  
       <div className="container">
         <Link to="/home" className="navbar-brand" onClick={closeMenu}>
           <img

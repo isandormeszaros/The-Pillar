@@ -7,7 +7,6 @@ const SearchComponent = ({setSearchTrigger}) => {
   
 
   const handleSearch = () => {
-    // Átirányítás a keresési eredmények oldalára
     setSearchTrigger(prev => prev + 1);
     navigate(`/search?keyword=${keyword}`);
   };

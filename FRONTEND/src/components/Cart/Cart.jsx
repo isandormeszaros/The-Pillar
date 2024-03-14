@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import locales from "../../utils/locales.json";
 import "./Cart.css"
 
 const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
     const [couponCode, setCouponCode] = useState("");
-
     const totalPrice = cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
+    const [openModal, setOpenModal] = useState(false);
+    const navigate = useNavigate();
 
     const handleCheckOut = () => {
         console.log(cart)
@@ -39,8 +41,9 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
         }
     };
 
-
-
+    const handleDeleteConfirmation = () => {
+        setOpenModal(true)
+    }
 
     return (
         <div className="cart-container container text-lg-start text-md-center text-center mt-5 ">
@@ -54,8 +57,6 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
                     </div>
                 </>
             ) : (
-
-
                 <div className="container p-3">
                     <nav aria-label="breadcrumb custom-p-font">
                         <ol className="breadcrumb justify-content-center justify-content-lg-start">
@@ -68,7 +69,8 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
                     <div className="row">
                         <div className="col-lg-9 custom-p-font cart-items-container">
                             <div className="d-flex flex-row-reverse">
-                                <div onClick={removeAllItems} className="pt-2 error delete-all-items"><i className="pi pi-trash"></i> Összes törlése</div>
+                                {/* <div onClick={removeAllItems} className="pt-2 error delete-all-items"><i className="pi pi-trash"></i> Összes törlése</div> */}
+                                <div onClick={() => handleDeleteConfirmation()} className="pt-2 error delete-all-items"><i className="pi pi-trash"></i> Összes törlése</div>
                             </div>
                             <ul className="list-unstyled">
                                 {cart.map((item, index) => (
@@ -166,6 +168,33 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
                             <a href="/checkout" onClick={handleCheckOut} className="default-button d-flex ">Checkout</a>
                         </div>
                     </div>
+
+                    {openModal && (
+                        <div className="modal-background">
+                            <div className="modal-container">
+                                <div className="modal-close-btn">
+                                    <button onClick={() => setOpenModal(false)}><i className="pi pi-times"></i></button>
+                                </div>
+                                <div className="modal-title">
+                                    <h1 className="custom-heading-font">Biztos benne, hogy törli a kosár tartalmát?</h1>
+                                </div>
+                                <div className="modal-body">
+                                    <p className="custom-p-font">A művelet nem visszafordítható.</p>
+                                </div>
+                                <div className="modal-footer">
+                                    <button className="default-button profile-icon-button"
+                                        onClick={() => {
+                                            setOpenModal(false);
+                                        }}
+                                        id="cancelBtn"
+                                    >
+                                        <i className="pi pi-arrow-left"></i>Mégse
+                                    </button>
+                                    <button className="default-button default-delete-button profile-icon-button" onClick={() => removeAllItems()}><i className="pi pi-trash"></i>Törlés</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

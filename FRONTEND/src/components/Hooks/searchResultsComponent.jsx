@@ -25,14 +25,14 @@ const SearchResultsComponent = () => {
       .then((response) => {
         setFilteredProducts(response.data);
         setLoading(false);
-        setError(false); // Reset error state when a successful response is received
-        setMessage(""); // Reset error message
+        setError(false); 
+        setMessage("");
       })
       .catch((error) => {
         console.log(error);
         setError(true);
-        setMessage("Hiba történt: " + error.response.status); // Update error message with the correct status code
-        setFilteredProducts([]); // Clear filtered products on error
+        setMessage("Hiba történt: " + error.response.status); 
+        setFilteredProducts([]); 
         setLoading(false);
       });
   }, [keyword]);
