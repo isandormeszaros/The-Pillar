@@ -1,19 +1,15 @@
 var express = require("express");
 var router = express.Router();
 var cors = require("cors");
-const fs = require("fs");
-const path = require("path");
 var DB = require("../database/dboperations");
 const authJwt = require("../middleware/authjwt");
 var authUtils = require("../utils/authUtils");
 const crypto = require("crypto");
-const stripe = require("stripe")(
-  "sk_test_51OqjCM01VYY1Q06qZfwWtRUeaK7MLymRQpNnkBNiUferRL3QYxJMYJKLByKSzsBfIPoslTYtoH0KnJBkQwywdqWZ003w8byPBd"
-);
+const stripe = require('stripe')("sk_test_51OqjCM01VYY1Q06qZfwWtRUeaK7MLymRQpNnkBNiUferRL3QYxJMYJKLByKSzsBfIPoslTYtoH0KnJBkQwywdqWZ003w8byPBd");
 
 router.use(cors());
 
-// User
+// Login to existing account
 router.post("/login", function (req, res, next) {
   DB.getSignIn(req.body.email, req.body.password)
     .then((data) => data[0])
@@ -30,12 +26,14 @@ router.post("/login", function (req, res, next) {
     .catch((error) => res.status(404).send(error));
 });
 
+// Get data about the profile
 router.get("/userprofile", [authJwt.verifyToken], (req, res) => {
   DB.getUserProfile(req.userParams.email)
     .then((data) => res.json(data))
     .catch((error) => res.send(error));
 });
 
+// Register a new user
 router.post("/register", (req, res) => {
   const { name, email, password, phone } = req.body;
   DB.createUser(name, email, password, phone)
@@ -49,6 +47,7 @@ router.post("/register", (req, res) => {
     });
 });
 
+// Delete account
 router.delete("/delete/:id", (req, res) => {
   const userId = req.params.id;
   DB.deleteUser(userId)
@@ -62,6 +61,7 @@ router.delete("/delete/:id", (req, res) => {
     });
 });
 
+// Modify account
 router.patch("/patch/:id", (req, res) => {
   const id = req.params.id;
   const userData = req.body;
@@ -85,6 +85,7 @@ router.patch("/patch/:id", (req, res) => {
   }
 });
 
+// Validation - check email exist in the database
 router.get("/validemail", (req, res) => {
   const email = req.body.email;
 
@@ -93,42 +94,26 @@ router.get("/validemail", (req, res) => {
     .catch((error) => res.send(error));
 });
 
-// // GET /validEmailList.txt - Az email listát tartalmazó fájl elérése
-// router.get("/validemaillist", (req, res) => {
-//   const filePath = path.join(__dirname, "..", "public", "validEmailList.txt");
-
-//   // Fájl olvasása
-//   fs.readFile(filePath, "utf8", (err, data) => {
-//     if (err) {
-//       // Ha hiba történik az olvasás közben, 500-as hibaüzenetet küldünk
-//       console.error(err);
-//       res.status(500).send("Hiba történt a fájl olvasása közben.");
-//       return;
-//     }
-
-//     // Sikeres olvasás esetén elküldjük a fájl tartalmát a válaszban
-//     res.send(data);
-//   });
-// });
-
-// Az OTP generálása a /otp útvonalon
+// Generate a new OTP
 function generateOTP() {
   return new Promise((resolve, reject) => {
-    const otpBytes = crypto.randomBytes(3); // 3 bájtsorozat generálása
+    const otpBytes = crypto.randomBytes(3);
     const numericOTP = parseInt(otpBytes.toString("hex"), 16)
       .toString()
-      .substr(0, 6); // Az OTP decimális stringgé alakítása
-    const formattedOTP = numericOTP.padStart(6, "0"); // Az OTP kiegészítése nullákkal az 6 jegyű számként való reprezentációhoz
+      .substr(0, 6);
+    const formattedOTP = numericOTP.padStart(6, "0");
     resolve(formattedOTP);
   });
 }
 
+// Get the OTP
 router.get("/otp", (req, res) => {
   generateOTP()
     .then((otp) => res.json({ otp }))
     .catch((error) => res.status(500).json({ error: error.message }));
 });
 
+// Stripe payment - redirect to checkout
 router.post("/create-checkout-session", async (req, res) => {
   try {
     const { cart } = req.body;

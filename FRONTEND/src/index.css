@@ -11,6 +11,10 @@
   --black: #000;
   --error: #bd0000;
   --success: #33ab1f;
+  /* ------------------------------ */
+  --card-body-color: #f0da98;
+  --border-hover-color: #dea531;
+  --card-text-color: #3b1b0d;
   --anim-ease-out: cubic-bezier(0.32, 0.71, 0.42, 0.94);
 
   /*========== Typography ==========*/

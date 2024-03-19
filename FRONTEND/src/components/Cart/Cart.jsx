@@ -1,19 +1,14 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import locales from "../../utils/locales.json";
+import Checkout from "../CheckOut/CheckOut";
 import "./Cart.css"
 
 const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
     const [couponCode, setCouponCode] = useState("");
     const totalPrice = cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
     const [openModal, setOpenModal] = useState(false);
-    const navigate = useNavigate();
 
-    const handleCheckOut = () => {
-        console.log(cart)
-    };
-
-    const applyCoupon = () => {
+    function applyCoupon() {
         if (couponCode === "teleki2024") {
             const discountedPrice = totalPrice * 0.9;
             const shippingPrice = totalPrice * 0.01;
@@ -28,7 +23,7 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
                 totalPriceWithShipping: totalWithShipping.toLocaleString("en-US", locales["en-US"].currencyFormat)
             };
         } else {
-            const shippingPrice = totalPrice * 0.01;
+            const shippingPrice = totalPrice * 0.02;
             const totalWithShipping = totalPrice + shippingPrice;
 
             return {
@@ -40,6 +35,17 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
             };
         }
     };
+
+   
+
+    const totalPriceToCart = applyCoupon().totalPriceWithShipping;
+    console.log(totalPriceToCart)
+
+    const handleCheckOut = () => {
+        return <Checkout applyCoupon={applyCoupon}/>
+    };
+
+    console.log(cart)
 
     const handleDeleteConfirmation = () => {
         setOpenModal(true)
@@ -105,8 +111,6 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
                             </ul>
                         </div>
 
-
-
                         <div className="col-lg-3 custom-p-font pt-lg-0 pt-5">
                             <div className="d-flex justify-content-center align-items-center cart-total-summary">
                                 <div className="col-8 pl-lg-0">
@@ -165,7 +169,7 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
                                     </p>
                                 </div>
                             </div>
-                            <a href="/checkout" onClick={handleCheckOut} className="default-button d-flex ">Checkout</a>
+                            <a href="/checkout" onClick={handleCheckOut} className="default-button default-button-width d-flex ">Checkout</a>
                         </div>
                     </div>
 

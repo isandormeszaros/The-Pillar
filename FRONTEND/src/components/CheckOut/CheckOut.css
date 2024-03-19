@@ -1,0 +1,20 @@
+.card-icon {
+  font-size: 30px;
+}
+
+.card {
+  background-color: var(--ultra-light-grey);
+}
+
+.custom-card {
+  width: 8rem;
+  height: 8rem;
+  cursor: pointer;
+}
+
+.custom-card:hover {
+  transition: all 0.6s linear;
+  color: var(--card-text-color);
+  background-color: var(--card-body-color);
+  border: 0.8px solid var(--border-hover-color) !important;
+}

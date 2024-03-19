@@ -1,33 +1,26 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, useParams, Navigate } from "react-router-dom";
-import ScrollToTop from "../../utils/ScrollToTop";
+import ScrollToTop from "../../utils/Separator/ScrollToTop";
 import Navbar from "../Navbar/Navbar";
 import Home from "../../pages/Home/Home";
-import Blogs from "../../pages/Layout/Blogs";
-import Contact from "../../pages/Layout/ContactUs";
-import About from "../../pages/Layout/AboutUs";
-import Faq from "../../pages/Layout/Faq"
-import NoPage from "../../pages/NoPage/NoPage";
+import About from "../../pages/Layout/About/AboutUs";
+import Faq from "../../pages/Layout/Faq/Faq"
 import Footer from "../Footer/Footer";
-import ProductDisplay from "../Context/ProductDisplay";
 import ProductList from "../Context/ProductList";
 import ProductListFiltered from "../Hooks/ProductListFiltered";
 import Login from "../../pages/Login/Login";
 import SearchComponent from "../Hooks/searchComponent";
 import SearchResultsComponent from "../Hooks/searchResultsComponent";
-// import InfiniteScroll from "../../utils/infiniteScroll";
-// import Gallery from "../Hooks/Gallery";
-import UserProfile from "../../pages/Login/UserProfile";
-import Registration from "../../pages/Signup/Registration";
-import Separator from "../../utils/Separator";
-// import ForgetPassword from "../../pages/Login/ForgetPassword";
+import UserProfile from "../../pages/UserProfile/UserProfile"
+import Registration from "../../pages/Registration/Registration";
+import Separator from "../../utils/Separator/Separator";
 import Cart from "../Cart/Cart";
-import TimeOut from "../../utils/TimeOut";
+import TimeOut from "../../utils/TimeOut/TimeOut";
 import CheckOut from "../CheckOut/CheckOut";
 import Results from "../Hooks/Results";
 import { ToastContainer } from "react-toastify";
 import FilterSection from "../Context/FilterSection";
-import NotFound from "../../utils/NotFound";
+import NotFound from "../../utils/NotFound/NotFound";
 import AllWatches from "../../pages/Layout/AllWatches/AllWatches";
 import useCart from "../Hooks/useCart";
 
@@ -39,9 +32,7 @@ const SearchResultPage = () => {
 function Menu() {
   const [islogged, setIslogged] = useState(false);
   const [isLefut, setIsLefut] = useState(false);
-  const {cart, setCart, addToCartFunction, updateQuantity, removeFromCart, removeAllItems } = useCart();
-
-
+  const { cart, setCart, addToCartFunction, updateQuantity, removeFromCart, removeAllItems } = useCart();
 
   useEffect(() => {
     const log = sessionStorage.getItem("islogged");
@@ -54,7 +45,6 @@ function Menu() {
 
     console.log("Is logged:", islogged);
   }, []);
-
 
   return (
     <BrowserRouter>
@@ -90,9 +80,6 @@ function Menu() {
         <Route path="/searchPage" element={<SearchComponent />} />
         <Route path="/search" element={<SearchResultsComponent />} />
         <Route path="/about" element={<About />} />
-        {/* <Route path="/forgetpassword" element={<ForgetPassword />} /> */}
-        {/* <Route path="/blogs" element={<InfiniteScroll />} /> */}
-        {/* <Route path="/contact" element={<Contact />} /> */}
         <Route path="/faq" element={<Faq />} />
         <Route path="/cart" element={<Cart cart={cart} setCart={setCart} updateQuantity={updateQuantity} removeAllItems={removeAllItems} removeFromCart={removeFromCart} />} />
         <Route path="/timeout" element={<TimeOut />} />

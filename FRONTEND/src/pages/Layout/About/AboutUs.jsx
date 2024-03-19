@@ -1,5 +1,5 @@
 import React from "react";
-import "./Grid.css";
+import './About.css'
 
 function AboutUs() {
   const numRows = 200; // Sorok száma

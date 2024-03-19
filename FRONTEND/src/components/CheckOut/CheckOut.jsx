@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import locales from "../../utils/locales.json";
 import { loadStripe } from '@stripe/stripe-js';
 import axios from 'axios';
+import './CheckOut.css'
 
-
-function Checkout({ cart }) {
+function Checkout({ cart, applyCoupon }) {
 
     const makePayment = async () => {
         const stripe = await loadStripe("pk_test_51OqjCM01VYY1Q06qzRZJ5ftluZMxe6FN1iZZpf7agPSgsZNoe8OqTxnc0wO0DDJfIZgzpIygQIJVcx4JQzsCv4vV00JpYY0CUo");
@@ -37,14 +37,7 @@ function Checkout({ cart }) {
             console.log("Alma");
             console.log(error);
         }
-
-
-
-
     }
-
-
-
 
     const [formData, setFormData] = useState({
         name: '',
@@ -65,70 +58,137 @@ function Checkout({ cart }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Fizetési adatok elküldése az API-nak
             const response = await axios.post('http://localhost:8080/allwatches/orders', {
                 cart: cart.map(item => ({
                     product: item.watchName,
                     quantity: item.quantity
                 })),
-                userAddress: formData.address, // Módosítva: userAddress
-                orderDate: new Date(), // Módosítva: orderDate
-                shippingDate: new Date(), // Módosítva: shippingDate
-                status: '0', // Módosítva: status
-                paymentId: '1' // Módosítva: paymentId
+                userAddress: formData.address,
+                orderDate: new Date(),
+                shippingDate: new Date(),
+                status: '0',
+                paymentId: '1'
             });
 
             console.log('Megrendelés sikeres:', response.data);
-            // Sikeres megrendelés esetén átirányítás a sikeres megrendelés oldalra vagy más kezelt viselkedés
         } catch (error) {
             console.error('Hiba a megrendelés során:', error.response.data.error);
-            // Hiba esetén kezelés, pl. hibaüzenet megjelenítése a felhasználónak
         }
     };
 
+    console.log(cart)
+
+
+    const totalPriceToCart = applyCoupon.totalPriceWithShipping;
+    console.log(totalPriceToCart);
+
+
 
     return (
-        <div className="container mt-5">
-            <h2>Checkout</h2>
+        //             <div className="row">
+        //                 <div className="col-3"><input type="text" /></div>
+        //                 <form onSubmit={handleSubmit}>
+        //                     <div className="form-group">
+        //                         <label htmlFor="address">Cím</label>
+        //                         <input type="text" className="form-control address-input" id="address" name="address" value={formData.address} onChange={handleInputChange} required />
+        //                     </div>
+        //                     <button type="submit" className="btn btn-primary">Fizetés</button>
+        //                     <button onClick={makePayment}>Stripe</button>
+        //                 </form>
+        //             </div>
+        //         </div>
 
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="/home">Home</a></li>
-                    <li class="breadcrumb-item"><a href="/cart">Kosár</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Checkout</li>
-                </ol>
-            </nav>
-            <div className="row">
-                <div className="col-md-6">
-                    {cart.map((item, index) => (
-                        <div className="product" key={index}>
-                            <h4>{item.product.watchName}</h4>
-                            <p>{item.product.description}</p>
-                            <p>
-                                Ár:{" "}
-                                {item.product.price.toLocaleString("en-US", locales["en-US"].currencyFormat)}
-                            </p>
-                            <p>
-                                Mennyiség: {item.quantity}
-                            </p>
-                        </div>
-                    ))}
-                </div>
-                <div className="col-md-6">
-                    <form onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label htmlFor="address">Cím</label>
-                            <input type="text" className="form-control" id="address" name="address" value={formData.address} onChange={handleInputChange} required />
-                        </div>
-                        {/* Új input mező hozzáadása */}
+        <div className="checkout-container container text-lg-start text-md-center text-center mt-5 ">
+            <div className="container p-3">
+                <nav aria-label="breadcrumb custom-p-font">
+                    <ol className="breadcrumb justify-content-center justify-content-lg-start">
+                        <li className="breadcrumb-item custom-p-font"><a href="/home" className="breadcrumb-anchor-cart">Nyitóoldal</a></li>
+                        <li className="breadcrumb-item custom-p-font"><a href="/allbrands" className="breadcrumb-anchor-cart">Órák</a></li>
+                        <li className="breadcrumb-item custom-p-font"><a href="/cart" className="breadcrumb-anchor-cart">Kosár</a></li>
+                        <li className="breadcrumb-item custom-p-font active" aria-current="page">Checkout</li>
+                    </ol>
+                </nav>
+                <h3 className="custom-heading-font pb-3">Checkout <span className="dark-gold">({cart.length})</span></h3>
+                <div className="row">
+                    <div className="col-lg-8 custom-p-font cart-items-container">
+                        <ul className="list-unstyled">
+                            {cart.map((item, index) => (
+                                <li key={index}>
+                                    <hr />
+                                    <div className="d-flex justify-content-between">
+                                        <div className="fw-bolder cart-item-font-size">{item.product.watchName}</div>
+                                        <div className="fw-bolder cart-item-font-size">{(item.product.price * item.quantity).toLocaleString("en-US", locales["en-US"].currencyFormat)}</div>
+                                    </div>
+                                    <div className="d-flex justify-content-between">
+                                        <div className="fw-bolder cart-item-font-size">{item.product.price.toLocaleString("en-US", locales["en-US"].currencyFormat)}</div>
 
-                        {/* További input mezők */}
-                        <button type="submit" className="btn btn-primary">Fizetés</button>
-                        <button onClick={makePayment}>Stripe</button>
-                    </form>
+                                    </div>
+                                    <div className="p-4"></div>
+                                    <div className="d-flex justify-content-between">
+                                        <div className="quantity-checker">
+                                            <span className="px-2">{item.quantity}</span>
+                                        </div>
+                                        <div>
+
+                                        </div>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    <div className="col-lg-4 custom-p-font pt-lg-0 pt-5">
+                        <div className="d-flex align-items-center cart-total-summary">
+                            <div className="col-12 pl-lg-0">
+                                <input className="my-1 form-control  coupon-input"
+                                    type="text"
+                                    value=""
+
+                                    placeholder="Szállítási cím"
+                                />
+                            </div>
+                        </div>
+                        <hr />
+                        <div className="d-flex align-items-center gap-1">
+                            <div className="card col-2 border-color custom-card mx-1">
+                                <div className="card-body mt-4">
+                                    <div><i className='pi pi-credit-card card-icon'></i></div>
+                                    <p>Bankkártya</p>
+                                </div>
+                            </div>
+                            <div className="card col-2 border-color custom-card mx-1">
+                                <div className="card-body mt-4">
+                                    <div><i className='pi pi-wallet card-icon'></i></div>
+                                    <p>Utánvétel</p>
+                                </div>
+                            </div>
+                            <div className="card col-2 border-color custom-card mx-1">
+                                <div className="card-body mt-4">
+                                    <div><i className='pi pi-truck card-icon'></i></div>
+                                    <p>Csomagpont</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="d-flex justify-content-center align-items-center cart-total-summary pb-4">
+                            <div className="col-8 pl-lg-0">
+                                <p className="my-1 text-start">Végösszeg</p>
+                            </div>
+                            <div className="col-4 pr-lg-0">
+                                <p className="my-1 text-end">
+                                    {/* {totalPriceToCart} */}
+                                </p>
+                            </div>
+                        </div>
+
+                        <hr />
+
+
+
+                        <a href="/checkout" className="default-button d-flex ">Checkout</a>
+                    </div>
                 </div>
             </div>
-            <button className='default-button'>Vissza</button>
+
         </div>
     );
 }

@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 function useCart() {
     const [cart, setCart] = useState([]); // A KOSÁR TARTALMA
 
-
   useEffect(() => {
     // Load cart from localStorage if it exists
     const existingCart = localStorage.getItem("cart");

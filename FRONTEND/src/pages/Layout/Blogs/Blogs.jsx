@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import WatchesServices from "../../services/WatchesServices";
+import WatchesServices from "../../../services/WatchesServices";
+import './Blogs.css'
 
 export default function Blogs() {
   const [watches, setWatches] = useState([]);

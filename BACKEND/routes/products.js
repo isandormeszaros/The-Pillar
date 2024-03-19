@@ -3,7 +3,7 @@ var express = require("express");
 var router = express.Router();
 var db = require("../database/dboperations");
 
-//1.	GET		/allwatches - Az összes elérhető óramárka lekérdezése
+// GET /allwatches - Az összes elérhető óramárka lekérdezése
 router.get("/", (req, res) => {
   db.selectBrands()
     .then((adat) => res.json(adat))
@@ -24,7 +24,7 @@ router.get("/sort/desc", (req, res) => {
     .catch((error) => res.send(error));
 });
 
-// GET /allwatches/filter/rolex Szűrt termék lekérése pl: sapka
+// GET /allwatches/filter/rolex - Szűrt termék lekérése 
 router.get("/filter/:szur", (req, res) => {
   let szur = "%" + req.params.szur + "%";
   db.selectFilteredProduct(szur)
@@ -40,7 +40,7 @@ router.get("/filter/:szur", (req, res) => {
     });
 });
 
-// Termékek JSON szűrése
+// POST allwatches/filter - Termékek JSON szűrése
 router.post("/filter", (req, res) => {
   let JS = req.body;
   // console.log(JS);
@@ -49,67 +49,77 @@ router.post("/filter", (req, res) => {
     .catch((error) => res.send(error));
 });
 
-// GET /allwatches/filter/rolex infinite scroll
+// GET /allwatches/page/2 - infinite scroll
 router.get("/page/:page", (req, res) => {
   db.selectPageProduct(req.params.page)
     .then((adat) => res.json(adat))
     .catch((error) => console.log(error));
 });
 
+// GET /allwatches/all/brands - Óramárka megjelenítése
 router.get("/all/brands", (req, res) => {
   db.selectByBrands()
     .then((adat) => res.json(adat))
     .catch((error) => console.log(error));
 });
 
+// GET /allwatches/all/dialcolors - Számlap színének megjelenítése
 router.get("/all/dialcolors", (req, res) => {
   db.selectByDialColors()
     .then((adat) => res.json(adat))
     .catch((error) => console.log(error));
 });
 
+// GET /allwatches/all/dates - Gyártási év megjelenítése
 router.get("/all/dates", (req, res) => {
   db.selectByDates()
     .then((adat) => res.json(adat))
     .catch((error) => console.log(error));
 });
 
+// GET /allwatches/all/casematerials - Tok anyagának megjelenítése
 router.get("/all/casematerials", (req, res) => {
   db.selectByCaseMaterials()
     .then((adat) => res.json(adat))
     .catch((error) => console.log(error));
 });
 
+// GET /allwatches/all/strapmaterials - Szíj anyaganak megjelenítése
 router.get("/all/strapmaterials", (req, res) => {
   db.selectByStrapMaterials()
     .then((adat) => res.json(adat))
     .catch((error) => console.log(error));
 });
 
+// GET /allwatches/all/movements - Óramű megjelenítése
 router.get("/all/movements", (req, res) => {
   db.selectByMovements()
     .then((adat) => res.json(adat))
     .catch((error) => console.log(error));
 });
 
+// GET /allwatches/all/resistances - Vízállóság megjelenítése
 router.get("/all/resistances", (req, res) => {
   db.selectByResistances()
     .then((adat) => res.json(adat))
     .catch((error) => console.log(error));
 });
 
+// GET /allwatches/all/bandwidthes - Szíj szélességének megjelenítése
 router.get("/all/bandwidthes", (req, res) => {
   db.selectByBandWidthes()
     .then((adat) => res.json(adat))
     .catch((error) => console.log(error));
 });
 
+// GET /allwatches/all/dialmaterials - Számlap anyagának megjelenítése
 router.get("/all/dialmaterials", (req, res) => {
   db.selectByDialMaterials()
     .then((adat) => res.json(adat))
     .catch((error) => console.log(error));
 });
 
+// GET /allwatches/orders - Rendelés leadása
 router.post("/orders", (req, res) => {
   const orders = req.body;
 
@@ -143,89 +153,6 @@ router.post("/orders", (req, res) => {
       res
         .status(500)
         .json({ success: false, error: "Hiba a megrendelés rögzítése közben" });
-    });
-});
-
-//2.	GET		/filmek/3		- Egy film adatai
-router.get("/:id", (req, res) => {
-  let id = req.params.id;
-  db.selectFilmekId(id)
-    .then((adat) => {
-      if (adat.length == 0) res.status(404).send("Nincs ilyen rekord: " + id);
-      else return res.json(adat);
-    })
-    .catch((error) => {
-      res.send(error);
-    });
-});
-
-//3.	POST		/filmek			- Új film létrehozása
-router.post("/", (req, res) => {
-  if (Object.keys(req.body).length < 5)
-    res.status(400).send("Az adatok nincsenek megadva! (megnevezes, ar, db)");
-  let rendezo = req.body.rendezo;
-  let cim = req.body.cim;
-  let ev = req.body.ev;
-  let nyelv = req.body.nyelv;
-  let hossz = req.body.hossz;
-  db.insertFilmek(rendezo, cim, ev, nyelv, hossz)
-    .then((adat) => {
-      res.status(200).json(adat);
-    })
-    .catch((error) => {
-      res.status(500).send(error);
-    });
-});
-
-//4.	PUT		/filmek/3		- Az adott film módosítása
-router.put("/:id", (req, res) => {
-  let id = req.params.id;
-  let rendezo = req.body.rendezo;
-  let cim = req.body.cim;
-  let ev = req.body.ev;
-  let nyelv = req.body.nyelv;
-  let hossz = req.body.hossz;
-  db.updateFilmek(rendezo, cim, ev, nyelv, hossz, id)
-    .then((adat) => {
-      if (adat.affectedRows == 0)
-        res.status(404).send("Nincs ilyen rekord: " + id);
-      else return res.json(adat);
-    })
-    .catch((error) => {
-      res.send(error);
-    });
-});
-
-//5.	PATCH		/filmek/3		- Részleges módosítás
-router.patch("/:id", (req, res) => {
-  let id = req.params.id;
-  let rendezo = req.body.rendezo;
-  let cim = req.body.cim;
-  let ev = req.body.ev;
-  let nyelv = req.body.nyelv;
-  let hossz = req.body.hossz;
-  db.patchFilmek(id, rendezo, cim, ev, nyelv, hossz)
-    .then((adat) => {
-      if (adat.affectedRows == 0)
-        res.status(404).send("Nincs ilyen rekord: " + id);
-      else return res.json(adat);
-    })
-    .catch((error) => {
-      res.send(error);
-    });
-});
-
-//6.	DELETE		/filmek/3 		- Egy film törlése
-router.delete("/:id", (req, res) => {
-  let id = req.params.id;
-  db.deleteFilmek(id)
-    .then((adat) => {
-      if (adat.affectedRows == 0)
-        res.status(404).send("Nincs ilyen rekord: " + id);
-      else return res.json(adat);
-    })
-    .catch((error) => {
-      res.send(error);
     });
 });
 

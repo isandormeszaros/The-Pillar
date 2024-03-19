@@ -1,11 +1,8 @@
 var config = require("./dbconfig");
 const mysql = require("mysql");
 let pool = mysql.createPool(config);
-const cryto = require("crypto");
-const { Portal } = require("@chakra-ui/react");
-const { error } = require("console");
 
-// GET /brands - Az összes elérhető óramárka lekérdezése
+// GET /allwatches - Az összes elérhető óramárka lekérdezése
 async function selectBrands() {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -20,7 +17,7 @@ async function selectBrands() {
   });
 }
 
-// GET /allwatches/asc - Az órák ár szerint növekvő sorrendbe rendezése
+// GET /allwatches/sort/asc - Az órák ár szerint növekvő sorrendbe rendezése
 async function selectBrandsByPriceASC() {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -36,7 +33,7 @@ async function selectBrandsByPriceASC() {
   });
 }
 
-// GET /allwatches/desc - Az órák ár szerint csökkenőbe sorrendbe rendezése
+// GET /allwatches/sort/desc - Az órák ár szerint csökkenőbe sorrendbe rendezése
 async function selectBrandsByPriceDESC() {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -52,7 +49,7 @@ async function selectBrandsByPriceDESC() {
   });
 }
 
-// GET /allwatches/filter/rolex - Az órák ár szerint növekvő sorrendbe rendezése
+// GET /allwatches/filter/rolex - Szűrt termék lekérése 
 async function selectFilteredProduct(szur) {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -69,7 +66,7 @@ async function selectFilteredProduct(szur) {
   });
 }
 
-//2.    GET     /termekek/page/x       - Az x. oldalon található termékek lista
+// GET /allwatches/page/2 - Az oldalon található terméklista. Pl: 2. oldalon
 async function selectPageProduct(page) {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -85,7 +82,7 @@ async function selectPageProduct(page) {
   });
 }
 
-// GET /allwatches/all/brands - Az óra márkák megjelenítése
+// GET /allwatches/all/brands - Óramárka megjelenítése
 async function selectJustBrands() {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -117,7 +114,7 @@ async function selectByBrands() {
   });
 }
 
-// GET /allwatches/all/dialcolor - Az óra számplap színeinek megjelenítése
+// GET /allwatches/all/dialcolors - Számlap színének megjelenítése
 async function selectByDialColors() {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -133,23 +130,7 @@ async function selectByDialColors() {
   });
 }
 
-// GET /allwatches/all/casematerial - Az óra tok anyagának megjelenítése
-async function selectByCaseMaterials() {
-  return new Promise((resolve, reject) => {
-    pool.query(
-      "SELECT material, watch_count FROM watches.allcasematerialcount;",
-      (error, elements) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(elements);
-        }
-      }
-    );
-  });
-}
-
-// GET /allwatches/all/date - Az óra gyártási idejének megjelenítése
+// GET /allwatches/all/dates - Gyártási év megjelenítése
 async function selectByDates() {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -165,7 +146,23 @@ async function selectByDates() {
   });
 }
 
-// GET /allwatches/all/strapmaterial - Az óra szíjának anyagának megjelenítése
+// GET /allwatches/all/casematerials - Tok anyagának megjelenítése
+async function selectByCaseMaterials() {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      "SELECT material, watch_count FROM watches.allcasematerialcount;",
+      (error, elements) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(elements);
+        }
+      }
+    );
+  });
+}
+
+// GET /allwatches/all/strapmaterials - Szíj anyaganak megjelenítése
 async function selectByStrapMaterials() {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -181,7 +178,7 @@ async function selectByStrapMaterials() {
   });
 }
 
-// GET /allwatches/all/movements - Az óra típusának megjelenítése
+// GET /allwatches/all/movements - Óramű megjelenítése
 async function selectByMovements() {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -197,7 +194,7 @@ async function selectByMovements() {
   });
 }
 
-// GET /allwatches/all/resistances - Az óra vízállóságának megjelenítése
+// GET /allwatches/all/resistances - Vízállóság megjelenítése
 async function selectByResistances() {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -213,7 +210,7 @@ async function selectByResistances() {
   });
 }
 
-// GET /allwatches/all/bandwidthes - Az óraszíj ?????? megjelenítése
+// GET /allwatches/all/bandwidthes - Szíj szélességének megjelenítése
 async function selectByBandWidthes() {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -229,7 +226,7 @@ async function selectByBandWidthes() {
   });
 }
 
-// GET /allwatches/all/dialmaterials - A számplap anyagának megjelenítése
+// GET /allwatches/all/dialmaterials - Számlap anyagának megjelenítése
 async function selectByDialMaterials() {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -245,6 +242,7 @@ async function selectByDialMaterials() {
   });
 }
 
+// Órák szűrése az oldalon
 async function selectProductWhere(whereConditions) {
   let whereClause = ""; // Kezdetben üres string
   let values = [];
@@ -283,7 +281,9 @@ async function selectProductWhere(whereConditions) {
   });
 }
 
-//4. post bejelentkezés /login
+
+// --- FELHASZNÁLÓK KEZELÉSE ---
+// Bejelentkezés 
 async function getSignIn(email, password) {
   console.log(email, password);
   return new Promise((resolve, reject) => {
@@ -303,7 +303,7 @@ async function getSignIn(email, password) {
   });
 }
 
-//5.Get profil adatai
+// Profil részletes adatai
 async function getUserProfile(email) {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -322,7 +322,7 @@ async function getUserProfile(email) {
   });
 }
 
-//6. post regisztráció /register
+// Regisztráció
 async function createUser(name, email, password, phone) {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -338,6 +338,7 @@ async function createUser(name, email, password, phone) {
   });
 }
 
+// Fiók törlése
 async function deleteUser(id) {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -354,6 +355,7 @@ async function deleteUser(id) {
   });
 }
 
+// Email validáció
 async function getEmail(email){
   return new Promise((resolve, reject) =>{
     pool.query("SELECT email FROM validemail", [email], (error, result) => {
@@ -367,6 +369,7 @@ async function getEmail(email){
   })
 }
 
+// Fiók módosítása
 async function patchUser(id, userData) {
   return new Promise((resolve, reject) => {
     let hasPreviousField = false;
@@ -428,7 +431,7 @@ async function patchUser(id, userData) {
   });
 }
 
-
+// Rendelés leadása
 async function placeOrder(data) {
   const { cart, orderDate, shippingDate, status, paymentId, userAddress } =
     data;
@@ -475,116 +478,9 @@ async function placeOrder(data) {
   }
 }
 
-//2.	GET		/filmek/3		- Egy film adatai
-async function selectFilmekId(id) {
-  return new Promise((resolve, reject) => {
-    pool.query("select * from film where id=?", [id], (error, elements) => {
-      if (error) {
-        return reject(error);
-      }
-      return resolve(elements);
-    });
-  });
-}
 
-//3.	POST		/filmek			- Új film létrehozása
-async function insertFilmek(rendezo, cim, ev, nyelv, hossz) {
-  return new Promise((resolve, reject) => {
-    pool.query(
-      "insert into film (rendezo,cim,ev,nyelv,hossz) values (?,?,?,?,?)",
-      [rendezo, cim, ev, nyelv, hossz],
-      (error, elements) => {
-        if (error) {
-          return reject(error);
-        }
-        return resolve(elements);
-      }
-    );
-  });
-}
 
-//4.	PUT		/filmek/3		- Az adott film módosítása
-async function updateFilmek(rendezo, cim, ev, nyelv, hossz, id) {
-  return new Promise((resolve, reject) => {
-    pool.query(
-      "update film set rendezo=?,cim=?,ev=?,nyelv=?,hossz=? where id=?",
-      [rendezo, cim, ev, nyelv, hossz, id],
-      (error, elements) => {
-        if (error) {
-          return reject(error);
-        }
-        return resolve(elements);
-      }
-    );
-  });
-}
-
-//5.	PATCH		/filmek/3		- Részleges módosítás
-async function patchFilmek(id, rendezo, cim, ev, nyelv, hossz) {
-  return new Promise((resolve, reject) => {
-    let ell = 0;
-    let sql = "update film set";
-    let arr = [];
-    if (rendezo) {
-      ell = 0;
-      sql += " rendezo=?";
-      arr.push(rendezo);
-      ell = 1;
-    }
-    if (cim) {
-      if (ell == 1) sql += ",";
-      ell = 0;
-      sql += " cim=?";
-      arr.push(cim);
-      ell = 1;
-    }
-
-    if (ev) {
-      if (ell == 1) sql += ",";
-      ell = 0;
-      sql += " ev=?";
-      arr.push(ev);
-      ell = 1;
-    }
-
-    if (nyelv) {
-      if (ell == 1) sql += ",";
-      ell = 0;
-      sql += " nyelv=?";
-      arr.push(nyelv);
-      ell = 1;
-    }
-
-    if (hossz) {
-      if (ell == 1) sql += ",";
-      ell = 0;
-      sql += " hossz=?";
-      arr.push(hossz);
-    }
-    sql += " where id=?";
-    arr.push(id);
-    pool.query(sql, arr, (error, elements) => {
-      if (error) {
-        return reject(error);
-      }
-      return resolve(elements);
-    });
-  });
-}
-
-//6.	DELETE		/filmek/3 		- Egy film törlése
-async function deleteFilmek(id) {
-  return new Promise((resolve, reject) => {
-    pool.query("delete from film where id=?", id, (error, elements) => {
-      if (error) {
-        return reject(error);
-      }
-      return resolve(elements);
-    });
-  });
-}
-
-async function selectUsers(email, password) {
+async function selectUser(email, password) {
   return new Promise((resolve, reject) => {
     pool.query(
       "select * from user where email=? and password=?",
@@ -601,20 +497,6 @@ async function selectUsers(email, password) {
     );
   });
 }
-
-// async function selectFilterProducts(szur){
-//     return new Promise((resolve,reject)=>{
-//         pool.query('select * from random where termek = ? ,[szur](error, elements)=>{
-//             if(error){
-//                 return(reject(error))
-//             }
-//             if(elements==""){
-//                 return(reject("Nincs ilyen user"))
-//             }
-//             return(resolve(elements))
-//         })
-//     })
-// }
 
 module.exports = {
   selectBrands: selectBrands,
@@ -639,11 +521,6 @@ module.exports = {
   deleteUser: deleteUser,
   getEmail : getEmail,
   patchUser: patchUser,
+  selectUser: selectUser,
   placeOrder: placeOrder,
-  selectFilmekId: selectFilmekId,
-  insertFilmek: insertFilmek,
-  updateFilmek: updateFilmek,
-  patchFilmek: patchFilmek,
-  deleteFilmek: deleteFilmek,
-  selectUsers: selectUsers,
 };

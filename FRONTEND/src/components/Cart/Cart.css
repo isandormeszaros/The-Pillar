@@ -173,6 +173,10 @@ button:focus {
   gap: 7px;
 }
 
+.default-button-width {
+  min-width: 0px !important;
+}
+
 .setting-default-button {
   background-color: transparent;
   color: black;
