@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import locales from "../../utils/locales.json";
 import { loadStripe } from '@stripe/stripe-js';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './CheckOut.css'
 
-function Checkout({ cart, applyCoupon }) {
+function Checkout({ cart }) {
+    const location = useLocation();
+    // const { totalPriceWithShipping } = location.state || {};
+    console.log(location.state)
 
     const makePayment = async () => {
         const stripe = await loadStripe("pk_test_51OqjCM01VYY1Q06qzRZJ5ftluZMxe6FN1iZZpf7agPSgsZNoe8OqTxnc0wO0DDJfIZgzpIygQIJVcx4JQzsCv4vV00JpYY0CUo");
@@ -34,7 +38,6 @@ function Checkout({ cart, applyCoupon }) {
             console.log(result);
         }
         catch (error) {
-            console.log("Alma");
             console.log(error);
         }
     }
@@ -77,12 +80,7 @@ function Checkout({ cart, applyCoupon }) {
     };
 
     console.log(cart)
-
-
-    const totalPriceToCart = applyCoupon.totalPriceWithShipping;
-    console.log(totalPriceToCart);
-
-
+    // console.log(totalPriceWithShipping)
 
     return (
         //             <div className="row">
@@ -149,42 +147,40 @@ function Checkout({ cart, applyCoupon }) {
                             </div>
                         </div>
                         <hr />
-                        <div className="d-flex align-items-center gap-1">
-                            <div className="card col-2 border-color custom-card mx-1">
+                        <div className="d-flex align-items-center justify-content-between gap-1">
+                            <div className="card col-2 border-color custom-card">
                                 <div className="card-body mt-4">
                                     <div><i className='pi pi-credit-card card-icon'></i></div>
                                     <p>Bankkártya</p>
                                 </div>
                             </div>
-                            <div className="card col-2 border-color custom-card mx-1">
+                            <div className="card col-2 border-color custom-card">
                                 <div className="card-body mt-4">
                                     <div><i className='pi pi-wallet card-icon'></i></div>
                                     <p>Utánvétel</p>
                                 </div>
                             </div>
-                            <div className="card col-2 border-color custom-card mx-1">
+                            <div className="card col-2 border-color custom-card">
                                 <div className="card-body mt-4">
                                     <div><i className='pi pi-truck card-icon'></i></div>
                                     <p>Csomagpont</p>
                                 </div>
                             </div>
                         </div>
+                        <hr />
                         <div className="d-flex justify-content-center align-items-center cart-total-summary pb-4">
                             <div className="col-8 pl-lg-0">
                                 <p className="my-1 text-start">Végösszeg</p>
                             </div>
                             <div className="col-4 pr-lg-0">
                                 <p className="my-1 text-end">
-                                    {/* {totalPriceToCart} */}
+                                    {location.state.totalPriceWithShipping}
                                 </p>
                             </div>
                         </div>
-
                         <hr />
 
-
-
-                        <a href="/checkout" className="default-button d-flex ">Checkout</a>
+                        <button onClick={makePayment} className="default-button d-flex">Checkout</button>
                     </div>
                 </div>
             </div>

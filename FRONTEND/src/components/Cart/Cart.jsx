@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import locales from "../../utils/locales.json";
 import Checkout from "../CheckOut/CheckOut";
+import { useLocation, Link } from "react-router-dom";
 import "./Cart.css"
 
 const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
     const [couponCode, setCouponCode] = useState("");
     const totalPrice = cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
     const [openModal, setOpenModal] = useState(false);
+    const location = useLocation();
 
     function applyCoupon() {
         if (couponCode === "teleki2024") {
@@ -36,20 +38,21 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
         }
     };
 
-   
-
-    const totalPriceToCart = applyCoupon().totalPriceWithShipping;
-    console.log(totalPriceToCart)
-
-    const handleCheckOut = () => {
-        return <Checkout applyCoupon={applyCoupon}/>
-    };
+    console.log(applyCoupon().totalPriceWithShipping)
 
     console.log(cart)
 
     const handleDeleteConfirmation = () => {
         setOpenModal(true)
     }
+
+    useEffect(() => {
+        if (location.state?.applyCoupon) {
+            console.log(location.state.applyCoupon.totalPriceWithShipping);
+        } else {
+            console.log("No coupon applied");
+        }
+    }, []);
 
     return (
         <div className="cart-container container text-lg-start text-md-center text-center mt-5 ">
@@ -169,7 +172,9 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
                                     </p>
                                 </div>
                             </div>
-                            <a href="/checkout" onClick={handleCheckOut} className="default-button default-button-width d-flex ">Checkout</a>
+                            <Link to="/checkout" state={{ totalPriceWithShipping: applyCoupon().totalPriceWithShipping }} className="default-button default-button-width d-flex ">
+                                Checkout
+                            </Link>
                         </div>
                     </div>
 
@@ -202,7 +207,6 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
                 </div>
             )}
         </div>
-
     );
 };
 

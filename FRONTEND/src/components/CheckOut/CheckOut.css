@@ -1,15 +1,9 @@
 .card-icon {
-  font-size: 30px;
+  font-size: 20px;
 }
 
 .card {
   background-color: var(--ultra-light-grey);
-}
-
-.custom-card {
-  width: 8rem;
-  height: 8rem;
-  cursor: pointer;
 }
 
 .custom-card:hover {
@@ -17,4 +11,20 @@
   color: var(--card-text-color);
   background-color: var(--card-body-color);
   border: 0.8px solid var(--border-hover-color) !important;
+}
+
+@media (min-width: 380px) {
+  .custom-card {
+    min-width: 100px;
+    min-height: 100px;
+    cursor: pointer;
+  }
+}
+
+@media (min-width: 992px) {
+  .custom-card {
+    min-width: 130px;
+    min-height: 100px;
+    cursor: pointer;
+  }
 }

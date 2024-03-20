@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import "primeicons/primeicons.css";
 import "./Navbar.css";
 
-const Navbar = ({ cart }) => {
+const Navbar = ({ cart, islogged }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolledDown, setIsScrolledDown] = useState(false);
   const images = "http://localhost:8080/images/";
@@ -30,9 +30,11 @@ const Navbar = ({ cart }) => {
     setIsOpen(false);
   };
 
+  console.log(islogged)
+
   return (
     // <nav className={`navbar navbar-expand-lg custom-navbar fixed-top ${isScrolledDown ? "scrolled-down" : ""}`}>
-    <nav className={`navbar navbar-expand-lg custom-navbar ${isScrolledDown ? "scrolled-down" : ""}`}>  
+    <nav className={`navbar navbar-expand-lg custom-navbar ${isScrolledDown ? "scrolled-down" : ""}`}>
       <div className="container">
         <Link to="/home" className="navbar-brand" onClick={closeMenu}>
           <img
@@ -46,6 +48,7 @@ const Navbar = ({ cart }) => {
             <span className="pi pi-search icon-size"></span>
           </a>
           <a href="/login" className="me-3">
+            {islogged ? (<i className="pi pi-circle-fill user-badge"></i>) : ''}
             <span className="pi pi-user icon-size"></span>
           </a>
           <a href="/cart" className="text-decoration-none">

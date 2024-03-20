@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 function useCart() {
-    const [cart, setCart] = useState([]); // A KOSÁR TARTALMA
+  const [cart, setCart] = useState([]); // A KOSÁR TARTALMA
 
   useEffect(() => {
     // Load cart from localStorage if it exists
@@ -53,7 +53,7 @@ function useCart() {
     setCart([]);
   }
 
-  return{cart, setCart, addToCartFunction, updateQuantity, removeFromCart, removeAllItems}
+  return { cart, setCart, addToCartFunction, updateQuantity, removeFromCart, removeAllItems }
 }
 
 export default useCart;

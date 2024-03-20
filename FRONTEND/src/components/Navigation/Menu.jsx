@@ -32,7 +32,7 @@ const SearchResultPage = () => {
 function Menu() {
   const [islogged, setIslogged] = useState(false);
   const [isLefut, setIsLefut] = useState(false);
-  const { cart, setCart, addToCartFunction, updateQuantity, removeFromCart, removeAllItems } = useCart();
+  const { cart, setCart, addToCartFunction, updateQuantity, removeFromCart, removeAllItems, applyCoupon } = useCart();
 
   useEffect(() => {
     const log = sessionStorage.getItem("islogged");
@@ -46,9 +46,15 @@ function Menu() {
     console.log("Is logged:", islogged);
   }, []);
 
+  
+
+  if (islogged) {
+    console.log('User bejelentkezve')
+  }
+
   return (
     <BrowserRouter>
-      <Navbar cart={cart} />
+      <Navbar cart={cart} islogged={islogged} />
       <Separator />
       <Routes>
         <Route path="/home" element={<Home />} />
