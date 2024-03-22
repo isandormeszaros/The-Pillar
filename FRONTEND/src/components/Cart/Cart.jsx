@@ -39,6 +39,7 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
     };
 
     console.log(applyCoupon().totalPriceWithShipping)
+    console.log(couponCode)
 
     console.log(cart)
 
@@ -50,7 +51,7 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
         if (location.state?.applyCoupon) {
             console.log(location.state.applyCoupon.totalPriceWithShipping);
         } else {
-            console.log("No coupon applied");
+            console.log("Nincs aktivált coupon!");
         }
     }, []);
 
@@ -172,7 +173,7 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
                                     </p>
                                 </div>
                             </div>
-                            <Link to="/checkout" state={{ totalPriceWithShipping: applyCoupon().totalPriceWithShipping }} className="default-button default-button-width d-flex ">
+                            <Link to="/checkout" state={{ totalPriceWithShipping: applyCoupon().totalPriceWithShipping, coupon: couponCode }} className="default-button default-button-width d-flex ">
                                 Checkout
                             </Link>
                         </div>

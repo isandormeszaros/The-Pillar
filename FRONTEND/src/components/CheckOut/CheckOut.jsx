@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import locales from "../../utils/locales.json";
 import { loadStripe } from '@stripe/stripe-js';
 import { useLocation } from 'react-router-dom';
@@ -9,10 +9,6 @@ function Checkout({ cart }) {
     const location = useLocation();
     // const { totalPriceWithShipping } = location.state || {};
     console.log(location.state)
-    const [addingNewAddress, setAddingNewAddress] = useState(false);
-    const handleAddNewAddress = () => {
-        setAddingNewAddress(true);
-    };
 
     const makePayment = async () => {
         const stripe = await loadStripe("pk_test_51OqjCM01VYY1Q06qzRZJ5ftluZMxe6FN1iZZpf7agPSgsZNoe8OqTxnc0wO0DDJfIZgzpIygQIJVcx4JQzsCv4vV00JpYY0CUo");
@@ -57,21 +53,22 @@ function Checkout({ cart }) {
         couponCode: '',
     });
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-    };
+    useEffect(() => {
+        if (location.state && location.state.coupon) {
+            setFormData(prevFormData => ({
+                ...prevFormData,
+                couponCode: location.state.coupon
+            }));
+        }
+    }, [location.state]);
 
-    const handleCouponInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-    };
+    // const handleInputChange = (e) => {
+    //     const { name, value } = e.target;
+    //     setFormData(prevState => ({
+    //         ...prevState,
+    //         [name]: value
+    //     }));
+    // };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -160,14 +157,6 @@ function Checkout({ cart }) {
                             </div>
                         </div>
                         <hr />
-                        <input
-                            className="my-1 form-control coupon-input"
-                            type="text"
-                            value={formData.couponCode}
-                            onChange={handleCouponInputChange}
-                            name="couponCode"
-                            placeholder="Kuponkód"
-                        />
                         <div className="d-flex justify-content-center align-items-center cart-total-summary pb-4">
                             <div className="col-8 pl-lg-0">
                                 <p className="my-1 text-start">Végösszeg</p>
