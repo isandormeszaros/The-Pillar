@@ -1,0 +1,23 @@
+.cancel-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  filter: grayscale(30%);
+  background-image: url("http://localhost:8080/images/checkout/cancel/cancel.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.cancel-content {
+  text-align: center;
+}
+
+.cancel-content h1 {
+  margin-bottom: 20px;
+}
+
+.cancel-icon {
+  color: var(--error);
+  font-size: 48px;
+}

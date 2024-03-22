@@ -23,6 +23,8 @@ import FilterSection from "../Context/FilterSection";
 import NotFound from "../../utils/NotFound/NotFound";
 import AllWatches from "../../pages/Layout/AllWatches/AllWatches";
 import useCart from "../Hooks/useCart";
+import Success from "../CheckOut/Success/Success";
+import Cancel from "../CheckOut/Cancel/Cancel";
 
 const SearchResultPage = () => {
   const { sText } = useParams();
@@ -46,7 +48,7 @@ function Menu() {
     console.log("Is logged:", islogged);
   }, []);
 
-  
+
 
   if (islogged) {
     console.log('User bejelentkezve')
@@ -93,6 +95,9 @@ function Menu() {
         <Route path="/allbrands/detailed" element={<Results isLefut={isLefut} />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/brands" element={<AllWatches />} />
+        <Route path="/checkout/succeed" element={<Success />} />
+        <Route path="/checkout/cancel" element={<Cancel />} />
+
       </Routes>
       <Footer />
       <ToastContainer />

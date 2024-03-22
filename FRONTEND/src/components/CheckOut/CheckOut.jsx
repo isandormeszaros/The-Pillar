@@ -9,16 +9,22 @@ function Checkout({ cart }) {
     const location = useLocation();
     // const { totalPriceWithShipping } = location.state || {};
     console.log(location.state)
+    const [addingNewAddress, setAddingNewAddress] = useState(false);
+    const handleAddNewAddress = () => {
+        setAddingNewAddress(true);
+    };
 
     const makePayment = async () => {
         const stripe = await loadStripe("pk_test_51OqjCM01VYY1Q06qzRZJ5ftluZMxe6FN1iZZpf7agPSgsZNoe8OqTxnc0wO0DDJfIZgzpIygQIJVcx4JQzsCv4vV00JpYY0CUo");
 
         const body = {
-            cart
+            cart,
+            couponCode: formData.couponCode,
         }
 
         const headers = {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            withCredentials: true
         }
 
         try {
@@ -47,10 +53,19 @@ function Checkout({ cart }) {
         email: '',
         address: 'Budapest, Kiss utca 10',
         city: '',
-        zip: ''
+        zip: '',
+        couponCode: '',
     });
 
     const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    const handleCouponInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prevState => ({
             ...prevState,
@@ -79,23 +94,10 @@ function Checkout({ cart }) {
         }
     };
 
+    console.log(formData.couponCode)
     console.log(cart)
-    // console.log(totalPriceWithShipping)
 
     return (
-        //             <div className="row">
-        //                 <div className="col-3"><input type="text" /></div>
-        //                 <form onSubmit={handleSubmit}>
-        //                     <div className="form-group">
-        //                         <label htmlFor="address">Cím</label>
-        //                         <input type="text" className="form-control address-input" id="address" name="address" value={formData.address} onChange={handleInputChange} required />
-        //                     </div>
-        //                     <button type="submit" className="btn btn-primary">Fizetés</button>
-        //                     <button onClick={makePayment}>Stripe</button>
-        //                 </form>
-        //             </div>
-        //         </div>
-
         <div className="checkout-container container text-lg-start text-md-center text-center mt-5 ">
             <div className="container p-3">
                 <nav aria-label="breadcrumb custom-p-font">
@@ -136,16 +138,6 @@ function Checkout({ cart }) {
                     </div>
 
                     <div className="col-lg-4 custom-p-font pt-lg-0 pt-5">
-                        <div className="d-flex align-items-center cart-total-summary">
-                            <div className="col-12 pl-lg-0">
-                                <input className="my-1 form-control  coupon-input"
-                                    type="text"
-                                    value=""
-
-                                    placeholder="Szállítási cím"
-                                />
-                            </div>
-                        </div>
                         <hr />
                         <div className="d-flex align-items-center justify-content-between gap-1">
                             <div className="card col-2 border-color custom-card">
@@ -168,6 +160,14 @@ function Checkout({ cart }) {
                             </div>
                         </div>
                         <hr />
+                        <input
+                            className="my-1 form-control coupon-input"
+                            type="text"
+                            value={formData.couponCode}
+                            onChange={handleCouponInputChange}
+                            name="couponCode"
+                            placeholder="Kuponkód"
+                        />
                         <div className="d-flex justify-content-center align-items-center cart-total-summary pb-4">
                             <div className="col-8 pl-lg-0">
                                 <p className="my-1 text-start">Végösszeg</p>

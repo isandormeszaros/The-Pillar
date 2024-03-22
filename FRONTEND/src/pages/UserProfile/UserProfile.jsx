@@ -9,7 +9,7 @@ import "./UserProfile.css"
 function UserProfile({ islogged, setIslogged }) {
   const [response, setResponse] = useState({});
   const [openModal, setOpenModal] = useState(false);
-  const [userIdToDelete, setUserIdToDelete] = useState(null); // Store the id of the user to delete
+  const [userIdToDelete, setUserIdToDelete] = useState(null); 
   const [userUpdate, setUserUpdate] = useState({
     name: "",
     userEmail: "",
@@ -19,6 +19,7 @@ function UserProfile({ islogged, setIslogged }) {
   const [msg, setMsg] = useState("");
   const navigate = useNavigate();
   const images = "http://localhost:8080/images/user/";
+
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -37,7 +38,6 @@ function UserProfile({ islogged, setIslogged }) {
             setIslogged(true);
             setResponse(response);
             setMsg("Azonosítás OK");
-            console.log(response);
           })
           .catch((error) => {
             setResponse(error);
@@ -137,6 +137,10 @@ function UserProfile({ islogged, setIslogged }) {
         }
       })
   };
+
+  const userAddress = response.data && response.data.length > 0 ? response.data[0].userAddress : '';
+
+  console.log(userAddress);
 
   return (
     <div>

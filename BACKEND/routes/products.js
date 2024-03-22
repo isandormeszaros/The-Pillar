@@ -24,7 +24,7 @@ router.get("/sort/desc", (req, res) => {
     .catch((error) => res.send(error));
 });
 
-// GET /allwatches/filter/rolex - Szűrt termék lekérése 
+// GET /allwatches/filter/rolex - Szűrt termék lekérése
 router.get("/filter/:szur", (req, res) => {
   let szur = "%" + req.params.szur + "%";
   db.selectFilteredProduct(szur)
@@ -115,6 +115,12 @@ router.get("/all/bandwidthes", (req, res) => {
 // GET /allwatches/all/dialmaterials - Számlap anyagának megjelenítése
 router.get("/all/dialmaterials", (req, res) => {
   db.selectByDialMaterials()
+    .then((adat) => res.json(adat))
+    .catch((error) => console.log(error));
+});
+
+router.delete("/test/post", (req, res) => {
+  db.updateCaseDiameterId()
     .then((adat) => res.json(adat))
     .catch((error) => console.log(error));
 });

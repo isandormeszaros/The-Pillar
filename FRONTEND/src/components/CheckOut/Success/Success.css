@@ -1,0 +1,28 @@
+.success-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  filter: grayscale(30%);
+  background-image: url("http://localhost:8080/images/checkout/success/success.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.success-content {
+  text-align: center;
+}
+
+.success-content h1 {
+  margin-bottom: 20px;
+}
+
+.success-icon {
+  color: var(--success);
+  font-size: 48px;
+}
+
+.order-status-button{
+    background-color: var(--white);
+    color: var(--font-color);
+}

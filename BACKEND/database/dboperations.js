@@ -1,6 +1,8 @@
 var config = require("./dbconfig");
 const mysql = require("mysql");
 let pool = mysql.createPool(config);
+const fs = require("fs");
+const path = require("path");
 
 // GET /allwatches - Az összes elérhető óramárka lekérdezése
 async function selectBrands() {
@@ -49,7 +51,7 @@ async function selectBrandsByPriceDESC() {
   });
 }
 
-// GET /allwatches/filter/rolex - Szűrt termék lekérése 
+// GET /allwatches/filter/rolex - Szűrt termék lekérése
 async function selectFilteredProduct(szur) {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -281,9 +283,8 @@ async function selectProductWhere(whereConditions) {
   });
 }
 
-
 // --- FELHASZNÁLÓK KEZELÉSE ---
-// Bejelentkezés 
+// Bejelentkezés
 async function getSignIn(email, password) {
   console.log(email, password);
   return new Promise((resolve, reject) => {
@@ -356,17 +357,16 @@ async function deleteUser(id) {
 }
 
 // Email validáció
-async function getEmail(email){
-  return new Promise((resolve, reject) =>{
+async function getEmail(email) {
+  return new Promise((resolve, reject) => {
     pool.query("SELECT email FROM validemail", [email], (error, result) => {
-      if(error){
-        reject (error);
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
       }
-      else{
-        resolve(result)
-      }
-    })
-  })
+    });
+  });
 }
 
 // Fiók módosítása
@@ -404,7 +404,11 @@ async function patchUser(id, userData) {
       hasPreviousField = true;
     }
 
-    if (userData && userData.userAddress !== undefined && userData.userAddress !== null) {
+    if (
+      userData &&
+      userData.userAddress !== undefined &&
+      userData.userAddress !== null
+    ) {
       if (hasPreviousField) sql += ",";
       sql += " userAddress=?";
       values.push(userData.userAddress);
@@ -412,7 +416,7 @@ async function patchUser(id, userData) {
     }
 
     if (!hasPreviousField) {
-      resolve(0); 
+      resolve(0);
       return;
     }
 
@@ -478,8 +482,6 @@ async function placeOrder(data) {
   }
 }
 
-
-
 async function selectUser(email, password) {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -497,6 +499,60 @@ async function selectUser(email, password) {
     );
   });
 }
+
+async function updateCaseDiameterId(id) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      "DELETE FROM watches.base WHERE id = 1",
+      [id],
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+}
+
+// ----------------------------------------------------------------------
+// async function updateCaseDiameterId() {
+//   const filePath = path.join(__dirname, "../public/caseDiameter.txt");
+
+//   fs.readFile(filePath, "utf8", async (err, data) => {
+//     if (err) {
+//       console.error(err);
+//       return;
+//     }
+
+//     const caseDiameters = data.split("\n");
+
+//     try {
+//       for (let i = 0; i < 1; i++) {
+//         const caseDiameter = caseDiameters[i].trim();
+//         const baseId = i + 1;
+
+//         const sql = "UPDATE base SET caseDiameterId = 15 WHERE id = 1";
+//         // const values = [parseInt(caseDiameter), baseId];
+
+//         try {
+//           // const random = await pool.query(sql, values);
+//           const random = await pool.query(sql);
+//           console.log(random);
+//           // console.log(`Sikeresen updatelt id: ${baseId} értéke: ${caseDiameter}`);
+//         } catch (error) {
+//           console.error(`Hiba az Idben ${baseId}:`, error);
+//         }
+//       }
+
+//       console.log("Sikeres update.");
+//     } catch (error) {
+//       console.error("Hiba:", error);
+//     }
+//   });
+// }
+
 
 module.exports = {
   selectBrands: selectBrands,
@@ -519,8 +575,9 @@ module.exports = {
   getUserProfile: getUserProfile,
   createUser: createUser,
   deleteUser: deleteUser,
-  getEmail : getEmail,
+  getEmail: getEmail,
   patchUser: patchUser,
   selectUser: selectUser,
   placeOrder: placeOrder,
+  updateCaseDiameterId: updateCaseDiameterId,
 };

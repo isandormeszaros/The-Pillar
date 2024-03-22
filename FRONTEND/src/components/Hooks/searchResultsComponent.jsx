@@ -11,7 +11,6 @@ const SearchResultsComponent = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [message, setMessage] = useState("");
-  const [searchTrigger, setSearchTrigger] = useState(0);
 
   useEffect(() => {
     setLoading(true);
@@ -40,7 +39,7 @@ const SearchResultsComponent = () => {
 
   return (
     <div>
-      <SearchComponent setSearchTrigger={setSearchTrigger} />
+    <SearchComponent/>
       <h2>Keresési eredmények:</h2>
       {loading ? (
         <p>Betöltés...</p>

@@ -69,6 +69,11 @@
   font-size: 8px;
 }
 
+.coupon-row {
+  background-color: var(--light-grey-background);
+  color: var(--light-grey-text);
+}
+
 @keyframes slideIn {
   from {
     transform: translateX(100%);

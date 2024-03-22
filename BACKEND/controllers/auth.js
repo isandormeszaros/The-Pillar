@@ -5,7 +5,9 @@ var DB = require("../database/dboperations");
 const authJwt = require("../middleware/authjwt");
 var authUtils = require("../utils/authUtils");
 const crypto = require("crypto");
-const stripe = require('stripe')("sk_test_51OqjCM01VYY1Q06qZfwWtRUeaK7MLymRQpNnkBNiUferRL3QYxJMYJKLByKSzsBfIPoslTYtoH0KnJBkQwywdqWZ003w8byPBd");
+const stripe = require("stripe")(
+  "sk_test_51OqjCM01VYY1Q06qZfwWtRUeaK7MLymRQpNnkBNiUferRL3QYxJMYJKLByKSzsBfIPoslTYtoH0KnJBkQwywdqWZ003w8byPBd"
+);
 
 router.use(cors());
 
@@ -116,11 +118,20 @@ router.get("/otp", (req, res) => {
 // Stripe payment - redirect to checkout
 router.post("/create-checkout-session", async (req, res) => {
   try {
-    const { cart } = req.body;
+    const { cart, couponCode } = req.body;
 
-    // Check if cart is empty
     if (!cart || cart.length === 0) {
       return res.status(400).json({ error: "Cart is empty" });
+    }
+
+    let discounts = [];
+    if (couponCode) {
+      const coupon = await stripe.coupons.retrieve(couponCode);
+      if (!coupon) {
+        return res.status(400).json({ error: "Invalid coupon code" });
+      } else {
+        discounts.push({ coupon: couponCode });
+      }
     }
 
     const lineItems = cart.map((item) => {
@@ -136,15 +147,25 @@ router.post("/create-checkout-session", async (req, res) => {
       };
     });
 
-    console.log("x");
-
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
-      success_url: "http://localhost:3000/home",
-      cancel_url: "http://localhost:3000/cart",
+      billing_address_collection: "auto",
+      shipping_address_collection: {
+        allowed_countries: ["HU"],
+      },
+      // shipping_address: {
+      //   line1: formData.address,
+      // },
+      discounts: discounts,
+      success_url: "http://localhost:3000/checkout/succeed",
+      cancel_url: "http://localhost:3000/checkout/failed",
     });
+
+    console.log("Discounts applied:", discounts);
+    console.log("cart", couponCode);
+    // console.log(couponCode);
 
     res.json({ id: session.id });
   } catch (error) {
