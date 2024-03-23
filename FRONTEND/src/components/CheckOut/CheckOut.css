@@ -2,11 +2,12 @@
   font-size: 20px;
 }
 
-.card {
-  background-color: var(--ultra-light-grey);
+.custom-card {
+  border: 0.8px solid var(--paragraph-color);
 }
 
-.custom-card:hover {
+.custom-card:hover,
+.custom-card-active {
   transition: all 0.6s linear;
   color: var(--card-text-color);
   background-color: var(--card-body-color);

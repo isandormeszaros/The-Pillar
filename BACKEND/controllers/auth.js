@@ -118,7 +118,7 @@ router.get("/otp", (req, res) => {
 // Stripe payment - redirect to checkout
 router.post("/create-checkout-session", async (req, res) => {
   try {
-    const { cart, couponCode } = req.body;
+    const { cart, couponCode, formData } = req.body;
 
     if (!cart || cart.length === 0) {
       return res.status(400).json({ error: "Cart is empty" });
@@ -133,6 +133,16 @@ router.post("/create-checkout-session", async (req, res) => {
         discounts.push({ coupon: couponCode });
       }
     }
+
+    console.log(formData)
+    // formData.push({})
+
+    const shippingRate = await stripe.shippingRates.retrieve(
+      "shr_1OxQHT01VYY1Q06qjJQ7b6cC"
+    );
+
+    const taxRate = await stripe.taxRates.retrieve("txr_1OxPwc01VYY1Q06qWha8JHA5");
+
 
     const lineItems = cart.map((item) => {
       return {
@@ -155,17 +165,34 @@ router.post("/create-checkout-session", async (req, res) => {
       shipping_address_collection: {
         allowed_countries: ["HU"],
       },
+      shipping_options: [
+        {
+          shipping_rate_data: {
+            type: shippingRate.type,
+            fixed_amount: shippingRate.fixed_amount,
+            display_name: shippingRate.display_name,
+            delivery_estimate: {
+              minimum: shippingRate.delivery_estimate.minimum,
+              maximum: shippingRate.delivery_estimate.maximum,
+            },
+          },
+        },
+      ],
       // shipping_address: {
       //   line1: formData.address,
       // },
+      automatic_tax: {
+        enabled: true,
+      },
       discounts: discounts,
       success_url: "http://localhost:3000/checkout/succeed",
       cancel_url: "http://localhost:3000/checkout/failed",
     });
 
+    console.log(taxRate);
+    console.log("Shipping:", shippingRate);
     console.log("Discounts applied:", discounts);
-    console.log("cart", couponCode);
-    // console.log(couponCode);
+    console.log("Coupon:", couponCode);
 
     res.json({ id: session.id });
   } catch (error) {

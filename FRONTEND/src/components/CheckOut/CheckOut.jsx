@@ -1,21 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import locales from "../../utils/locales.json";
 import { loadStripe } from '@stripe/stripe-js';
 import { useLocation } from 'react-router-dom';
+import locales from "../../utils/locales.json";
+import { toast } from 'react-toastify';
 import axios from 'axios';
 import './CheckOut.css'
 
+
 function Checkout({ cart }) {
     const location = useLocation();
-    // const { totalPriceWithShipping } = location.state || {};
-    console.log(location.state)
+    const [couponCode, setCouponCode] = useState('');
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        address: 'Budapest, Kiss utca 10',
+        city: '',
+        zip: '',
+        couponCode: '',
+    });
 
     const makePayment = async () => {
         const stripe = await loadStripe("pk_test_51OqjCM01VYY1Q06qzRZJ5ftluZMxe6FN1iZZpf7agPSgsZNoe8OqTxnc0wO0DDJfIZgzpIygQIJVcx4JQzsCv4vV00JpYY0CUo");
 
         const body = {
             cart,
-            couponCode: formData.couponCode,
+            couponCode: couponCode,
+            formData
         }
 
         const headers = {
@@ -44,31 +54,19 @@ function Checkout({ cart }) {
         }
     }
 
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        address: 'Budapest, Kiss utca 10',
-        city: '',
-        zip: '',
-        couponCode: '',
-    });
-
     useEffect(() => {
-        if (location.state && location.state.coupon) {
-            setFormData(prevFormData => ({
-                ...prevFormData,
-                couponCode: location.state.coupon
-            }));
+        const savedCoupon = localStorage.getItem('coupon');
+        const parsedCoupon = JSON.parse(savedCoupon);
+        if (savedCoupon) {
+            setCouponCode(parsedCoupon);
         }
-    }, [location.state]);
+    }, []);
 
-    // const handleInputChange = (e) => {
-    //     const { name, value } = e.target;
-    //     setFormData(prevState => ({
-    //         ...prevState,
-    //         [name]: value
-    //     }));
-    // };
+    console.log(couponCode);
+
+    if (couponCode && couponCode !== "teleki2024") {
+        toast.error("Érvénytelen kupon");
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -136,28 +134,36 @@ function Checkout({ cart }) {
 
                     <div className="col-lg-4 custom-p-font pt-lg-0 pt-5">
                         <hr />
-                        <div className="d-flex align-items-center justify-content-between gap-1">
-                            <div className="card col-2 border-color custom-card">
-                                <div className="card-body mt-4">
-                                    <div><i className='pi pi-credit-card card-icon'></i></div>
-                                    <p>Bankkártya</p>
+                        <div className="d-flex d-md-inline align-items-center justify-content-center">
+                            <div className="row g-2">
+                                <div className="col-6">
+                                    <div className="p-3 custom-card custom-card-active">
+                                        <div className="pt-3"><i className='pi pi-credit-card card-icon'></i></div>
+                                        <p>Bankkártya</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="card col-2 border-color custom-card">
-                                <div className="card-body mt-4">
-                                    <div><i className='pi pi-wallet card-icon'></i></div>
-                                    <p>Utánvétel</p>
+                                <div className="col-6">
+                                    <div className="p-3 custom-card">
+                                        <div className="pt-3"><i className='pi pi-wallet card-icon'></i></div>
+                                        <p>Utánvétel</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="card col-2 border-color custom-card">
-                                <div className="card-body mt-4">
-                                    <div><i className='pi pi-truck card-icon'></i></div>
-                                    <p>Csomagpont</p>
+                                <div className="col-6">
+                                    <div className="p-3 custom-card">
+                                        <div className="pt-3"><i className='pi pi-map-marker card-icon'></i></div>
+                                        <p>Átvétel postaponton</p>
+                                    </div>
+                                </div>
+                                <div className="col-6">
+                                    <div className="p-3 custom-card">
+                                        <div className="pt-3"><i className='pi pi-map card-icon'></i></div>
+                                        <p>Átvétel az üzletben</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <hr />
-                        <div className="d-flex justify-content-center align-items-center cart-total-summary pb-4">
+                        <div className="d-flex justify-content-center align-items-center cart-total-summary pb-5 pb-lg-3">
                             <div className="col-8 pl-lg-0">
                                 <p className="my-1 text-start">Végösszeg</p>
                             </div>
@@ -167,14 +173,14 @@ function Checkout({ cart }) {
                                 </p>
                             </div>
                         </div>
-                        <hr />
-
-                        <button onClick={makePayment} className="default-button d-flex">Checkout</button>
+                        <div className="d-flex justify-content-center align-items-center cart-total-summary">
+                            <button onClick={makePayment} className="default-button d-flex w-100">Checkout</button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-        </div>
+        </div >
     );
 }
 

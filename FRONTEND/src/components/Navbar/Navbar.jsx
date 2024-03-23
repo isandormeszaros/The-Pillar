@@ -35,7 +35,7 @@ const Navbar = ({ cart, islogged }) => {
   return (
     // <nav className={`navbar navbar-expand-lg custom-navbar fixed-top ${isScrolledDown ? "scrolled-down" : ""}`}>
     <>
-      <div className="row black coupon-row">
+      <div className="row coupon-row p-0 m-0">
         <div className="col text-align-center align-items-center">
           <p className="custom-p-font m-2">Vásároljon egy karórát 1.000$ felett és használja a <strong>teleki2024</strong> kupont június 30-áig!</p>
         </div>

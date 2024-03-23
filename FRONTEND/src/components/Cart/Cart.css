@@ -73,6 +73,16 @@ button:focus {
   position: relative;
 }
 
+.invalid-coupon {
+  border: 1px solid var(--error);
+  color: var(--error);
+}
+
+.valid-coupon {
+  border: 1px solid var(--success);
+  color: var(--success);
+}
+
 @media only screen and (max-width: 1023px) {
   .empty-cart-mobile {
     display: flex;

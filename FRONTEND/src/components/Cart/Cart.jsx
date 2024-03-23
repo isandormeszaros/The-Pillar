@@ -1,59 +1,71 @@
 import { useEffect, useState } from "react";
 import locales from "../../utils/locales.json";
-import Checkout from "../CheckOut/CheckOut";
-import { useLocation, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./Cart.css"
 
 const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
     const [couponCode, setCouponCode] = useState("");
     const totalPrice = cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
     const [openModal, setOpenModal] = useState(false);
-    const location = useLocation();
+    const [couponError, setCouponError] = useState(false);
 
     function applyCoupon() {
+        let discountedPrice, discountAmount;
         if (couponCode === "teleki2024") {
-            const discountedPrice = totalPrice * 0.9;
-            const shippingPrice = totalPrice * 0.01;
-            const discountAmount = totalPrice - discountedPrice;
-            const totalWithShipping = discountedPrice + shippingPrice;
-
-            return {
-                originalPrice: totalPrice.toLocaleString("en-US", locales["en-US"].currencyFormat),
-                discountedPrice: discountedPrice.toLocaleString("en-US", locales["en-US"].currencyFormat),
-                discountAmount: discountAmount.toLocaleString("en-US", locales["en-US"].currencyFormat),
-                shippingPrice: shippingPrice.toLocaleString("en-US", locales["en-US"].currencyFormat),
-                totalPriceWithShipping: totalWithShipping.toLocaleString("en-US", locales["en-US"].currencyFormat)
-            };
+            discountedPrice = totalPrice * 0.9;
+            discountAmount = totalPrice - discountedPrice;
         } else {
-            const shippingPrice = totalPrice * 0.02;
-            const totalWithShipping = totalPrice + shippingPrice;
-
-            return {
-                originalPrice: totalPrice.toLocaleString("en-US", locales["en-US"].currencyFormat),
-                discountedPrice: totalPrice.toLocaleString("en-US", locales["en-US"].currencyFormat),
-                discountAmount: (0).toLocaleString("en-US", locales["en-US"].currencyFormat),
-                shippingPrice: shippingPrice.toLocaleString("en-US", locales["en-US"].currencyFormat),
-                totalPriceWithShipping: totalWithShipping.toLocaleString("en-US", locales["en-US"].currencyFormat)
-            };
+            discountedPrice = totalPrice;
+            discountAmount = 0;
         }
-    };
+
+        const taxPrice = discountedPrice * 0.27;
+        const totalWithShipping = discountedPrice + taxPrice;
+
+        return {
+            originalPrice: totalPrice.toLocaleString("en-US", locales["en-US"].currencyFormat),
+            discountedPrice: discountedPrice.toLocaleString("en-US", locales["en-US"].currencyFormat),
+            discountAmount: discountAmount.toLocaleString("en-US", locales["en-US"].currencyFormat),
+            taxPrice: taxPrice.toLocaleString("en-US", locales["en-US"].currencyFormat),
+            totalPriceWithShipping: totalWithShipping.toLocaleString("en-US", locales["en-US"].currencyFormat)
+        };
+    }
+
 
     console.log(applyCoupon().totalPriceWithShipping)
     console.log(couponCode)
 
-    console.log(cart)
+
+    const jsonCoupon = JSON.stringify(couponCode)
+
+    function handleApplyCoupon() {
+        localStorage.setItem('coupon', jsonCoupon);
+    }
+
+    useEffect(() => {
+        const savedCoupon = localStorage.getItem('coupon');
+        const parsedCoupon = JSON.parse(savedCoupon);
+        if (savedCoupon) {
+            setCouponCode(parsedCoupon);
+        }
+    }, []);
 
     const handleDeleteConfirmation = () => {
         setOpenModal(true)
     }
 
-    useEffect(() => {
-        if (location.state?.applyCoupon) {
-            console.log(location.state.applyCoupon.totalPriceWithShipping);
-        } else {
-            console.log("Nincs aktivált coupon!");
-        }
-    }, []);
+    function removeCouponItems() {
+        localStorage.removeItem('coupon')
+    }
+
+    if (couponCode && couponCode !== "teleki2024" && !couponError) {
+        setCouponError(true);
+    }
+    else if (couponError && couponCode === "teleki2024") {
+        setCouponError(false);
+    }
+
+    const couponClass = couponError ? 'invalid-coupon' : 'valid-coupon';
 
     return (
         <div className="cart-container container text-lg-start text-md-center text-center mt-5 ">
@@ -127,13 +139,25 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
                             <hr />
                             <div className="d-flex align-items-center cart-total-summary">
                                 <div className="col-12 pl-lg-0">
-                                    <input className="my-1 form-control  coupon-input"
+                                    <input className={`my-1 form-control coupon-input ${couponClass}`}
                                         type="text"
                                         value={couponCode}
                                         onChange={(e) => setCouponCode(e.target.value)}
                                         placeholder="Kuponkód"
                                     />
                                     <p className="m-0 p-0 small text-muted text-start">10% kedvezmény</p>
+                                </div>
+                            </div>
+                            <hr />
+                            <div className="d-flex justify-content-center align-items-center cart-total-summary">
+                                <div className="col-8 pl-lg-0">
+                                    <p className="my-0 mt-1 text-start">Adó</p>
+                                    <p className="m-0 p-0 small text-muted text-start">27% ÁFA</p>
+                                </div>
+                                <div className="col-4 pr-lg-0">
+                                    <p className="my-1 text-end">
+                                        {applyCoupon().taxPrice}
+                                    </p>
                                 </div>
                             </div>
                             <hr />
@@ -151,18 +175,6 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
 
                             </div>
                             <hr />
-                            <div className="d-flex justify-content-center align-items-center cart-total-summary">
-                                <div className="col-8 pl-lg-0">
-                                    <p className="my-1 text-start">Szállítási díj</p>
-                                </div>
-                                <div className="col-4 pr-lg-0">
-                                    <p className="my-1 text-end">
-                                        {applyCoupon().shippingPrice}
-                                    </p>
-
-                                </div>
-                            </div>
-                            <hr />
                             <div className="d-flex justify-content-center align-items-center cart-total-summary pb-4">
                                 <div className="col-8 pl-lg-0">
                                     <p className="my-1 text-start">Végösszeg</p>
@@ -173,7 +185,7 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
                                     </p>
                                 </div>
                             </div>
-                            <Link to="/checkout" state={{ totalPriceWithShipping: applyCoupon().totalPriceWithShipping, coupon: couponCode }} className="default-button default-button-width d-flex ">
+                            <Link to="/checkout" onClick={handleApplyCoupon} state={{ totalPriceWithShipping: applyCoupon().totalPriceWithShipping }} className="default-button default-button-width d-flex ">
                                 Checkout
                             </Link>
                         </div>
@@ -200,7 +212,7 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
                                     >
                                         <i className="pi pi-arrow-left"></i>Mégse
                                     </button>
-                                    <button className="default-button default-delete-button profile-icon-button" onClick={() => removeAllItems()}><i className="pi pi-trash"></i>Törlés</button>
+                                    <button className="default-button default-delete-button profile-icon-button" onClick={() => { removeAllItems(); removeCouponItems() }}><i className="pi pi-trash"></i>Törlés</button>
                                 </div>
                             </div>
                         </div>
@@ -208,6 +220,7 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems }) => {
                 </div>
             )}
         </div>
+
     );
 };
 
