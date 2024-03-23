@@ -3,6 +3,7 @@ const mysql = require("mysql");
 let pool = mysql.createPool(config);
 const fs = require("fs");
 const path = require("path");
+const { query } = require("express");
 
 // GET /allwatches - Az összes elérhető óramárka lekérdezése
 async function selectBrands() {
@@ -14,6 +15,22 @@ async function selectBrands() {
           return reject(error);
         }
         return resolve(elements);
+      }
+    );
+  });
+}
+
+// GET /allwatches/wathes/1 - Az oldalon található óra id alapján
+async function selectProductById(id) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      "SELECT * FROM watches.alltablesview WHERE id = ?",
+      [id],
+      (error, elements) => {
+        if (error) {
+          reject(error);
+        }
+        resolve(elements);
       }
     );
   });
@@ -553,9 +570,9 @@ async function updateCaseDiameterId(id) {
 //   });
 // }
 
-
 module.exports = {
   selectBrands: selectBrands,
+  selectProductById: selectProductById,
   selectFilteredProduct: selectFilteredProduct,
   selectProductWhere: selectProductWhere,
   selectJustBrands: selectJustBrands,

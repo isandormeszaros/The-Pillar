@@ -25,6 +25,7 @@ import AllWatches from "../../pages/Layout/AllWatches/AllWatches";
 import useCart from "../Hooks/useCart";
 import Success from "../CheckOut/Success/Success";
 import Cancel from "../CheckOut/Cancel/Cancel";
+import ProductDetailPage from "../Context/ProductDetailPage";
 
 const SearchResultPage = () => {
   const { sText } = useParams();
@@ -97,6 +98,7 @@ function Menu() {
         <Route path="/brands" element={<AllWatches />} />
         <Route path="/checkout/succeed" element={<Success />} />
         <Route path="/checkout/cancel" element={<Cancel />} />
+        <Route path="/allwatches/watches/:id" element={<ProductDetailPage />} />
 
       </Routes>
       <Footer />

@@ -3,6 +3,7 @@ import WatchesServices from "../../services/WatchesServices";
 import SearchComponent from "../Hooks/searchComponent";
 import FilterSection from "./FilterSection";
 import locales from "../../utils/locales.json";
+import { Link } from 'react-router-dom';
 import { toast } from "react-toastify";
 
 function ProductList({ addToCartFunction }) {
@@ -21,10 +22,10 @@ function ProductList({ addToCartFunction }) {
     WatchesServices.getPage(page)
       .then((response) => {
         const data = response.data;
-        // Check if no more items are returned
+
         if (data.length === 0) {
           setAllItemsLoaded(true);
-          return WatchesServices.getAll(); // Assuming this endpoint fetches the total count of watches
+          return WatchesServices.getAll();
         }
         setItems((prevItems) => [...prevItems, ...data]);
         setPage(page + 1);
@@ -35,7 +36,7 @@ function ProductList({ addToCartFunction }) {
 
       .then((totalCountResponse) => {
         if (totalCountResponse) {
-          const totalCount = totalCountResponse.data.length; // Assuming the response has a structure like { totalCount: 100 }
+          const totalCount = totalCountResponse.data.length;
           setTotalWatchesCount(totalCount);
         }
       })
@@ -97,7 +98,8 @@ function ProductList({ addToCartFunction }) {
         <div className="container">
           <div className="row">
             {items.map((product) => (
-              <div key={product.id} className="col-lg-4 mb-4">
+
+              <div key={product.id} className="col-lg-4 mb-4 pointer">
                 <div className="card border">
                   <div className="view overlay">
                     <img
@@ -115,7 +117,8 @@ function ProductList({ addToCartFunction }) {
                         {product.price.toLocaleString("en-US", locales["en-US"].currencyFormat)}
                       </p>
                       <p className="card-text text-muted">ID: {product.id}</p>
-                      <button onClick={() => addToCart(product)}  className="default-button"><i className="pi pi-cart-plus" style={{ fontSize: "1rem" }}></i> Kosárba</button>
+                      <button onClick={() => addToCart(product)} className="default-button"><i className="pi pi-cart-plus" style={{ fontSize: "1rem" }}></i> Kosárba</button>
+                      <Link to={`/allwatches/watches/${product.id}`}>Részletek</Link>
                     </div>
                     <div
                       style={{

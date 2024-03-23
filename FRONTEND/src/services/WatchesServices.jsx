@@ -10,6 +10,10 @@ const get = (id) => {
   return http.get(`/brands/${id}`);
 };
 
+const getProductById = (id) => {
+  return http.get(`/allwatches/watches/${id}`);
+};
+
 // SEARCH INPUT FILTER
 const getFiltered = (szur) => {
   return http.get(`/allwatches/filter/${szur}`);
@@ -108,6 +112,7 @@ const update = (id, data) => {
 const WatchesServices = {
   getAll,
   get,
+  getProductById,
   getFiltered,
   getDetailedFiltered,
   sortByPriceAsc,

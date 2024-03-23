@@ -105,7 +105,7 @@ function Checkout({ cart }) {
                 </nav>
                 <h3 className="custom-heading-font pb-3">Checkout <span className="dark-gold">({cart.length})</span></h3>
                 <div className="row">
-                    <div className="col-lg-8 custom-p-font cart-items-container">
+                    <div className="col-lg-9 custom-p-font cart-items-container">
                         <ul className="list-unstyled">
                             {cart.map((item, index) => (
                                 <li key={index}>
@@ -132,7 +132,7 @@ function Checkout({ cart }) {
                         </ul>
                     </div>
 
-                    <div className="col-lg-4 custom-p-font pt-lg-0 pt-5">
+                    <div className="col-lg-3 custom-p-font pt-lg-0 pt-5">
                         <hr />
                         <div className="d-flex d-md-inline align-items-center justify-content-center">
                             <div className="row g-2">
@@ -151,13 +151,13 @@ function Checkout({ cart }) {
                                 <div className="col-6">
                                     <div className="p-3 custom-card">
                                         <div className="pt-3"><i className='pi pi-map-marker card-icon'></i></div>
-                                        <p>Átvétel postaponton</p>
+                                        <p>Csomagpont</p>
                                     </div>
                                 </div>
                                 <div className="col-6">
                                     <div className="p-3 custom-card">
                                         <div className="pt-3"><i className='pi pi-map card-icon'></i></div>
-                                        <p>Átvétel az üzletben</p>
+                                        <p>Személyesen</p>
                                     </div>
                                 </div>
                             </div>

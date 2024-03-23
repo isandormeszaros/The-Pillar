@@ -10,6 +10,14 @@ router.get("/", (req, res) => {
     .catch((error) => res.send(error));
 });
 
+router.get("/watches/:id", (req, res) => {
+  let id = req.params.id;
+
+  db.selectProductById(id)
+    .then((data) => res.json(data))
+    .catch((error) => res.send(error));
+});
+
 // GET /allwatches/sort/asc - Az órák ár szerint növekvő sorrendbe rendezése
 router.get("/sort/asc", (req, res) => {
   db.selectBrandsByPriceASC()
