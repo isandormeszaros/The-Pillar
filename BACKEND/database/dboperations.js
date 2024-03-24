@@ -249,7 +249,7 @@ async function selectByBandWidthes() {
 async function selectByDialMaterials() {
   return new Promise((resolve, reject) => {
     pool.query(
-      "SELECT `material`, `watch_count` FROM `watches.alldialmaterialcount`",
+      "SELECT material, watch_count FROM alldialmaterialcount",
       (error, elements) => {
         if (error) {
           reject(error);
