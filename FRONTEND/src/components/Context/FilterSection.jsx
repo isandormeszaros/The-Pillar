@@ -4,7 +4,7 @@ import WatchesServices from "../../services/WatchesServices";
 import queryString from "query-string";
 import { useNavigate, useLocation } from "react-router-dom"; // Import missing dependencies
 
-function FilterSection({ setIsLefut, lefut }) {
+function FilterSection() {
   const [brands, setBrands] = useState([]);
   const [selectedBrand, setSelectedBrand] = useState("");
   const [searchTrigger, setSearchTrigger] = useState(0);

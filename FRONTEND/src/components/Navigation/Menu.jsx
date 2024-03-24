@@ -34,7 +34,6 @@ const SearchResultPage = () => {
 
 function Menu() {
   const [islogged, setIslogged] = useState(false);
-  const [isLefut, setIsLefut] = useState(false);
   const { cart, setCart, addToCartFunction, updateQuantity, removeFromCart, removeAllItems, applyCoupon } = useCart();
 
   useEffect(() => {
@@ -66,7 +65,6 @@ function Menu() {
           path="/allbrands"
           element={
             <div>
-              <FilterSection setIsLefut={setIsLefut} />
               <ProductList addToCartFunction={addToCartFunction} />
             </div>
           }
@@ -93,12 +91,12 @@ function Menu() {
         <Route path="/cart" element={<Cart cart={cart} setCart={setCart} updateQuantity={updateQuantity} removeAllItems={removeAllItems} removeFromCart={removeFromCart} />} />
         <Route path="/timeout" element={<TimeOut />} />
         <Route path="/checkout" element={<CheckOut cart={cart} />} />
-        <Route path="/allbrands/detailed" element={<Results isLefut={isLefut} />} />
+        <Route path="/allbrands/detailed" element={<Results />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/brands" element={<AllWatches />} />
         <Route path="/checkout/succeed" element={<Success />} />
         <Route path="/checkout/cancel" element={<Cancel />} />
-        <Route path="/allwatches/watches/:id" element={<ProductDetailPage />} />
+        <Route path="/allwatches/watches/:id" element={<ProductDetailPage addToCartFunction={addToCartFunction} />} />
 
       </Routes>
       <Footer />

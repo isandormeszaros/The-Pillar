@@ -165,8 +165,6 @@ function UserProfile({ islogged, setIslogged }) {
         </div>
       ) : (
         <div className="profile p-0">
-
-
           {Array.isArray(response.data) ? (
             response.data.map((user) => (
               <div key={user.id}>

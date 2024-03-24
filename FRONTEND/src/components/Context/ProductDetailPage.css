@@ -1,0 +1,11 @@
+.detail-title {
+  font-size: var(--h2-font-size);
+  padding-top: 32px;
+}
+
+.description-price {
+  font-weight: bold;
+  font-size: var(--h1-font-size);
+  margin: 28px 0 30px 0;
+  color: black;
+}
