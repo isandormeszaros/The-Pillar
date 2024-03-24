@@ -18,14 +18,5 @@
   .custom-card {
     min-width: 100px;
     min-height: 100px;
-    cursor: pointer;
-  }
-}
-
-@media (min-width: 992px) {
-  .custom-card {
-    min-width: 130px;
-    min-height: 100px;
-    cursor: pointer;
   }
 }

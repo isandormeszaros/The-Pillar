@@ -12,6 +12,7 @@ function ProductDetailPage({ addToCartFunction }) {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [splideReady, setSplideReady] = useState(false); // Track initialization of splide
+  const images = "http://localhost:8080/images/carouser/famouswatches/";
 
   const splideRef = useRef(null); // Ref to Splide component
 
@@ -121,14 +122,14 @@ function ProductDetailPage({ addToCartFunction }) {
             )}
           </div>
 
-          <div className="col-description col-lg-6 text-start justify-content-start">
+          <div className="col-description col-lg-6 text-start justify-content-start detail-items-container">
             {product && (
               <div className="custom-p-font">
-                <div className="d-flex justify-content-between align-items-center">
+                <div className="d-flex justify-content-between align-items-center pt-4 pt-lg-0">
                   <div>
                     <h3 className="custom-heading-font">{product.watchName}</h3>
                   </div>
-                  <div><i className="pi pi-heart"></i></div>
+                  <div><i className="pi pi-heart detail-favourite-item"></i></div>
                 </div>
                 <p className="text-justify">{product.description}</p>
                 <p className="description-price m-0">
@@ -136,7 +137,7 @@ function ProductDetailPage({ addToCartFunction }) {
                 </p>
                 <p className="m-0 small"><sup>*</sup>Az ár az áfát nem tartalmazza</p>
                 <div className="col-lg-4 col-md-12 justify-content-center pb-5">
-                  <button className="default-button d-flex w-100 mt-4" onClick={() => { addToCartFunction(product); addToCartSucceed() }}>Kosárba<i className="pi pi-shopping-cart text-white"></i></button>
+                  <button className="default-button d-flex w-100 mt-4" onClick={() => { addToCartFunction(product); addToCartSucceed() }}>Kosárba teszem<i className="pi pi-shopping-cart"></i></button>
                 </div>
                 <div className="shipping-row row text-center">
                   <div className="col-12">
@@ -151,31 +152,118 @@ function ProductDetailPage({ addToCartFunction }) {
                   <div className="col-12">
                     <h2 className="custom-heading-font detail-title">Óra részletei</h2>
                     <hr className="mt-0" />
-                    <p>Darabszám: {product.quantity} db</p>
-                    <p>Doboz: {product.box ? "Van" : "Nincs"}</p>
-                    <p>Papírok: {product.paper ? "Van" : "Nincs"}</p>
-                    <p>Gyártás éve: {product.date}</p>
-                    <p>Gyártás helye: Még nincs</p>
+                    <p className="mb-2">Darabszám: {product.quantity} db</p>
+                    <p className="mb-2">Doboz: {product.box ? "Van" : "Nincs"}</p>
+                    <p className="mb-2">Papírok: {product.paper ? "Van" : "Nincs"}</p>
+                    <p className="mb-2">Gyártás éve: {product.date}</p>
+                    <p className="mb-2">Gyártás helye: Még nincs</p>
                   </div>
                   <h2 className="custom-heading-font detail-title">Tok & számlap</h2>
                   <hr />
-                  <p>Tok anyaga: {product.caseMaterial}</p>
-                  <p>Tok vastagsága: {product.caseThickness}mm</p>
-                  <p>Tok Diaméter: {product.caseDiameter}mm</p>
-                  <p>Számlap anyaga: {product.dialMaterial}</p>
-                  <p>Sámlap színe: {product.dialColor}</p>
+                  <p className="mb-2">Tok anyaga: {product.caseMaterial}</p>
+                  <p className="mb-2">Tok vastagsága: {product.caseThickness}mm</p>
+                  <p className="mb-2">Tok Diaméter: {product.caseDiameter}mm</p>
+                  <p className="mb-2">Számlap anyaga: {product.dialMaterial}</p>
+                  <p className="mb-2">Sámlap színe: {product.dialColor}</p>
                   <h2 className="custom-heading-font detail-title">Szíj</h2>
                   <hr />
-                  <p>Szíj anyaga: {product.strapMaterial}</p>
-                  <p>Szíj szélessége: {product.bandWidth}mm</p>
+                  <p className="mb-2">Szíj anyaga: {product.strapMaterial}</p>
+                  <p className="mb-2">Szíj szélessége: {product.bandWidth}mm</p>
                   <h2 className="custom-heading-font detail-title">Működés</h2>
                   <hr />
-                  <p>Szerkezet: {product.movement}</p>
-                  <p>Vízállóság: {product.resistance}m</p>
+                  <p className="mb-2">Szerkezet: {product.movement}</p>
+                  <p className="mb-2">Vízállóság: {product.resistance}m</p>
                 </div>
 
               </div>
             )}
+          </div>
+          <div className="col-12 py-5">
+            <Splide
+              options={{
+                type: "loop",
+                drag: "free",
+                focus: "center",
+                perPage: 3,
+                gap: "1rem",
+                fixedWidth: 250,
+                fixedHeight: 200,
+                pagination: false,
+                autoplay: true,
+                interval: 3000,
+                autoStart: true,
+                pauseOnHover: true,
+                breakpoints: {
+                  640: {
+                    perPage: 1,
+                  },
+                  768: {
+                    perPage: 2,
+                  },
+                  1024: {
+                    perPage: 2,
+                  },
+                  1440: {
+                    perPage: 3,
+                  },
+                },
+              }}
+            >
+              <SplideSlide>
+                <div className="card border-0 position-relative">
+                  <img
+                    src={images + "rolex.jpg"}
+                    className="carouser-img rounded-0 black-and-white"
+                    alt="Rolex"
+                  />
+                </div>
+              </SplideSlide>
+              <SplideSlide>
+                <div className="card border-0 position-relative">
+                  <img
+                    src={images + "omega.jpg"}
+                    className="carouser-img rounded-0 black-and-white"
+                    alt="Omega"
+                  />
+                </div>
+              </SplideSlide>
+              <SplideSlide>
+                <div className="card border-0 position-relative">
+                  <img
+                    src={images + "seiko.jpg"}
+                    className="carouser-img rounded-0 black-and-white"
+                    alt="Seiko"
+                  />
+                </div>
+              </SplideSlide>
+              <SplideSlide>
+                <div className="card border-0 position-relative">
+                  <img
+                    src={images + "tudor.jpg"}
+                    className="carouser-img rounded-0 black-and-white"
+                    alt="Tudor"
+                  />
+                </div>
+              </SplideSlide>
+              <SplideSlide>
+                <div className="card border-0 position-relative">
+                  <img
+                    src={images + "tagheuer.jpg"}
+                    className="carouser-img rounded-0 black-and-white"
+                    alt="Tag Heuer"
+                  />
+                </div>
+              </SplideSlide>
+              <SplideSlide className="mb-5">
+                <div className="card border-0 position-relative">
+                  <img
+                    src={images + "longines.jpg"}
+                    className="carouser-img rounded-0 black-and-white"
+                    alt="Longines"
+                  />
+                </div>
+              </SplideSlide>
+            </Splide>
           </div>
         </div>
       </div>

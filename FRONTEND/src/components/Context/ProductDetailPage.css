@@ -9,3 +9,34 @@
   margin: 28px 0 30px 0;
   color: black;
 }
+
+.detail-favourite-item {
+  font-size: 1.2rem;
+  color: var(--font-color);
+  margin-left: 10px;
+}
+
+.detail-favourite-item:hover {
+  color: var(--error);
+  transition: all 0.3s linear;
+  cursor: pointer;
+}
+
+@media (min-width: 992px) {
+  .detail-items-container {
+    height: 600px;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .detail-items-container::-webkit-scrollbar {
+    width: 10px;
+    background-color: var(--ultra-light-grey);
+    border-radius: 10px;
+  }
+
+  .detail-items-container::-webkit-scrollbar-thumb {
+    background: var(--light-grey-background);
+    border-radius: 5px;
+  }
+}

@@ -58,7 +58,7 @@ const Navbar = ({ cart, islogged }) => {
               <span className="pi pi-user icon-size"></span>
             </a>
             <a href="/cart" className="text-decoration-none">
-              <span className="pi pi-shopping-cart icon-size"></span>
+              <span className="pi pi-shopping-cart cart-icon icon-size"></span>
               {cart.length > 0 && (
                 <span className="cart-badge">{cart.length}</span>
               )}
@@ -116,7 +116,7 @@ const Navbar = ({ cart, islogged }) => {
                 <span className="pi pi-user"></span>
               </a>
               <a href="/cart" className="text-decoration-none">
-                <span className="pi pi-shopping-cart"></span>
+                <span className="pi pi-shopping-cart cart-icon"></span>
                 {cart.length > 0 && (
                   <span className="cart-badge">{cart.length}</span>
                 )}

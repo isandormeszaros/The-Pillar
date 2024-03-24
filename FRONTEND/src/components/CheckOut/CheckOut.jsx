@@ -136,28 +136,28 @@ function Checkout({ cart }) {
                         <hr />
                         <div className="d-flex d-md-inline align-items-center justify-content-center">
                             <div className="row g-2">
-                                <div className="col-6">
+                                <div className="col-6 pointer">
                                     <div className="p-3 custom-card custom-card-active">
                                         <div className="pt-3"><i className='pi pi-credit-card card-icon'></i></div>
-                                        <p>Bankkártya</p>
+                                        <p>Kártyás tranzakció</p>
                                     </div>
                                 </div>
-                                <div className="col-6">
+                                <div className="col-6 pointer">
                                     <div className="p-3 custom-card">
                                         <div className="pt-3"><i className='pi pi-wallet card-icon'></i></div>
-                                        <p>Utánvétel</p>
+                                        <p>Utánvételes fizetés</p>
                                     </div>
                                 </div>
-                                <div className="col-6">
+                                <div className="col-6 pointer">
                                     <div className="p-3 custom-card">
                                         <div className="pt-3"><i className='pi pi-map-marker card-icon'></i></div>
-                                        <p>Csomagpont</p>
+                                        <p>Postapont átvétel</p>
                                     </div>
                                 </div>
-                                <div className="col-6">
+                                <div className="col-6 pointer">
                                     <div className="p-3 custom-card">
                                         <div className="pt-3"><i className='pi pi-map card-icon'></i></div>
-                                        <p>Személyesen</p>
+                                        <p>Személyes átvétel</p>
                                     </div>
                                 </div>
                             </div>

@@ -41,7 +41,7 @@
 
 .pi-search,
 .pi-user,
-.pi-shopping-cart,
+.cart-icon,
 .cart-badge {
   color: var(--background-dark-blue);
   cursor: pointer;
@@ -50,7 +50,7 @@
 .nav-link:hover,
 .pi-search:hover,
 .pi-user:hover,
-.pi-shopping-cart:hover,
+.cart-icon:hover,
 .navbar-toggler:hover {
   color: var(--dark-gold);
   transition: 0.3s all ease;
