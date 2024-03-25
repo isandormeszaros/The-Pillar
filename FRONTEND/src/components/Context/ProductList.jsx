@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import WatchesServices from "../../services/WatchesServices";
 import SearchComponent from "../Hooks/searchComponent";
 import FilterSection from "./FilterSection";
 import locales from "../../utils/locales.json";
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { toast } from "react-toastify";
+
+
 
 function ProductList({ addToCartFunction }) {
   const [items, setItems] = useState([]);
@@ -14,6 +16,15 @@ function ProductList({ addToCartFunction }) {
   const [totalWatchesCount, setTotalWatchesCount] = useState(0);
   const [allItemsLoaded, setAllItemsLoaded] = useState(false);
   const images = "http://localhost:8080/images/";
+  const location = useLocation();
+  const szures = {}
+  const queryParams = new URLSearchParams(location.search);
+  const [random, setRandom] = useState();
+  queryParams.forEach((value, key) => {
+    szures[key] = value;
+  })
+
+
 
   const fetchData = () => {
     setIsLoading(true);
@@ -56,6 +67,31 @@ function ProductList({ addToCartFunction }) {
     fetchData();
   }, []);
 
+// Előző szures paraméter állapotának tárolása előző érték változóban
+const prevSzures = useRef(szures);
+
+useEffect(() => {
+  // Szures változásának ellenőrzése
+  const szuresChanged = JSON.stringify(szures) !== JSON.stringify(prevSzures.current);
+  if (szuresChanged) {
+    WatchesServices.postSearch(szures)
+      .then(response => {
+        setRandom(response.random);
+        console.log("Sikeres");
+      })
+      .catch(error => {
+        console.error("Hiba történt", error);
+      });
+
+    // Az aktuális szures paraméter értékének frissítése az előző értékre
+    prevSzures.current = szures;
+  }
+}, [szures]); // Dependency array includes szures parameter
+
+
+  console.log(random)
+
+
   const addToCart = (product) => {
     addToCartFunction(product);
     toast.success("Termék sikeresen hozzáadva a kosárhoz!");
@@ -71,6 +107,7 @@ function ProductList({ addToCartFunction }) {
           style={{ objectFit: "cover", height: "375px" }}
         />
         <div className="text-center">
+          <span className='text-danger text-uppercase'>Disclaimer: A szűrés még fejlesztés alatt áll, egyelőre undefined értékkel tér vissza.</span>
           <h1 className="custom-heading-font pt-4">All Watches</h1>
           <p
             className="small"

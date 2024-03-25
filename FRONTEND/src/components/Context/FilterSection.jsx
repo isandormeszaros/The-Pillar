@@ -90,6 +90,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 function FilterSection() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [queryBrands, setQueryBrands] = useState('')
+
   const [brands, setBrands] = useState([]);
   const [dialColors, setdialColors] = useState([]);
   const [dates, setDates] = useState([]);
@@ -121,6 +123,8 @@ function FilterSection() {
   const [showAllDialMaterials, setShowAllDialMaterials] = useState(false);
 
   const [activeAccordion, setActiveAccordion] = useState(null);
+
+
 
   // ACCORDION CURRENT INDEXES
   const toggleAccordion = (index) => {
@@ -212,25 +216,26 @@ function FilterSection() {
     const queryParams = {
       brand: selectedBrands,
       dialColor: selectedDialColors,
-      // Add other filters as needed
     };
-  
+
     const updatedParams = queryString.stringify(queryParams);
     navigate(`?${updatedParams}`);
   };
-  
+
 
   //   // BRAND ACTUAL CHECKBOX IS SELECTED
+  // Handle brand checkbox change event
   const handleBrandChange = (event) => {
     const { checked, value } = event.target;
-    setSelectedBrands(
-      checked
-        ? [...selectedBrands, value]
-        : selectedBrands.filter((brand) => brand !== value)
-    );
-    // Call the updateQueryParams function after updating selected brands
-    updateQueryParams();
-  };
+    if (checked) {
+      setSelectedBrands([...selectedBrands, value]);
+    } else {
+      setSelectedBrands(selectedBrands.filter((brand) => brand !== value));
+    }
+  }
+
+
+  console.log(selectedBrands)
 
   //   // DIAL COLOR ACTUAL CHECKBOX IS SELECTED
   const handleDialColorChange = (event) => {
@@ -358,12 +363,21 @@ function FilterSection() {
   };
 
   useEffect(() => {
-    const parsed = queryString.parse(location.search);
-    setSelectedBrands(parsed.brand || []);
-    setSelectedDialColors(parsed.dialColor || []);
-    // Parse and set other filters as needed
+    const queryParams = queryString.parse(location.search);
+    setQueryBrands(queryParams.queryBrands || '');
+
   }, [location.search]);
-  
+
+  const handleSearch = () => {
+    let fil = {};
+    if (selectedBrands.length > 0) {
+      fil['queryBrands'] = selectedBrands.join(',');
+    }
+    const searchQuery = queryString.stringify(fil);
+    navigate(`/allbrands?${searchQuery}`);
+    setQueryBrands(fil['queryBrands']);
+  };
+
 
   // ACCORDION ITEMS JSON
   const accordionItems = [
@@ -376,7 +390,7 @@ function FilterSection() {
               <input
                 type="checkbox"
                 id={brand.id}
-                value={brand.X}
+                value={brand.brand}
                 checked={selectedBrands.includes(brand.brand)}
                 onChange={handleBrandChange}
               />
@@ -618,6 +632,7 @@ function FilterSection() {
           )}
         </div>
       ))}
+      <button className="handleSearch" onClick={handleSearch}>Keresés</button>
     </section>
   );
 }

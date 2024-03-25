@@ -11,12 +11,10 @@ function Checkout({ cart }) {
     const location = useLocation();
     const [couponCode, setCouponCode] = useState('');
     const [formData, setFormData] = useState({
-        name: '',
-        email: '',
+        name: 'Példa Név',
+        email: 'ujemail@gmail.com',
         address: 'Budapest, Kiss utca 10',
-        city: '',
-        zip: '',
-        couponCode: '',
+        city: 'Budapes',
     });
 
     const makePayment = async () => {
@@ -95,6 +93,7 @@ function Checkout({ cart }) {
     return (
         <div className="checkout-container container text-lg-start text-md-center text-center mt-5 ">
             <div className="container p-3">
+                <span className='text-danger text-uppercase'>Disclaimer: A fizetés még fejlesztés alatt áll, így csak előre megadott adatokkal működik. Ez az formData-ban van megadva.</span>
                 <nav aria-label="breadcrumb custom-p-font">
                     <ol className="breadcrumb justify-content-center justify-content-lg-start">
                         <li className="breadcrumb-item custom-p-font"><a href="/home" className="breadcrumb-anchor-cart">Nyitóoldal</a></li>
@@ -176,6 +175,7 @@ function Checkout({ cart }) {
                         <div className="d-flex justify-content-center align-items-center cart-total-summary">
                             <button onClick={makePayment} className="default-button d-flex w-100">Checkout</button>
                         </div>
+                        <button className='default-button mt-3 w-100' onClick={handleSubmit}>Rendelés leadása</button>
                     </div>
                 </div>
             </div>
