@@ -43,9 +43,6 @@ function Menu() {
     }
     const sessionStorageData = JSON.parse(sessionStorage.getItem("islogged"));
     console.log("SessionStorage:", sessionStorageData);
-    console.log(log);
-
-    console.log("Is logged:", islogged);
   }, []);
 
 

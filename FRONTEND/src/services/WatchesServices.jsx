@@ -86,7 +86,7 @@ const getDialMaterials = () => {
 };
 
 const postSearch = (filter) => {
-  return http.post(`/products/filter`, filter)
+  return http.post(`/allwatches/filter`, filter)
 };
 
 const getEmail = () => {

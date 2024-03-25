@@ -30,8 +30,6 @@ const Navbar = ({ cart, islogged }) => {
     setIsOpen(false);
   };
 
-  console.log(islogged)
-
   return (
     // <nav className={`navbar navbar-expand-lg custom-navbar fixed-top ${isScrolledDown ? "scrolled-down" : ""}`}>
     <>

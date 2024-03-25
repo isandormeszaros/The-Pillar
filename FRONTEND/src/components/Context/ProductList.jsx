@@ -6,8 +6,6 @@ import locales from "../../utils/locales.json";
 import { Link, useLocation } from 'react-router-dom';
 import { toast } from "react-toastify";
 
-
-
 function ProductList({ addToCartFunction }) {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -17,13 +15,49 @@ function ProductList({ addToCartFunction }) {
   const [allItemsLoaded, setAllItemsLoaded] = useState(false);
   const images = "http://localhost:8080/images/";
   const location = useLocation();
-  const szures = {}
+  const [szures, setSzures] = useState({});
   const queryParams = new URLSearchParams(location.search);
-  const [random, setRandom] = useState();
-  queryParams.forEach((value, key) => {
-    szures[key] = value;
+  const [random, setRandom] = useState(null);
+  const [updatedSzures, setUpdatedSzures] = useState([]);
+
+
+  useEffect(() => {
+    const updatedSzures = {}; // alapértelmezett üres szűrők
+
+    queryParams.forEach((value, key) => {
+      updatedSzures[key] = value;
+    });
+
+    // ha a queryParams üres, akkor használjuk az alapértelmezett üres szűrőket
+    if (Object.keys(updatedSzures).length === 0) {
+      setUpdatedSzures({}); // Üres objektum beállítása
+    } else {
+      setUpdatedSzures(updatedSzures);
+    }
+
+    WatchesServices.postSearch(updatedSzures)
+      .then(response => {
+        setRandom(response);
+        console.log("Sikeres");
+      })
+      .catch(error => {
+        console.error("Hiba történt", error);
+      });
+  }, []);
+
+
+
+
+  const searchParams = new URLSearchParams("key1=value1&key2=value2");
+  searchParams.forEach((key, value) => {
+    console.log(key, value)
   })
 
+  // console.log(queryParams.forEach((value, key) => {
+  //   szures[key] = value;
+  // }))
+
+  console.log(updatedSzures)
 
 
   const fetchData = () => {
@@ -67,29 +101,32 @@ function ProductList({ addToCartFunction }) {
     fetchData();
   }, []);
 
-// Előző szures paraméter állapotának tárolása előző érték változóban
-const prevSzures = useRef(szures);
 
-useEffect(() => {
-  // Szures változásának ellenőrzése
-  const szuresChanged = JSON.stringify(szures) !== JSON.stringify(prevSzures.current);
-  if (szuresChanged) {
-    WatchesServices.postSearch(szures)
-      .then(response => {
-        setRandom(response.random);
-        console.log("Sikeres");
-      })
-      .catch(error => {
-        console.error("Hiba történt", error);
-      });
+  // Előző szures paraméter állapotának tárolása előző érték változóban
+  const prevSzures = useRef(updatedSzures);
 
-    // Az aktuális szures paraméter értékének frissítése az előző értékre
-    prevSzures.current = szures;
-  }
-}, [szures]); // Dependency array includes szures parameter
+  // useEffect(() => {
+  //   // Szures változásának ellenőrzése
+  //   const szuresChanged = JSON.stringify(updatedSzures) !== JSON.stringify(prevSzures.current);
+  //   if (szuresChanged) {
+  //     WatchesServices.postSearch(updatedSzures)
+  //       .then(response => {
+  //         setRandom(response.random);
+  //         console.log("Sikeres");
+  //       })
+  //       .catch(error => {
+  //         console.error("Hiba történt", error);
+  //       });
+
+  //     // Az aktuális szures paraméter értékének frissítése az előző értékre
+  //     prevSzures.current = updatedSzures;
+  //     console.log(random)
+  //   }
+  // }, [updatedSzures]); // Dependency array includes szures parameter
+
+  // console.log(random)
 
 
-  console.log(random)
 
 
   const addToCart = (product) => {
@@ -174,6 +211,12 @@ useEffect(() => {
             ))}
           </div>
         </div>
+      </section>
+
+      <section id="data-display">
+        {/* Useref érték megjelenítése */}
+        <p>Useref érték: {prevSzures.current && Object.keys(prevSzures.current).length > 0 ? JSON.stringify(prevSzures.current) : "Nincs adat"}</p>
+        <div>Név  {random && random.data[0].watchName}</div>
       </section>
 
       <div className="text-center">

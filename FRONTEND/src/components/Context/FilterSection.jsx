@@ -234,9 +234,6 @@ function FilterSection() {
     }
   }
 
-
-  console.log(selectedBrands)
-
   //   // DIAL COLOR ACTUAL CHECKBOX IS SELECTED
   const handleDialColorChange = (event) => {
     const { checked, value } = event.target;
@@ -370,13 +367,20 @@ function FilterSection() {
 
   const handleSearch = () => {
     let fil = {};
+    const queryParams = queryString.parse(location.search);
     if (selectedBrands.length > 0) {
-      fil['queryBrands'] = selectedBrands.join(',');
+      fil['watchName'] = selectedBrands;
+      setQueryBrands(queryParams.brand || '');
     }
     const searchQuery = queryString.stringify(fil);
     navigate(`/allbrands?${searchQuery}`);
-    setQueryBrands(fil['queryBrands']);
+    setQueryBrands(fil['watchName']);
   };
+
+
+
+
+
 
 
   // ACCORDION ITEMS JSON
