@@ -43,7 +43,7 @@ function ProductList({ addToCartFunction }) {
       .catch(error => {
         console.error("Hiba történt", error);
       });
-  }, []);
+  }, [location.search]);
 
 
 
