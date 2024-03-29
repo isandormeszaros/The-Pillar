@@ -1,0 +1,17 @@
+.search-form-control {
+  border-radius: 0;
+  font-size: 0.9rem;
+  padding: 13.7px;
+  border: 0.6px solid var(--black);
+  display: inline;
+  width: auto;
+}
+
+.search-form-control:focus {
+  border-color: var(--dark-gold) !important;
+  box-shadow: 0 0 0 0.2rem rgba(236, 177, 89, 0.25) !important;
+}
+
+.search-button {
+  min-width: 25%;
+}

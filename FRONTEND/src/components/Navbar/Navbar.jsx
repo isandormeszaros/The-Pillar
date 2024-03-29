@@ -49,7 +49,7 @@ const Navbar = ({ cart, islogged }) => {
           </Link>
           <div className="d-lg-flex d-lg-none ms-auto align-items-center button-container me-2">
             <a href="/allbrands" className="me-3">
-              <span className="pi pi-search icon-size"></span>
+              <span className="pi pi-search search-icon icon-size"></span>
             </a>
             <a href="/login" className="me-3">
               {islogged ? (<i className="pi pi-circle-fill user-badge"></i>) : ''}
@@ -108,7 +108,7 @@ const Navbar = ({ cart, islogged }) => {
             </ul>
             <div className="d-none d-lg-flex ms-auto align-items-center button-container">
               <a href="/allbrands" className="me-3">
-                <span className="pi pi-search"></span>
+                <span className="pi pi-search search-icon"></span>
               </a>
               <a href="/login" className="me-3">
                 <span className="pi pi-user"></span>

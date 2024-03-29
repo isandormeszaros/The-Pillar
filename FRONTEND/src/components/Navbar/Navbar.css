@@ -39,7 +39,7 @@
   font-weight: 100;
 }
 
-.pi-search,
+.search-icon,
 .pi-user,
 .cart-icon,
 .cart-badge {
@@ -48,7 +48,7 @@
 }
 
 .nav-link:hover,
-.pi-search:hover,
+.search-icon:hover,
 .pi-user:hover,
 .cart-icon:hover,
 .navbar-toggler:hover {

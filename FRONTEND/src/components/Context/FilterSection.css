@@ -1,0 +1,10 @@
+#filter-section {
+    transition: height 0.3s ease;
+    overflow: hidden;
+  }
+  
+  #filter-section.expanded {
+    height: 100%; 
+  }
+  
+  

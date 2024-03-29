@@ -47,17 +47,17 @@ function ProductDetailPage({ addToCartFunction }) {
     imageUrls.push(imageUrl);
   }
 
-  console.log(product)
-
   return (
     <div>
       <div className="detailed-page-container container">
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb pt-3">
             <li className="breadcrumb-item custom-p-font"><a href="/home" className="breadcrumb-anchor-cart">Nyitóoldal</a></li>
-            <li className="breadcrumb-item custom-p-font"><a href="/allbrands" className="breadcrumb-anchor-cart">Óráink</a></li>
             {product && (
-              <li className="breadcrumb-item custom-p-font"><a href="/allbrands" className="breadcrumb-anchor-cart">{product.brand}</a></li>
+              <li className="breadcrumb-item custom-p-font"><a href="/allbrands" className="breadcrumb-anchor-cart">Óráink</a></li>
+            )}
+            {product && (
+              <li className="breadcrumb-item custom-p-font"><a href={"/allbrands?watchName=" + product.brand} className="breadcrumb-anchor-cart">{product.brand}</a></li>
             )}
             {product && (
               <li className="breadcrumb-item active custom-p-font" aria-current="page">{product.watchName}</li>
@@ -156,7 +156,7 @@ function ProductDetailPage({ addToCartFunction }) {
                     <p className="mb-2">Doboz: {product.box ? "Van" : "Nincs"}</p>
                     <p className="mb-2">Papírok: {product.paper ? "Van" : "Nincs"}</p>
                     <p className="mb-2">Gyártás éve: {product.date}</p>
-                    <p className="mb-2">Gyártás helye: Még nincs</p>
+                    <p className="mb-2">Gyártás helye: {product.country}</p>
                   </div>
                   <h2 className="custom-heading-font detail-title">Tok & számlap</h2>
                   <hr />

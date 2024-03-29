@@ -517,59 +517,6 @@ async function selectUser(email, password) {
   });
 }
 
-async function updateCaseDiameterId(id) {
-  return new Promise((resolve, reject) => {
-    pool.query(
-      "DELETE FROM watches.base WHERE id = 1",
-      [id],
-      (error, result) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(result);
-        }
-      }
-    );
-  });
-}
-
-// ----------------------------------------------------------------------
-// async function updateCaseDiameterId() {
-//   const filePath = path.join(__dirname, "../public/caseDiameter.txt");
-
-//   fs.readFile(filePath, "utf8", async (err, data) => {
-//     if (err) {
-//       console.error(err);
-//       return;
-//     }
-
-//     const caseDiameters = data.split("\n");
-
-//     try {
-//       for (let i = 0; i < 1; i++) {
-//         const caseDiameter = caseDiameters[i].trim();
-//         const baseId = i + 1;
-
-//         const sql = "UPDATE base SET caseDiameterId = 15 WHERE id = 1";
-//         // const values = [parseInt(caseDiameter), baseId];
-
-//         try {
-//           // const random = await pool.query(sql, values);
-//           const random = await pool.query(sql);
-//           console.log(random);
-//           // console.log(`Sikeresen updatelt id: ${baseId} értéke: ${caseDiameter}`);
-//         } catch (error) {
-//           console.error(`Hiba az Idben ${baseId}:`, error);
-//         }
-//       }
-
-//       console.log("Sikeres update.");
-//     } catch (error) {
-//       console.error("Hiba:", error);
-//     }
-//   });
-// }
-
 module.exports = {
   selectBrands: selectBrands,
   selectProductById: selectProductById,
@@ -596,5 +543,4 @@ module.exports = {
   patchUser: patchUser,
   selectUser: selectUser,
   placeOrder: placeOrder,
-  updateCaseDiameterId: updateCaseDiameterId,
 };

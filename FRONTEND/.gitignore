@@ -10,10 +10,6 @@
 .DS_Store
 Thumbs.db
 
-# Passwords and secret datas
-secrets.txt
-passwords.txt
-
 # Node modules
 FRONTEND/node_modules
 BACKEND/node_modules

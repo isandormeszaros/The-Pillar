@@ -85,6 +85,7 @@ import WatchesServices from "../../services/WatchesServices";
 import "bootstrap/dist/css/bootstrap.min.css";
 import queryString from "query-string";
 import { useLocation, useNavigate } from "react-router-dom";
+import "./FilterSection.css"
 
 
 function FilterSection() {
@@ -369,12 +370,23 @@ function FilterSection() {
     let fil = {};
     const queryParams = queryString.parse(location.search);
     if (selectedBrands.length > 0) {
-      fil['watchName'] = selectedBrands;
+      fil['watchName'] = selectedBrands.join(",");
       setQueryBrands(queryParams.brand || '');
     }
     const searchQuery = queryString.stringify(fil);
     navigate(`/allbrands?${searchQuery}`);
     setQueryBrands(fil['watchName']);
+
+    function createSearchParams(params) {
+      return new URLSearchParams(Object.entries(params).flatMap(([key, values]) => Array.isArray(values) ? values.map((value) => [key, value]) : [[key, values]]));
+    }
+
+    console.log(fil)
+
+    console.log(createSearchParams({
+      // foo: ["bar", "baz"],
+      ['watchName']: selectedBrands
+    }).toString());
   };
 
 
@@ -622,7 +634,7 @@ function FilterSection() {
   ];
 
   return (
-    <section id="filter-section" className="col-lg-3 col-md-4 text-justify">
+    <section id="filter-section">
       <h2 className="custom-heading-font">Szűrés</h2>
       {accordionItems.map((item, index) => (
         <div key={index}>

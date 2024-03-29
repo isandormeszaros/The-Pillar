@@ -5,6 +5,7 @@ import FilterSection from "./FilterSection";
 import locales from "../../utils/locales.json";
 import { Link, useLocation } from 'react-router-dom';
 import { toast } from "react-toastify";
+import { useModal } from "@chakra-ui/react";
 
 function ProductList({ addToCartFunction }) {
   const [items, setItems] = useState([]);
@@ -20,20 +21,23 @@ function ProductList({ addToCartFunction }) {
   const [random, setRandom] = useState(null);
   const [updatedSzures, setUpdatedSzures] = useState([]);
 
-
   useEffect(() => {
     const updatedSzures = {}; // alapértelmezett üres szűrők
 
+
     queryParams.forEach((value, key) => {
       updatedSzures[key] = value;
+      console.log("Sikeres " + key, value)
     });
 
-    // ha a queryParams üres, akkor használjuk az alapértelmezett üres szűrőket
-    if (Object.keys(updatedSzures).length === 0) {
-      setUpdatedSzures({}); // Üres objektum beállítása
-    } else {
-      setUpdatedSzures(updatedSzures);
-    }
+    console.log(updatedSzures)
+
+    // // ha a queryParams üres, akkor használjuk az alapértelmezett üres szűrőket
+    // if (Object.keys(updatedSzures).length === 0) {
+    //   setUpdatedSzures({}); // Üres objektum beállítása
+    // } else {
+    //   setUpdatedSzures(updatedSzures);
+    // }
 
     WatchesServices.postSearch(updatedSzures)
       .then(response => {
@@ -46,18 +50,13 @@ function ProductList({ addToCartFunction }) {
   }, [location.search]);
 
 
-
-
-  const searchParams = new URLSearchParams("key1=value1&key2=value2");
-  searchParams.forEach((key, value) => {
-    console.log(key, value)
-  })
-
   // console.log(queryParams.forEach((value, key) => {
   //   szures[key] = value;
   // }))
 
+
   console.log(updatedSzures)
+  console.log(random)
 
 
   const fetchData = () => {
@@ -92,6 +91,12 @@ function ProductList({ addToCartFunction }) {
         setIsLoading(false);
       });
   };
+
+  const updateSelectedBrands = (selectedBrands) => {
+    setUpdatedSzures(selectedBrands);
+  };
+
+  console.log(updatedSzures)
 
   const handleLoadMore = () => {
     fetchData();
@@ -144,7 +149,6 @@ function ProductList({ addToCartFunction }) {
           style={{ objectFit: "cover", height: "375px" }}
         />
         <div className="text-center">
-          <span className='text-danger text-uppercase'>Disclaimer: A szűrés még fejlesztés alatt áll, egyelőre undefined értékkel tér vissza.</span>
           <h1 className="custom-heading-font pt-4">All Watches</h1>
           <p
             className="small"
@@ -169,8 +173,16 @@ function ProductList({ addToCartFunction }) {
       <FilterSection />
 
       <section id="gallery">
-        <div className="container">
+        <div className="product-image-container container">
           <div className="row">
+            <div className="col-3 text-start" >
+              <FilterSection />
+            </div>
+            <div className="col-9 justify-content-center" style={{ "background-color": "red" }}>
+              
+            </div>
+
+
             {items.map((product) => (
 
               <div key={product.id} className="col-lg-4 mb-4 pointer">
@@ -216,7 +228,7 @@ function ProductList({ addToCartFunction }) {
       <section id="data-display">
         {/* Useref érték megjelenítése */}
         <p>Useref érték: {prevSzures.current && Object.keys(prevSzures.current).length > 0 ? JSON.stringify(prevSzures.current) : "Nincs adat"}</p>
-        <div>Név  {random && random.data[0].watchName}</div>
+        {/* <div>Név  {random && random.data[0].watchName}</div> */}
       </section>
 
       <div className="text-center">
