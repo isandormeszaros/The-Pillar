@@ -19,7 +19,7 @@
 @media (min-width: 320px) {
   .search-form-control,
   .search-button {
-    width: 200px !important;
+    width: 200px;
     justify-content: center;
     display: flex;
     margin-top: 10px;

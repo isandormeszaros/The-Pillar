@@ -1,31 +1,31 @@
 import { useState, useEffect } from "react";
 import WatchesServices from "../../../services/WatchesServices";
+import { Link } from "react-router-dom";
 import "./AllWatches.css"
 
 function AllWatches() {
-    const [allWatches, setAllWatches] = useState([]);
-    const images = "http://localhost:8080/images/";
+    const [data, setData] = useState([]);
+    const images = "http://localhost:8080/images/allwatches/";
 
     useEffect(() => {
         WatchesServices.getBrands()
-            .then((response) => setAllWatches(response.data))
+            .then((response) => setData(response.data))
             .catch((error) =>
                 console.error("Error occurred while fetching brands:", error)
             );
     }, []);
-    console.log(allWatches)
+
+    console.log();
 
     return (
         <div>
             <section id="header" className="text-center pb-5">
-                <img
-                    className="card-img-top"
-                    src={images + "allProductsThumbnail.jpg"}
-                    alt="Card image cap"
-                    style={{ objectFit: "cover", height: "375px" }}
-                />
+                <section className="allwatches-parallax">
+                    <div className="parallax-inner">
+                    </div>
+                </section>
                 <div className="text-center">
-                    <h1 className="custom-heading-font pt-4">Márkáink</h1>
+                    <h1 className="custom-heading-font pt-4">Márkáink ({data && data.length})</h1>
                     <p
                         className="small"
                         style={{
@@ -47,13 +47,28 @@ function AllWatches() {
 
             <div className="container">
                 <div className="row justify-content-start align-items-center">
-                    {allWatches.map((brand, index) => (
-                        <div className="col-3 col-lg-3 p-2 pointer h-50">
+                    {data.map((product, index) => (
+                        <div className="col-12 col-md-4 col-lg-3 p-2 pointer h-100">
                             <div key={index}>
-                                <div className="card">
-                                    <img src={images + "allProductsThumbnail.jpg"} alt="" />
-                                    <h1 className="custom-heading-font display-6">{brand.brand}</h1>
+
+                                <div className="card custom-border h-100">
+                                    <div className="view overlay">
+                                        <Link to={`/allbrands?watchName=${product.brand}`} className="text-decoration-none custom-p-font">
+                                            <img
+                                                className="card-img-top custom-brand-image rounded-0"
+                                                src={images + `${product.brand}` + "/1.avif"}
+                                                alt="Card"
+                                            />
+                                        </Link>
+                                        <a href="#!">
+                                            <div className="mask rgba-white-slight"></div>
+                                        </a>
+                                        <div className="card-body">
+                                            <h4 className="custom-card-title custom-heading-font mb-0">{product.brand}</h4>
+                                        </div>
+                                    </div>
                                 </div>
+                                {/* <Link to={`/allbrands?watchName=${brand.brand}`} className="text-decoration-none custom-p-font"> */}
                             </div>
                         </div>
                     ))}

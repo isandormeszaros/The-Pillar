@@ -104,6 +104,8 @@ function ProductList({ addToCartFunction }) {
     fetchData();
   };
 
+
+
   const filteredData = () => {
     WatchesServices.postSearch(updatedSzures)
       .then(response => {
@@ -160,7 +162,7 @@ function ProductList({ addToCartFunction }) {
 
   // const baseUrl = items ? "http://localhost:8080/images/" + product.id + "/1.jpg" : "";
 
-
+  console.log(random && random.data[0])
 
   return (
     <div>
@@ -207,7 +209,7 @@ function ProductList({ addToCartFunction }) {
 
             <div className="col-12 col-lg-10">
               <div className="row">
-                {items.map((product) => (
+                {random && random.data.map((product) => (
                   <div key={product.id} className="col-12 col-md-4 col-lg-3 px-1 mb-2">
                     <div className="card custom-border h-100">
                       <div className="view overlay">
@@ -232,11 +234,13 @@ function ProductList({ addToCartFunction }) {
                         <div
                           style={{
                             position: "absolute",
+                            justifyContent: "center",
+                            alignItems: "center",
                             top: "10px",
                             right: "10px",
                           }}
                         >
-                          <a href="/" className="btn btn-outline-danger border-0 btn-sm">
+                          <a href="/" className="btn btn-outline-dangerborder-0 btn-sm">
                             <i className="pi pi-heart"></i>
                           </a>
                         </div>

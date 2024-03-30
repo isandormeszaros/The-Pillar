@@ -1,0 +1,19 @@
+.allwatches-parallax {
+  background-image: url("http://localhost:8080/images/allwatches/allwatches.jpg");
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 50vh;
+  overflow: auto;
+}
+
+.parallax-inner {
+  padding: 10% 0;
+}
+
+.custom-brand-image {
+  width: auto;
+  height: 200px;
+  object-fit: cover;
+}

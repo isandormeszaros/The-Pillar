@@ -1,9 +1,6 @@
 var config = require("./dbconfig");
 const mysql = require("mysql");
 let pool = mysql.createPool(config);
-const fs = require("fs");
-const path = require("path");
-const { query } = require("express");
 
 // GET /allwatches - Az összes elérhető óramárka lekérdezése
 async function selectBrands() {
