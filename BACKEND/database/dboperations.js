@@ -261,14 +261,34 @@ async function selectByDialMaterials() {
   });
 }
 
-// Órák szűrése az oldalon
+
+// GET /allwatches/all/country - Óra gyártási helyének megjelenítése
+async function selectByCountries() {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      "SELECT country, watch_count FROM allcountrycount",
+      (error, elements) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(elements);
+        }
+      }
+    );
+  });
+}
+
 async function selectProductWhere(whereConditions) {
   let whereClause = ""; // Kezdetben üres string
   let values = [];
 
   if (whereConditions.watchName) {
-    whereClause += "WHERE watchName LIKE ?";
-    values.push("%" + whereConditions.watchName + "%");
+    let watchNames = whereConditions.watchName.split(", "); // Split the watchName string into an array
+    let watchNameClause = watchNames.map(() => "watchName LIKE ?").join(" OR "); // Create a clause for each watchName
+    whereClause += `WHERE (${watchNameClause})`; // Add the watchName clause to the SQL query
+    for (let name of watchNames) {
+      values.push("%" + name + "%"); // Add each watchName value to the values array
+    }
   }
 
   if (whereConditions.dialMaterial) {
@@ -299,6 +319,7 @@ async function selectProductWhere(whereConditions) {
     });
   });
 }
+
 
 // --- FELHASZNÁLÓK KEZELÉSE ---
 // Bejelentkezés
@@ -535,6 +556,7 @@ module.exports = {
   selectByResistances: selectByResistances,
   selectByBandWidthes: selectByBandWidthes,
   selectByDialMaterials: selectByDialMaterials,
+  selectByCountries: selectByCountries,
   getSignIn: getSignIn,
   getUserProfile: getUserProfile,
   createUser: createUser,

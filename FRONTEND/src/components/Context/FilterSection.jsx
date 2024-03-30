@@ -102,6 +102,7 @@ function FilterSection() {
   const [resistances, setResistances] = useState([]);
   const [bandWidthes, setBandWidthes] = useState([]);
   const [dialMaterials, setDialMaterials] = useState([]);
+  const [countries, setCountries] = useState([]);
 
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedDialColors, setSelectedDialColors] = useState([]);
@@ -112,6 +113,7 @@ function FilterSection() {
   const [selectedResistances, setSelectedResistances] = useState([]);
   const [selectedBandWidthes, setSelectedBandWidthes] = useState([]);
   const [selectedDialMaterials, setSelectedDialMaterials] = useState([]);
+  const [selectedCountries, setSelectedCountries] = useState([]);
 
   const [showAllBrands, setShowAllBrands] = useState(false);
   const [showAllDialColors, setShowAllDialColors] = useState(false);
@@ -122,6 +124,7 @@ function FilterSection() {
   const [showAllResistances, setShowAllResistances] = useState(false);
   const [showAllBandWidthes, setShowAllBandWidthes] = useState(false);
   const [showAllDialMaterials, setShowAllDialMaterials] = useState(false);
+  const [showAllCountries, setShowAllCountries] = useState(false);
 
   const [activeAccordion, setActiveAccordion] = useState(null);
 
@@ -208,6 +211,15 @@ function FilterSection() {
   useEffect(() => {
     WatchesServices.getDialMaterials()
       .then((response) => setDialMaterials(response.data))
+      .catch((error) =>
+        console.error("Hiba történt a számlap anyagok lekérdezésekor:", error)
+      );
+  }, []);
+
+  //   // CUSTOM HOOK FOR GETCOUNTRIES
+  useEffect(() => {
+    WatchesServices.getCountries()
+      .then((response) => setCountries(response.data))
       .catch((error) =>
         console.error("Hiba történt a számlap anyagok lekérdezésekor:", error)
       );
@@ -315,6 +327,16 @@ function FilterSection() {
     );
   };
 
+  //   // COUNTRY ACTUAL CHECKBOX IS SELECTED
+  const handleCountryChange = (event) => {
+    const { checked, value } = event.target;
+    setCountries(
+      checked
+        ? [...selectedCountries, value]
+        : selectedCountries.filter((country) => country !== value)
+    );
+  };
+
   //   // SHOW ALL BRANDS
   const toggleShowAllBrands = () => {
     setShowAllBrands(!showAllBrands);
@@ -360,6 +382,11 @@ function FilterSection() {
     setShowAllDialMaterials(!showAllDialMaterials);
   };
 
+  // SHOW ALL COUNTRIES
+  const toggleShowAllCountries = () => {
+    setShowAllCountries(!showAllCountries);
+  };
+
   useEffect(() => {
     const queryParams = queryString.parse(location.search);
     setQueryBrands(queryParams.queryBrands || '');
@@ -370,23 +397,23 @@ function FilterSection() {
     let fil = {};
     const queryParams = queryString.parse(location.search);
     if (selectedBrands.length > 0) {
-      fil['watchName'] = selectedBrands.join(",");
+      fil['watchName'] = selectedBrands.join(", ");
       setQueryBrands(queryParams.brand || '');
     }
     const searchQuery = queryString.stringify(fil);
     navigate(`/allbrands?${searchQuery}`);
     setQueryBrands(fil['watchName']);
 
-    function createSearchParams(params) {
-      return new URLSearchParams(Object.entries(params).flatMap(([key, values]) => Array.isArray(values) ? values.map((value) => [key, value]) : [[key, values]]));
-    }
+    // function createSearchParams(params) {
+    //   return new URLSearchParams(Object.entries(params).flatMap(([key, values]) => Array.isArray(values) ? values.map((value) => [key, value]) : [[key, values]]));
+    // }
 
     console.log(fil)
 
-    console.log(createSearchParams({
-      // foo: ["bar", "baz"],
-      ['watchName']: selectedBrands
-    }).toString());
+    // console.log(createSearchParams({
+    //   // foo: ["bar", "baz"],
+    //   ['watchName']: selectedBrands
+    // }).toString());
   };
 
 
@@ -405,6 +432,7 @@ function FilterSection() {
             <div key={index}>
               <input
                 type="checkbox"
+                className="mx-1"
                 id={brand.id}
                 value={brand.brand}
                 checked={selectedBrands.includes(brand.brand)}
@@ -431,6 +459,7 @@ function FilterSection() {
             <div key={index}>
               <input
                 type="checkbox"
+                className="mx-1"
                 id={dialColor.id}
                 value={dialColor.X}
                 checked={selectedDialColors.includes(dialColor.color)}
@@ -457,6 +486,7 @@ function FilterSection() {
             <div key={index}>
               <input
                 type="checkbox"
+                className="mx-1"
                 id={date.id}
                 value={date.X}
                 checked={selectedDates.includes(date.date)}
@@ -476,6 +506,33 @@ function FilterSection() {
       ),
     },
     {
+      title: "Gyártás helye",
+      content: (
+        <>
+          {countries.slice(0, showAllCountries ? countries.length : 3).map((countries, index) => (
+            <div key={index}>
+              <input
+                type="checkbox"
+                className="mx-1"
+                id={countries.id}
+                value={countries.X}
+                checked={selectedCountries.includes(countries.country)}
+                onChange={handleCountryChange}
+              />
+              <label htmlFor={countries.id} className="d-inline">
+                {countries.country} ({countries.watch_count})
+              </label>
+            </div>
+          ))}
+          {!showAllCountries && (
+            <a onClick={toggleShowAllCountries} className="filter-btn">
+              <i className="pi pi-plus"></i> Összes megtekintése
+            </a>
+          )}
+        </>
+      ),
+    },
+    {
       title: "Tok anyag",
       content: (
         <>
@@ -483,6 +540,7 @@ function FilterSection() {
             <div key={index}>
               <input
                 type="checkbox"
+                className="mx-1"
                 id={material.id}
                 value={material.X}
                 checked={selectedCaseMaterials.includes(material.material)}
@@ -509,6 +567,7 @@ function FilterSection() {
             <div key={index}>
               <input
                 type="checkbox"
+                className="mx-1"
                 id={material.id}
                 value={material.X}
                 checked={selectedStrapMaterials.includes(material.material)}
@@ -535,6 +594,7 @@ function FilterSection() {
             <div key={index}>
               <input
                 type="checkbox"
+                className="mx-1"
                 id={movement.id}
                 value={movement.X}
                 checked={selectedMovements.includes(movement.movement)}
@@ -561,6 +621,7 @@ function FilterSection() {
             <div key={index}>
               <input
                 type="checkbox"
+                className="mx-1"
                 id={resistance.id}
                 value={resistance.X}
                 checked={selectedResistances.includes(resistance.resistance)}
@@ -587,6 +648,7 @@ function FilterSection() {
             <div key={index}>
               <input
                 type="checkbox"
+                className="mx-1"
                 id={width.id}
                 value={width.X}
                 checked={selectedBandWidthes.includes(width.band_width)}
@@ -613,6 +675,7 @@ function FilterSection() {
             <div key={index}>
               <input
                 type="checkbox"
+                className="mx-1"
                 id={material.id}
                 value={material.X}
                 checked={selectedDialMaterials.includes(material.material)}
@@ -633,13 +696,36 @@ function FilterSection() {
     },
   ];
 
+  //   return (
+  //     <section id="filter-section">
+  //       {accordionItems.map((item, index) => (
+  //         <div key={index} className="py-1 custom-p-font text-break">
+  //           <div className="accordion-title filter-title" onClick={() => toggleAccordion(index)}>
+  //             {item.title}
+  //           </div>
+  //           {activeAccordion === index && (
+  //             <div className="accordion-content">
+  //               {item.content}
+  //             </div>
+  //           )}
+  //         </div>
+  //       ))}
+  //       <button className="handle-search custom-p-font" onClick={handleSearch}>Szűrés<i className="pi pi-filter pi-product"></i></button>
+  //       <button className="handle-search custom-p-font custom-product-delete" onClick={handleSearch}>Törlés<i className="pi pi-filter-slash pi-product"></i></button>
+  //     </section>
+  //   );
+  // }
+
   return (
     <section id="filter-section">
-      <h2 className="custom-heading-font">Szűrés</h2>
       {accordionItems.map((item, index) => (
-        <div key={index}>
-          <div className="accordion-title filter-title" onClick={() => toggleAccordion(index)}>
-            {item.title}
+        <div key={index} className="py-1 custom-p-font text-break">
+          <div className="accordion-title filter-title d-flex align-items-center" onClick={() => toggleAccordion(index)}>
+            <span>{item.title}</span>
+            <i
+              className={`pi pi-${activeAccordion === index ? 'minus' : 'plus'}`}
+              style={{ marginLeft: 'auto' }}
+            ></i>
           </div>
           {activeAccordion === index && (
             <div className="accordion-content">
@@ -648,7 +734,8 @@ function FilterSection() {
           )}
         </div>
       ))}
-      <button className="handleSearch" onClick={handleSearch}>Keresés</button>
+      <button className="handle-search custom-p-font" onClick={handleSearch}>Szűrés<i className="pi pi-filter pi-product"></i></button>
+      <button className="handle-search custom-p-font custom-product-delete" onClick={handleSearch}>Törlés<i className="pi pi-filter-slash pi-product"></i></button>
     </section>
   );
 }

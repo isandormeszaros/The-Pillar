@@ -127,6 +127,13 @@ router.get("/all/dialmaterials", (req, res) => {
     .catch((error) => console.log(error));
 });
 
+// GET /allwatches/all/country - Óra gyártási helyének megjelenítése
+router.get("/all/countries", (req, res) => {
+  db.selectByCountries()
+    .then((adat) => res.json(adat))
+    .catch((error) => console.log(error));
+});
+
 // GET /allwatches/orders - Rendelés leadása
 router.post("/orders", (req, res) => {
   const orders = req.body;

@@ -85,6 +85,11 @@ const getDialMaterials = () => {
   return http.get("/allwatches/all/dialmaterials");
 };
 
+// GET COUNTRIES FOR COMPOUND FILTERS
+const getCountries = () => {
+  return http.get("/allwatches/all/countries");
+};
+
 const postSearch = (filter) => {
   return http.post(`/allwatches/filter`, filter)
 };
@@ -127,6 +132,7 @@ const WatchesServices = {
   getResistances,
   getBandWidthes,
   getDialMaterials,
+  getCountries,
   getEmail,
   getOtp,
   postSearch,

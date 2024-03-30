@@ -1,0 +1,54 @@
+.parallax {
+  background-image: url("http://localhost:8080/images/allbrands/5.jpg");
+  background-attachment: fixed;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 50vh;
+  overflow: auto;
+}
+
+.parallax-inner {
+  padding: 10% 0;
+}
+
+.custom-card-title {
+  font-size: var(--h2-font-size);
+}
+
+.custom-product-link:hover {
+  color: var(--dark-gold);
+}
+
+.product-default-button {
+  background: transparent;
+  border: 0.8px solid var(--paragraph-color);
+  padding: 15px;
+  color: var(--paragraph-color);
+}
+
+.product-default-button:hover {
+  border: 0.8px solid var(--dark-gold);
+}
+
+.custom-price {
+  font-size: var(--h3-font-size);
+}
+
+@media screen and (max-width: 480px) {
+  .product-default-button {
+    min-width: 230px !important;
+  }
+}
+
+@media screen and (min-width: 481px) {
+  .product-default-button {
+    min-width: 230px;
+  }
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1281px) {
+  .product-default-button {
+    min-width: 0;
+  }
+}

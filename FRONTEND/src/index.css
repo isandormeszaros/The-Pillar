@@ -140,6 +140,11 @@ button {
   color: var(--dark-gold);
 }
 
+.custom-border {
+  border: 0.8px solid var(--ultra-light-grey);
+  border-radius: 0px !important;
+}
+
 /*========== Button ==========*/
 .default-button {
   display: inline-flex;
@@ -163,22 +168,6 @@ button {
   transition: all 0.3s linear;
   box-sizing: border-box !important;
   cursor: pointer;
-}
-
-.filter-btn,
-.filter-title {
-  font-weight: 300;
-  font-size: var(--smaller-font-size);
-  line-height: 1.2;
-  letter-spacing: 0.2em;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.filter-title {
-  font-size: var(--normal-font-size);
 }
 
 .default-button:hover {
@@ -244,7 +233,7 @@ button {
   z-index: 0;
 }
 
-.form-control:focus{
+.form-control:focus {
   border-color: var(--dark-gold) !important;
   box-shadow: 0 0 0 0.2rem rgba(236, 177, 89, 0.25) !important;
 }

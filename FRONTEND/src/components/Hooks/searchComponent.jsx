@@ -12,9 +12,9 @@ const SearchComponent = () => {
   };
 
   return (
-    <div className="search-container container px-4 d-flex justify-content-center">
+    <div className="search-container container px-4 pb-5 d-flex justify-content-center">
       <div className="row gx-1 ">
-        <div className="col d-flex justify-content-md-end">
+        <div className="col d-flex justify-content-center justify-content-md-end">
           <input
             className="form-control search-form-control"
             type="text"
@@ -23,7 +23,7 @@ const SearchComponent = () => {
             onChange={(e) => setKeyword(e.target.value)}
           />
         </div>
-        <div className="col d-flex justify-content-md-start">
+        <div className="col d-flex justify-content-center justify-content-md-start">
           <button onClick={handleSearch} className="default-button search-button">
             <i className="pi pi-search"></i>
           </button>

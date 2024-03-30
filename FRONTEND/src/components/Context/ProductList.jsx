@@ -5,7 +5,7 @@ import FilterSection from "./FilterSection";
 import locales from "../../utils/locales.json";
 import { Link, useLocation } from 'react-router-dom';
 import { toast } from "react-toastify";
-import { useModal } from "@chakra-ui/react";
+import "./ProductList.css"
 
 function ProductList({ addToCartFunction }) {
   const [items, setItems] = useState([]);
@@ -92,6 +92,8 @@ function ProductList({ addToCartFunction }) {
       });
   };
 
+
+
   const updateSelectedBrands = (selectedBrands) => {
     setUpdatedSzures(selectedBrands);
   };
@@ -102,9 +104,26 @@ function ProductList({ addToCartFunction }) {
     fetchData();
   };
 
+  const filteredData = () => {
+    WatchesServices.postSearch(updatedSzures)
+      .then(response => {
+        setRandom(response);
+        console.log("Sikeres");
+      })
+      .catch(error => {
+        console.error("Hiba történt", error);
+      });
+  };
+
+
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (Object.keys(updatedSzures).length > 0) {
+      filteredData();
+    } else {
+      fetchData();
+    }
+  }, [updatedSzures]);
+
 
 
   // Előző szures paraméter állapotának tárolása előző érték változóban
@@ -139,15 +158,23 @@ function ProductList({ addToCartFunction }) {
     toast.success("Termék sikeresen hozzáadva a kosárhoz!");
   };
 
+  // const baseUrl = items ? "http://localhost:8080/images/" + product.id + "/1.jpg" : "";
+
+
+
   return (
     <div>
       <section id="header" className="text-center pb-5">
-        <img
+        <section className="parallax">
+          <div className="parallax-inner">
+          </div>
+        </section>
+        {/* <img
           className="card-img-top"
-          src={images + "allProductsThumbnail.jpg"}
+          src={images + "allbrands/5.jpg"}
           alt="Card image cap"
           style={{ objectFit: "cover", height: "375px" }}
-        />
+        /> */}
         <div className="text-center">
           <h1 className="custom-heading-font pt-4">All Watches</h1>
           <p
@@ -170,65 +197,61 @@ function ProductList({ addToCartFunction }) {
       </section>
 
       <SearchComponent />
-      <FilterSection />
 
       <section id="gallery">
-        <div className="product-image-container container">
+        <div className="product-image-container container" style={{ maxWidth: "95%" }}>
           <div className="row">
-            <div className="col-3 text-start" >
+            <div className="col-12 text-start col-lg-2 pb-4">
               <FilterSection />
             </div>
-            <div className="col-9 justify-content-center" style={{ "background-color": "red" }}>
-              
-            </div>
 
-
-            {items.map((product) => (
-
-              <div key={product.id} className="col-lg-4 mb-4 pointer">
-                <div className="card border">
-                  <div className="view overlay">
-                    <img
-                      className="card-img-top"
-                      src={images + "test.jpg"}
-                      alt="Card"
-                    />
-                    <a href="#!">
-                      <div className="mask rgba-white-slight"></div>
-                    </a>
-                    <div className="card-body">
-                      <h4 className="custom-card-title">{product.watchName}</h4>
-                      <p className="text-muted">
-                        Price:{" "}
-                        {product.price.toLocaleString("en-US", locales["en-US"].currencyFormat)}
-                      </p>
-                      <p className="card-text text-muted">ID: {product.id}</p>
-                      <button onClick={() => addToCart(product)} className="default-button"><i className="pi pi-cart-plus" style={{ fontSize: "1rem" }}></i> Kosárba</button>
-                      <Link to={`/allwatches/watches/${product.id}`}>Részletek</Link>
-                    </div>
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: "10px",
-                        right: "10px",
-                      }}
-                    >
-                      <a href="/" className="btn btn-outline-danger btn-sm">
-                        <i className="pi pi-heart"></i>
-                      </a>
+            <div className="col-12 col-lg-10">
+              <div className="row">
+                {items.map((product) => (
+                  <div key={product.id} className="col-12 col-md-4 col-lg-3 px-1 mb-2">
+                    <div className="card custom-border h-100">
+                      <div className="view overlay">
+                        <Link to={`/allwatches/watches/${product.id}`} className="text-decoration-none custom-p-font">
+                          <img
+                            className="card-img-top rounded-0"
+                            src={`http://localhost:8080/images/${product.id}/10001.jpg`}
+                            alt="Card"
+                          />
+                        </Link>
+                        <a href="#!">
+                          <div className="mask rgba-white-slight"></div>
+                        </a>
+                        <div className="card-body">
+                          <h4 className="custom-card-title custom-heading-font mb-0">{product.watchName}</h4>
+                          <p className="text-muted mb-0">-</p>
+                          <p className="text-muted mb-3 custom-price">
+                            {product.price.toLocaleString("en-US", locales["en-US"].currencyFormat)}
+                          </p>
+                          <button onClick={() => addToCart(product)} className="default-button product-default-button"><i className="pi pi-cart-plus" style={{ fontSize: "1rem" }}></i> Kosárba</button>
+                        </div>
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "10px",
+                            right: "10px",
+                          }}
+                        >
+                          <a href="/" className="btn btn-outline-danger border-0 btn-sm">
+                            <i className="pi pi-heart"></i>
+                          </a>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </section>
 
       <section id="data-display">
-        {/* Useref érték megjelenítése */}
         <p>Useref érték: {prevSzures.current && Object.keys(prevSzures.current).length > 0 ? JSON.stringify(prevSzures.current) : "Nincs adat"}</p>
-        {/* <div>Név  {random && random.data[0].watchName}</div> */}
       </section>
 
       <div className="text-center">
@@ -249,6 +272,6 @@ function ProductList({ addToCartFunction }) {
       </div>
     </div>
   );
-}
+};
 
 export default ProductList;
