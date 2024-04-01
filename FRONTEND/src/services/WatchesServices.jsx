@@ -90,6 +90,14 @@ const getCountries = () => {
   return http.get("/allwatches/all/countries");
 };
 
+const getFavouriteById = (id) => {
+  return http.get(`/allwatches/favourite/${id}`);
+};
+
+const deleteFavourite = () => {
+  return http.delete(`/favourite/delete`);
+};
+
 const postSearch = (filter) => {
   return http.post(`/allwatches/filter`, filter)
 };
@@ -133,6 +141,8 @@ const WatchesServices = {
   getBandWidthes,
   getDialMaterials,
   getCountries,
+  getFavouriteById,
+  deleteFavourite,
   getEmail,
   getOtp,
   postSearch,

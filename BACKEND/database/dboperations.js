@@ -258,7 +258,6 @@ async function selectByDialMaterials() {
   });
 }
 
-
 // GET /allwatches/all/country - Óra gyártási helyének megjelenítése
 async function selectByCountries() {
   return new Promise((resolve, reject) => {
@@ -269,6 +268,73 @@ async function selectByCountries() {
           reject(error);
         } else {
           resolve(elements);
+        }
+      }
+    );
+  });
+}
+
+// GET /allwatches/favourite - Kedvenc termékek megjelenítése
+async function selectByFavourite(userId) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      "SELECT * FROM allfavouriteview WHERE  userId = ?",
+      [userId],
+      (error, elements) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(elements);
+        }
+      }
+    );
+  });
+}
+
+async function checkProductInFavourites(userIdFK, productIdFK) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      "SELECT * FROM watches.favourite WHERE userIdFK = ? AND productIdFK = ?",
+      [userIdFK, productIdFK],
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+}
+
+// POST /allwatches/favourite/add/2 - Kedvenc termékek hozzáadása
+async function addToFavourite(userIdFK, productIdFK) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      "INSERT INTO watches.favourite (userIdFK, productIdFK ) VALUES (?, ?)",
+      [userIdFK, productIdFK],
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+}
+
+// DELETE /allwatches/favourite/delete/2 - Kedvenc termékek törlése
+async function deleteByFavourite(userIdFK, productIdFK) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      "DELETE FROM watches.favourite WHERE userIdFK = ? AND productIdFK = ?",
+      [userIdFK, productIdFK],
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
         }
       }
     );
@@ -316,7 +382,6 @@ async function selectProductWhere(whereConditions) {
     });
   });
 }
-
 
 // --- FELHASZNÁLÓK KEZELÉSE ---
 // Bejelentkezés
@@ -554,6 +619,10 @@ module.exports = {
   selectByBandWidthes: selectByBandWidthes,
   selectByDialMaterials: selectByDialMaterials,
   selectByCountries: selectByCountries,
+  selectByFavourite: selectByFavourite,
+  addToFavourite: addToFavourite,
+  checkProductInFavourites: checkProductInFavourites,
+  deleteByFavourite: deleteByFavourite,
   getSignIn: getSignIn,
   getUserProfile: getUserProfile,
   createUser: createUser,

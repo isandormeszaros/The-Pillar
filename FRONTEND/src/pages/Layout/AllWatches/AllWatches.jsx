@@ -11,11 +11,9 @@ function AllWatches() {
         WatchesServices.getBrands()
             .then((response) => setData(response.data))
             .catch((error) =>
-                console.error("Error occurred while fetching brands:", error)
+                console.error("Error:", error)
             );
     }, []);
-
-    console.log();
 
     return (
         <div>

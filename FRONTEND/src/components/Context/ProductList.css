@@ -37,18 +37,18 @@
 
 @media screen and (max-width: 480px) {
   .product-default-button {
-    min-width: 230px !important;
+    min-width: 200px !important;
   }
 }
 
 @media screen and (min-width: 481px) {
   .product-default-button {
-    min-width: 230px;
+    min-width: 200px;
   }
 }
 
-@media screen and (min-width: 1024px) and (max-width: 1281px) {
+@media screen and (min-width: 1024px) {
   .product-default-button {
-    min-width: 0;
+    min-width: 230px;
   }
 }

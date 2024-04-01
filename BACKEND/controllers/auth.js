@@ -52,6 +52,7 @@ router.post("/register", (req, res) => {
 // Delete account
 router.delete("/delete/:id", (req, res) => {
   const userId = req.params.id;
+  
   DB.deleteUser(userId)
     .then((data) => {
       if (data.affectedRows == 0)
