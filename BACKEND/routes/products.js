@@ -158,41 +158,54 @@ router.post("/favourite/check", (req, res) => {
     .catch((error) => res.send(error));
 });
 
-// POST /allwatches/favourite/add/2 - Kedvenc termékek hozzáadása
+//  POST /allwatches/favourite/add/2 - Kedvenc termékek hozzáadása
 // router.post("/favourite/add", async (req, res) => {
 //   const { userIdFK, productIdFK } = req.body;
 
-//   // Ellenőrizd, hogy a termék már szerepel-e a kedvencek között
-//   const isProductInFavourites = await checkProductInFavourites(
-//     userIdFK,
-//     productIdFK
-//   );
+//   try {
+//     const isProductInFavourites = await checkProductInFavourites(userIdFK, productIdFK);
 
-//   if (isProductInFavourites) {
-//     res
-//       .status(400)
-//       .json({ message: "A termék már szerepel a kedvencek között." });
-//   } else {
-//     // Ha a termék még nincs a kedvencek között, akkor add hozzá
-//     db.addToFavourite(userIdFK, productIdFK)
-//       .then((adat) => res.json(adat))
-//       .catch((error) => res.send(error));
+//     if (isProductInFavourites) {
+//       res.status(400).json({ message: "A termék már szerepel a kedvencek között." });
+//     } else {
+//       await addToFavourite(userIdFK, productIdFK);
+//       res.json({ message: "A termék hozzáadva a kedvencek közé." });
+//     }
+//   } catch (error) {
+//     res.status(500).send(error);
 //   }
 // });
-//EZT A TERMÉKET EGYSZER MÁR HOZZÁADTA
 
-// DELETE /allwatches/favourite/delete/2 - Kedvenc termékek törlése
-router.delete("/favourite/delete", (req, res) => {
-  const { userIdFK, productIdFK } = req.body;
+// DELETE /allwatches/favourite/delete - Kedvenc termékek törlése
+router.delete("/favourite/delete/:id", (req, res) => {
+  const { id } = req.params;
+  const { userId } = req.body;
 
-  db.deleteByFavourite(userIdFK, productIdFK)
+  db.deleteByFavourite(id, userId)
     .then((data) => {
-      if (data.affectedRows == 0)
-        res.status(404).send("Nincs ilyen rekord:");
+      if (data.affectedRows == 0) res.status(404).send("Nincs ilyen rekord!");
       else
         return res.json({
           success: true,
           message: "Termék sikeresen törölve a kedvencek közül",
+        });
+    })
+    .catch((error) => {
+      res.send(error);
+    });
+});
+
+// DELETE /allwatches/favourite/alldelete- Összes kedvenc termék törlése
+router.delete("/favourite/all/delete", (req, res) => {
+  const userId = req.body.userId;
+
+  db.deleteAllFavourites(userId )
+    .then((data) => {
+      if (data.affectedRows == 0) res.status(404).send("Nincs ilyen rekord!");
+      else
+        return res.json({
+          success: true,
+          message: "Összes termék sikeresen törölve a kedvencek közül",
         });
     })
     .catch((error) => {

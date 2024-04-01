@@ -300,7 +300,7 @@ async function checkProductInFavourites(userIdFK, productIdFK) {
         if (error) {
           reject(error);
         } else {
-          resolve(result);
+          resolve(result.length > 0);
         }
       }
     );
@@ -325,11 +325,28 @@ async function addToFavourite(userIdFK, productIdFK) {
 }
 
 // DELETE /allwatches/favourite/delete/2 - Kedvenc termékek törlése
-async function deleteByFavourite(userIdFK, productIdFK) {
+async function deleteByFavourite(id, userId) {
   return new Promise((resolve, reject) => {
     pool.query(
-      "DELETE FROM watches.favourite WHERE userIdFK = ? AND productIdFK = ?",
-      [userIdFK, productIdFK],
+      "DELETE FROM watches.favourite WHERE id = ? and userIdFK = ?",
+      [id, userId],
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+}
+
+// DELETE /allwatches/favourite/delete/all - Összes kedvenc termék törlése
+async function deleteAllFavourites(userId) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      "DELETE FROM watches.favourite WHERE userIdFK = ?",
+      [userId],
       (error, result) => {
         if (error) {
           reject(error);
@@ -623,6 +640,7 @@ module.exports = {
   addToFavourite: addToFavourite,
   checkProductInFavourites: checkProductInFavourites,
   deleteByFavourite: deleteByFavourite,
+  deleteAllFavourites: deleteAllFavourites,
   getSignIn: getSignIn,
   getUserProfile: getUserProfile,
   createUser: createUser,

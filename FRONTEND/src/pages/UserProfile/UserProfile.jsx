@@ -6,23 +6,24 @@ import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'
 import WatchesServices from "../../services/WatchesServices";
 import "./UserProfile.css"
+import CustomModal from "./CustomModal";
 
 function UserProfile({ islogged, setIslogged }) {
   const [response, setResponse] = useState({});
   const [openModal, setOpenModal] = useState(false);
   const [userIdToDelete, setUserIdToDelete] = useState(null);
+  const [msg, setMsg] = useState("");
+  const navigate = useNavigate();
+  const [data, setData] = useState([]);
+  const [favourite, setFavourite] = useState([]);
+  const [favouriteToDelete, setFavouriteToDelete] = useState([]);
+  const images = "http://localhost:8080/images/";
   const [userUpdate, setUserUpdate] = useState({
     name: "",
     userEmail: "",
     userPhone: "",
     userAddress: ""
   })
-  const [msg, setMsg] = useState("");
-  const navigate = useNavigate();
-  const [data, setData] = useState([]);
-  const [favourite, setFavourite] = useState([]);
-  const images = "http://localhost:8080/images/";
-
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -70,7 +71,6 @@ function UserProfile({ islogged, setIslogged }) {
         .then((response) => {
           if (response.status === 200) {
             toast.success("Felhasználói adatok sikeresen frissítve");
-            // Válasz alapján lehet esetleg további műveleteket végezni, például frissíteni a felhasználói adatokat a frontend oldalon
           } else {
             toast.error("Hiba történt az adatok frissítése során");
           }
@@ -118,6 +118,12 @@ function UserProfile({ islogged, setIslogged }) {
     setOpenModal(true);
   }
 
+  const handleDeleteAllFavouriteConfirmation = () => {
+    const userId = response.data && response.data[0].id;
+
+    setFavouriteToDelete(userId)
+    setOpenModal(true);
+  };
 
   const handleDelete = (id) => {
     http.delete(`/auth/delete/${id}`)
@@ -141,27 +147,62 @@ function UserProfile({ islogged, setIslogged }) {
       })
   };
 
-  const userAddress = response.data && response.data.length > 0 ? response.data[0].userAddress : '';
+  // const userAddress = response.data && response.data.length > 0 ? response.data[0].userAddress : '';
 
-  console.log(userAddress);
+  const userId = response.data && response.data[0].id;
 
   useEffect(() => {
-    const userId = response.data && response.data[0].id;
-
-    WatchesServices.getFavouriteById(130)
+    WatchesServices.getFavouriteById(userId)
       .then((response) => setFavourite(response.data))
       .catch((error) =>
         console.error("Error:", error)
       );
-  }, []);
+  }, [userId]);
 
-  console.log(response.data)
-  console.log(favourite);
 
-  // console.log(response.data && response.data.product);
+  const handleDeleteFavourite = (id, userId) => {
+    http.delete(`/allwatches/favourite/delete/${id}`, { data: { userId } })
+      .then((response) => {
+        if (response.status === 200) {
+          toast.success("Sikeres törölve a kedvencek közül");
+          setFavourite(prevFavourite => prevFavourite.filter(item => item.id !== id));
+        } else {
+          toast.error("Hiba történt a törlés során");
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Hiba a szerverrel való kommunikáció során");
+        }
+      })
+  };
 
-  console.log(favourite && favourite[0])
-  console.log(images + 1 + "/10001.jpg");
+  const handleDeleteAllFavourite = (userId) => {
+    http.delete(`/allwatches/favourite/all/delete`, { data: { userId } })
+      .then((response) => {
+        if (response.status === 200) {
+          setOpenModal(false); 
+          toast.success("Összes termék sikeresen törölve a kedvencek közül");
+          setFavourite(prevFavourite => prevFavourite.filter(item => item.userId !== userId));
+        } else {
+          setOpenModal(false); 
+          toast.error("Hiba történt a törlés során");
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          setOpenModal(false); 
+          toast.error(error.response.data.message);
+        } else {
+          setOpenModal(false); 
+          toast.error("Hiba a szerverrel való kommunikáció során");
+        }
+      })
+  };
+
+  console.log(favouriteToDelete);
 
   return (
     <div>
@@ -274,87 +315,90 @@ function UserProfile({ islogged, setIslogged }) {
                         </div>
                       </div>
                     </div>
-
-
                   </div>
+
                   <div className="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
                     <h1>Section</h1>
                   </div>
-                  <div className="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
-                    <h1 className="custom-heading-font">Kedvenceim ({favourite.length})</h1>
-                    <div className="container px-5">
-                      <div className="d-flex flex-row-reverse bd-highlight">
-                        <div className="py-2 bd-highlight error pointer">Összes törlése</div>
-                      </div>
 
-                      <div className="row text-center">
-                        {favourite && Array.isArray(favourite) && favourite.length > 0 && (
-                          favourite.map((item, index) => (
-                            <div key={index} className="col-12 col-md-4 col-lg-3 px-1 mb-2">
-                              <div className="card custom-border">
-                                <div className="view overlay">
-                                  <img
-                                    className="card-img-top rounded-0"
-                                    src={images + item.brandId + "/10001.jpg"}
-                                    alt="Card"
-                                  />
-                                  <a href="#!">
-                                    <div className="mask rgba-white-slight"></div>
-                                  </a>
-                                  <div className="card-body">
-                                    <h4 className="custom-card-title custom-heading-font mb-0">{item.product}</h4>
-                                    <p className="text-muted m-0">-</p>
-                                    <Link to={"/allwatches/watches/" + item.brandId} className="default-button product-default-button"><i className="pi pi-info-circle" style={{ fontSize: "1rem" }}></i> Részletek</Link>
-                                  </div>
-                                  <div
-                                    style={{
-                                      position: "absolute",
-                                      justifyContent: "center",
-                                      alignItems: "center",
-                                      top: "10px",
-                                      right: "10px",
-                                    }}
-                                  >
-                                    <a href="/" className="btn btn-outline-dangerborder-0 btn-sm">
-                                      <i className="pi pi-trash text-warning"></i>
-                                    </a>
+                  <div className="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+                    {favourite.length === 0 ? (
+                      <div className="container py-5">
+                        <div className="row">
+                          <div className="col-12">
+                            <h1 className="custom-heading-font py-4">Önnek jelenleg nincs kedvenc terméke</h1>
+                            <Link to={"/allbrands"} className="default-button product-default-button favourite-button">Keresés<i className="pi pi-arrow-right" style={{ fontSize: ".8rem" }}></i></Link>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <div className="container px-5">
+                          <h1 className="custom-heading-font">Kedvenceim ({favourite.length})</h1>
+                          <div className="d-flex flex-row-reverse bd-highlight">
+                            <button className="py-2 bd-highlight error pointer" onClick={() => handleDeleteAllFavouriteConfirmation(data.userId)}>Összes törlése</button>
+                          </div>
+
+                          <div className="row text-center">
+                            {favourite && favourite[0] !== undefined && (
+                              favourite.map((item, index) => (
+                                <div key={index} className="col-12 col-md-4 col-lg-3 px-1 mb-2">
+                                  <div className="card custom-border">
+                                    <div className="view overlay">
+                                      <img
+                                        className="card-img-top rounded-0"
+                                        src={images + item.brandId + "/10001.jpg"}
+                                        alt="Card"
+                                      />
+                                      <a href="#!">
+                                        <div className="mask rgba-white-slight"></div>
+                                      </a>
+                                      <div className="card-body">
+                                        <h4 className="custom-card-title custom-heading-font mb-0">{item.product}</h4>
+                                        <p className="text-muted m-0">-</p>
+                                        <Link to={"/allwatches/watches/" + item.brandId} className="default-button product-default-button favourite-button"><i className="pi pi-info-circle" style={{ fontSize: "1rem" }}></i> Részletek</Link>
+                                      </div>
+                                      <div
+                                        style={{
+                                          position: "absolute",
+                                          justifyContent: "center",
+                                          alignItems: "center",
+                                          top: "10px",
+                                          right: "10px",
+                                        }}
+                                      >
+                                        <button className="btn btn-outline-dangerborder-0 btn-sm" onClick={() => handleDeleteFavourite(item.id, userId)}>
+                                          <i className="pi pi-trash text-warning"></i>
+                                        </button>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            </div>
-                          ))
-                        )}
+                              ))
+                            )}
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
 
-                {openModal && userIdToDelete === user.id && (
-                  <div className="modal-background">
-                    <div className="modal-container">
-                      <div className="modal-close-btn">
-                        <button onClick={() => setOpenModal(false)}><i className="pi pi-times"></i></button>
-                      </div>
-                      <div className="modal-title">
-                        <h1 className="custom-heading-font">Biztos benne, hogy törölni szeretné a fiókját?</h1>
-                      </div>
-                      <div className="modal-body">
-                        <p className="custom-p-font">A művelet nem visszafordítható.</p>
-                      </div>
-                      <div className="modal-footer">
-                        <button className="default-button profile-icon-button"
-                          onClick={() => {
-                            setOpenModal(false);
-                          }}
-                          id="cancelBtn"
-                        >
-                          <i className="pi pi-arrow-left"></i>Mégse
-                        </button>
-                        <button className="default-button default-delete-button profile-icon-button" onClick={() => handleDelete(user.id)}><i className="pi pi-trash"></i>Törlés</button>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                <CustomModal
+                  isOpen={openModal}
+                  onClose={() => setOpenModal(false)}
+                  title="Biztos benne, hogy törölni szeretné a fiókját?"
+                  content="A művelet nem visszafordítható."
+                  onConfirm={() => handleDelete(userIdToDelete)}
+                />
+
+                <CustomModal
+                  isOpen={openModal}
+                  onClose={() => setOpenModal(false)}
+                  title="Biztos benne, hogy törölni szeretné az összes kedvenc terméket?"
+                  content="A művelet nem visszafordítható."
+                  onConfirm={() => handleDeleteAllFavourite(favouriteToDelete)}
+                  confirmText="Törlés"
+                />
               </div>
             ))
           ) : (
