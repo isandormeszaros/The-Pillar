@@ -164,7 +164,6 @@ function ProductList({ addToCartFunction }) {
   const userId = localStorage.getItem('userId');
 
   const handleAddToFavoriteClick = (productId) => {
-    console.log(userId, productId);
     handleAddToFavorite(productId);
   };
 
@@ -259,7 +258,6 @@ function ProductList({ addToCartFunction }) {
                           }}
                         >
                           <button className="btn btn-outline-danger border-0 btn-sm" onClick={() => handleAddToFavoriteClick(product.id)}>
-
                             <i className="pi pi-heart"></i>
                           </button>
                         </div>

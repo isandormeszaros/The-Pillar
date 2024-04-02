@@ -10,7 +10,6 @@ import CustomModal from "./CustomModal";
 
 function UserProfile({ islogged, setIslogged }) {
   const [response, setResponse] = useState({});
-  const [openModal, setOpenModal] = useState(false);
   const [userIdToDelete, setUserIdToDelete] = useState(null);
   const [msg, setMsg] = useState("");
   const navigate = useNavigate();
@@ -25,6 +24,9 @@ function UserProfile({ islogged, setIslogged }) {
     userPhone: "",
     userAddress: ""
   })
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [openDeleteAllFavouriteModal, setOpenDeleteAllFavouriteModal] = useState(false);
+
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -118,14 +120,14 @@ function UserProfile({ islogged, setIslogged }) {
 
   const handleDeleteConfirmation = (id) => {
     setUserIdToDelete(id);
-    setOpenModal(true);
+    setOpenDeleteModal(true);
   }
 
   const handleDeleteAllFavouriteConfirmation = () => {
     const userId = response.data && response.data[0].id;
 
     setFavouriteToDelete(userId)
-    setOpenModal(true);
+    setOpenDeleteAllFavouriteModal(true);
   };
 
   const handleDelete = (id) => {
@@ -152,7 +154,7 @@ function UserProfile({ islogged, setIslogged }) {
 
   // const userAddress = response.data && response.data.length > 0 ? response.data[0].userAddress : '';
 
-  
+
 
   useEffect(() => {
     WatchesServices.getFavouriteById(userId)
@@ -190,24 +192,26 @@ function UserProfile({ islogged, setIslogged }) {
     http.delete(`/allwatches/favourite/all/delete`, { data: { userId } })
       .then((response) => {
         if (response.status === 200) {
-          setOpenModal(false);
+          setOpenDeleteAllFavouriteModal(false);
           toast.success("Összes termék sikeresen törölve a kedvencek közül");
           setFavourite(prevFavourite => prevFavourite.filter(item => item.userId !== userId));
         } else {
-          setOpenModal(false);
+          setOpenDeleteAllFavouriteModal(false);
           toast.error("Hiba történt a törlés során");
         }
       })
       .catch((error) => {
         if (error.response) {
-          setOpenModal(false);
+          setOpenDeleteAllFavouriteModal(false);
           toast.error(error.response.data.message);
         } else {
-          setOpenModal(false);
+          setOpenDeleteAllFavouriteModal(false);
           toast.error("Hiba a szerverrel való kommunikáció során");
         }
       })
   };
+
+  console.log(favourite)
 
   return (
     <div>
@@ -389,16 +393,16 @@ function UserProfile({ islogged, setIslogged }) {
                 </div>
 
                 <CustomModal
-                  isOpen={openModal}
-                  onClose={() => setOpenModal(false)}
+                  isOpen={openDeleteModal}
+                  onClose={() => setOpenDeleteModal(false)}
                   title="Biztos benne, hogy törölni szeretné a fiókját?"
                   content="A művelet nem visszafordítható."
                   onConfirm={() => handleDelete(userIdToDelete)}
                 />
 
                 <CustomModal
-                  isOpen={openModal}
-                  onClose={() => setOpenModal(false)}
+                  isOpen={openDeleteAllFavouriteModal}
+                  onClose={() => setOpenDeleteAllFavouriteModal(false)}
                   title="Biztos benne, hogy törölni szeretné az összes kedvenc terméket?"
                   content="A művelet nem visszafordítható."
                   onConfirm={() => handleDeleteAllFavourite(favouriteToDelete)}

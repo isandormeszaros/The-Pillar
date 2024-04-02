@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import WatchesServices from "../../services/WatchesServices";
 import SearchComponent from "./searchComponent";
+import AddFavourite from "../../utils/AddFavourite"
 
 const SearchResultsComponent = () => {
   const location = useLocation();
@@ -36,22 +37,38 @@ const SearchResultsComponent = () => {
       });
   }, [keyword]);
 
+  const userId = localStorage.getItem('userId');
+
+  const handleAddToFavoriteClick = (productId) => {
+    handleAddToFavorite(productId);
+  };
+
+  const handleAddToFavorite = (productId) => {
+    AddFavourite(userId, productId)
+      .then((response) => {
+        // Handle successful response
+        console.log(response);
+      })
+      .catch((error) => {
+        // Handle error
+        console.error(error);
+      });
+  };
 
   return (
     <div>
       <SearchComponent />
-      <h2>Keresési eredmények:</h2>
+      <h2 className="custom-heading-font">Keresési eredmények</h2>
       {loading ? (
         <p>Betöltés...</p>
       ) : error ? (
         <p>Hiba történt: {message}</p>
       ) : (
         <div>
-          <h2>Szűrt termékek</h2>
           <div className="container">
             <div className="row">
               <div className="d-flex flex-row-reverse bd-highlight">
-                <div className="bd-highlight">RENDEZÉS</div>
+                <div className="bd-highlight custom-p-font">Találatok száma: {filteredProducts.length} db</div>
               </div>
               {filteredProducts.map((watch) => (
                 <div key={watch.id} className="col-12 col-md-4 col-lg-3 mb-2 p-1">
@@ -84,9 +101,9 @@ const SearchResultsComponent = () => {
                           right: "10px",
                         }}
                       >
-                        <a href="/" className="btn btn-outline-danger btn-sm">
+                        <button className="btn btn-outline-danger border-0 btn-sm" onClick={() => handleAddToFavoriteClick(watch.id)}>
                           <i className="pi pi-heart"></i>
-                        </a>
+                        </button>
                       </div>
                     </div>
                   </div>

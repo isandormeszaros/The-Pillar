@@ -8,13 +8,19 @@ function useFavourite(userId, productId) {
         if (response.status === 200) {
           toast.success("Termék sikeresen hozzáadva a kedvencekhez");
           resolve(response);
-        } else {
+        }
+        else {
           toast.error("Probléma adódott a művelet közben");
           reject(new Error('Probléma a művelet közben'));
         }
       })
       .catch((error) => {
-        toast.error("Probléma adódott a művelet közben: ", error);
+        if (error.response && error.response.status === 400) {
+          toast.info("A terméket már hozzáadta a kedvencekhez");
+        }
+        else {
+          toast.error("Probléma adódott a művelet közben: ", error);
+        }
         reject(error);
       });
   });

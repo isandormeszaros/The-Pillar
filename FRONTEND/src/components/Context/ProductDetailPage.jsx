@@ -7,14 +7,15 @@ import "@splidejs/splide/dist/css/themes/splide-default.min.css";
 import locales from "../../utils/locales.json";
 import { toast } from 'react-toastify';
 import "./ProductDetailPage.css"
+import AddFavourite from "../../utils/AddFavourite"
 
 function ProductDetailPage({ addToCartFunction }) {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-  const [splideReady, setSplideReady] = useState(false); // Track initialization of splide
+  const [splideReady, setSplideReady] = useState(false);
   const images = "http://localhost:8080/images/carouser/famouswatches/";
 
-  const splideRef = useRef(null); // Ref to Splide component
+  const splideRef = useRef(null); 
 
   useEffect(() => {
     WatchesServices.getProductById(id)
@@ -46,6 +47,24 @@ function ProductDetailPage({ addToCartFunction }) {
     const imageUrl = baseUrl + imagePath;
     imageUrls.push(imageUrl);
   }
+
+  const userId = localStorage.getItem('userId');
+
+  const handleAddToFavoriteClick = (productId) => {
+    handleAddToFavorite(productId);
+  };
+
+  const handleAddToFavorite = (productId) => {
+    AddFavourite(userId, productId)
+      .then((response) => {
+        // Handle successful response
+        console.log(response);
+      })
+      .catch((error) => {
+        // Handle error
+        console.error(error);
+      });
+  };
 
   return (
     <div>
@@ -129,7 +148,7 @@ function ProductDetailPage({ addToCartFunction }) {
                   <div>
                     <h3 className="custom-heading-font">{product.watchName}</h3>
                   </div>
-                  <div><i className="pi pi-heart detail-favourite-item"></i></div>
+                  <div><button onClick={() => handleAddToFavoriteClick(product.id)}><i className="pi pi-heart detail-favourite-item"></i></button> </div>
                 </div>
                 <p className="text-justify">{product.description}</p>
                 <p className="description-price m-0">

@@ -157,7 +157,11 @@ router.post("/favourite/add", (req, res) => {
       res.json(data);
     })
     .catch((error) => {
-      res.send(error);
+      if (error === "A terméket már hozzáadta a kedvencekhez") {
+        res.status(400).send("A termék már a kedvencek között van");
+      } else {
+        res.status(500).send(error.message);
+      }
     });
 });
 
