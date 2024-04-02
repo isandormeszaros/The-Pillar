@@ -291,28 +291,12 @@ async function selectByFavourite(userId) {
   });
 }
 
-async function checkProductInFavourites(userIdFK, productIdFK) {
-  return new Promise((resolve, reject) => {
-    pool.query(
-      "SELECT * FROM watches.favourite WHERE userIdFK = ? AND productIdFK = ?",
-      [userIdFK, productIdFK],
-      (error, result) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(result.length > 0);
-        }
-      }
-    );
-  });
-}
-
 // POST /allwatches/favourite/add/2 - Kedvenc termékek hozzáadása
-async function addToFavourite(userIdFK, productIdFK) {
+async function addToFavourite(userId, productId) {
   return new Promise((resolve, reject) => {
     pool.query(
       "INSERT INTO watches.favourite (userIdFK, productIdFK ) VALUES (?, ?)",
-      [userIdFK, productIdFK],
+      [userId, productId],
       (error, result) => {
         if (error) {
           reject(error);
@@ -638,7 +622,6 @@ module.exports = {
   selectByCountries: selectByCountries,
   selectByFavourite: selectByFavourite,
   addToFavourite: addToFavourite,
-  checkProductInFavourites: checkProductInFavourites,
   deleteByFavourite: deleteByFavourite,
   deleteAllFavourites: deleteAllFavourites,
   getSignIn: getSignIn,

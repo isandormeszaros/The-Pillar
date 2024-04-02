@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import http from "../../http-common";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -18,6 +18,7 @@ function UserProfile({ islogged, setIslogged }) {
   const [favourite, setFavourite] = useState([]);
   const [favouriteToDelete, setFavouriteToDelete] = useState([]);
   const images = "http://localhost:8080/images/";
+  const userId = response.data && response.data[0].id;
   const [userUpdate, setUserUpdate] = useState({
     name: "",
     userEmail: "",
@@ -32,6 +33,7 @@ function UserProfile({ islogged, setIslogged }) {
       const currentTime = Date.now() / 1000;
       if (decodedToken.exp < currentTime) {
         toast.error("Lejárt token, jelentkezzen be újra!")
+        localStorage.removeItem('userId');
         handleLogout();
       } else {
         http
@@ -64,7 +66,6 @@ function UserProfile({ islogged, setIslogged }) {
   const handleUserUpdate = () => {
     const token = localStorage.getItem("token");
     if (token) {
-      const userId = response.data[0].id;
       http.patch(`/auth/patch/${userId}`, userUpdate, {
         headers: { "x-access-token": token },
       })
@@ -109,7 +110,9 @@ function UserProfile({ islogged, setIslogged }) {
     localStorage.removeItem("token");
     setIslogged(false);
     sessionStorage.removeItem("islogged");
+    localStorage.removeItem('userId');
     setMsg("Kijelenetketzve");
+    toast.success("Sikeres kijelentkezés");
     navigate("/login");
   };
 
@@ -149,7 +152,7 @@ function UserProfile({ islogged, setIslogged }) {
 
   // const userAddress = response.data && response.data.length > 0 ? response.data[0].userAddress : '';
 
-  const userId = response.data && response.data[0].id;
+  
 
   useEffect(() => {
     WatchesServices.getFavouriteById(userId)
@@ -158,6 +161,10 @@ function UserProfile({ islogged, setIslogged }) {
         console.error("Error:", error)
       );
   }, [userId]);
+
+  useEffect(() => {
+    localStorage.setItem('userId', userId);
+  }, [userId])
 
 
   const handleDeleteFavourite = (id, userId) => {
@@ -183,26 +190,24 @@ function UserProfile({ islogged, setIslogged }) {
     http.delete(`/allwatches/favourite/all/delete`, { data: { userId } })
       .then((response) => {
         if (response.status === 200) {
-          setOpenModal(false); 
+          setOpenModal(false);
           toast.success("Összes termék sikeresen törölve a kedvencek közül");
           setFavourite(prevFavourite => prevFavourite.filter(item => item.userId !== userId));
         } else {
-          setOpenModal(false); 
+          setOpenModal(false);
           toast.error("Hiba történt a törlés során");
         }
       })
       .catch((error) => {
         if (error.response) {
-          setOpenModal(false); 
+          setOpenModal(false);
           toast.error(error.response.data.message);
         } else {
-          setOpenModal(false); 
+          setOpenModal(false);
           toast.error("Hiba a szerverrel való kommunikáció során");
         }
       })
   };
-
-  console.log(favouriteToDelete);
 
   return (
     <div>
@@ -356,7 +361,7 @@ function UserProfile({ islogged, setIslogged }) {
                                       <div className="card-body">
                                         <h4 className="custom-card-title custom-heading-font mb-0">{item.product}</h4>
                                         <p className="text-muted m-0">-</p>
-                                        <Link to={"/allwatches/watches/" + item.brandId} className="default-button product-default-button favourite-button"><i className="pi pi-info-circle" style={{ fontSize: "1rem" }}></i> Részletek</Link>
+                                        <Link to={"/allwatches/watches/" + item.brandId} className="default-button product-default-button favourite-button"><i className="pi pi-info-circle" style={{ fontSize: "1rem" }}></i>Részletek</Link>
                                       </div>
                                       <div
                                         style={{

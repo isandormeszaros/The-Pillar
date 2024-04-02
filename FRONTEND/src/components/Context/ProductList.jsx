@@ -6,6 +6,7 @@ import locales from "../../utils/locales.json";
 import { Link, useLocation } from 'react-router-dom';
 import { toast } from "react-toastify";
 import "./ProductList.css"
+import AddFavourite from "../../utils/AddFavourite"
 
 function ProductList({ addToCartFunction }) {
   const [items, setItems] = useState([]);
@@ -160,9 +161,26 @@ function ProductList({ addToCartFunction }) {
     toast.success("Termék sikeresen hozzáadva a kosárhoz!");
   };
 
-  // const baseUrl = items ? "http://localhost:8080/images/" + product.id + "/1.jpg" : "";
+  const userId = localStorage.getItem('userId');
 
-  console.log(random && random.data[0])
+  const handleAddToFavoriteClick = (productId) => {
+    console.log(userId, productId);
+    handleAddToFavorite(productId);
+  };
+
+  const handleAddToFavorite = (productId) => {
+    AddFavourite(userId, productId)
+      .then((response) => {
+        // Handle successful response
+        console.log(response);
+      })
+      .catch((error) => {
+        // Handle error
+        console.error(error);
+      });
+  };
+
+  console.log(userId)
 
   return (
     <div>
@@ -240,9 +258,10 @@ function ProductList({ addToCartFunction }) {
                             right: "10px",
                           }}
                         >
-                          <a href="/" className="btn btn-outline-dangerborder-0 btn-sm">
+                          <button className="btn btn-outline-danger border-0 btn-sm" onClick={() => handleAddToFavoriteClick(product.id)}>
+
                             <i className="pi pi-heart"></i>
-                          </a>
+                          </button>
                         </div>
                       </div>
                     </div>

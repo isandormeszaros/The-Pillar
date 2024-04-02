@@ -1,6 +1,6 @@
 import React from "react";
 
-const CustomModal = ({ isOpen, onClose, title, content, onConfirm }) => {
+function CustomModal({ isOpen, onClose, title, content, onConfirm }) {
   if (!isOpen) {
     return null;
   }

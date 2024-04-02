@@ -148,33 +148,18 @@ router.get("/favourite/:id", (req, res) => {
     .catch((error) => console.log(error));
 });
 
-router.post("/favourite/check", (req, res) => {
-  const { userIdFK, productIdFK } = req.body;
-  console.log("userIdFK:", userIdFK);
-  console.log("productIdFK:", productIdFK);
-
-  db.checkProductInFavourites(userIdFK, productIdFK)
-    .then((adat) => res.json(adat))
-    .catch((error) => res.send(error));
+// POST /allwatches/favourite/add/2 - Kedvenc termékek hozzáadása
+router.post("/favourite/add", (req, res) => {
+  const { userId, productId } = req.body;
+  
+  db.addToFavourite(userId, productId)
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((error) => {
+      res.send(error);
+    });
 });
-
-//  POST /allwatches/favourite/add/2 - Kedvenc termékek hozzáadása
-// router.post("/favourite/add", async (req, res) => {
-//   const { userIdFK, productIdFK } = req.body;
-
-//   try {
-//     const isProductInFavourites = await checkProductInFavourites(userIdFK, productIdFK);
-
-//     if (isProductInFavourites) {
-//       res.status(400).json({ message: "A termék már szerepel a kedvencek között." });
-//     } else {
-//       await addToFavourite(userIdFK, productIdFK);
-//       res.json({ message: "A termék hozzáadva a kedvencek közé." });
-//     }
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// });
 
 // DELETE /allwatches/favourite/delete - Kedvenc termékek törlése
 router.delete("/favourite/delete/:id", (req, res) => {

@@ -94,14 +94,6 @@ const getFavouriteById = (id) => {
   return http.get(`/allwatches/favourite/${id}`);
 };
 
-const deleteFavourite = (id, userId) => {
-  return http.delete(`allwatches/favourite/delete/${id}`, userId);
-};
-
-const deleteAllFavourites = (userId) => {
-  return http.delete(`allwatches/favourite/all/delete`, userId);
-};
-
 const postSearch = (filter) => {
   return http.post(`/allwatches/filter`, filter)
 };
@@ -146,8 +138,6 @@ const WatchesServices = {
   getDialMaterials,
   getCountries,
   getFavouriteById,
-  deleteFavourite,
-  deleteAllFavourites,
   getEmail,
   getOtp,
   postSearch,

@@ -24,8 +24,7 @@ function Login({ islogged, setIslogged }) {
           localStorage.setItem("token", token);
 
           setIslogged(true);
-          sessionStorage.setItem("islogged", islogged);
-
+          sessionStorage.setItem("islogged", islogged); 
           toast.success("Sikeres bejelentkezés");
         } else {
           toast.error("Hibás bejelentkezés");

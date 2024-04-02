@@ -73,7 +73,7 @@ const Registration = () => {
         http.post("/auth/register", { name, email, password, phone: slicedPhoneNumber })
           .then((response) => {
             if (response.status === 200) {
-              toast.success("Sikeres regisztráció! " + name);
+              toast.success("Sikeres regisztráció! " + name + " néven");
               navigate("/login");
               toast.success("Kérjük jelentkezzen be!");
             } else {

@@ -34,7 +34,7 @@ const SearchResultPage = () => {
 
 function Menu() {
   const [islogged, setIslogged] = useState(false);
-  const { cart, setCart, addToCartFunction, updateQuantity, removeFromCart, removeAllItems, applyCoupon } = useCart();
+  const { cart, setCart, addToCartFunction, updateQuantity, removeFromCart, removeAllItems } = useCart();
 
   useEffect(() => {
     const log = sessionStorage.getItem("islogged");
@@ -43,8 +43,6 @@ function Menu() {
     }
     const sessionStorageData = JSON.parse(sessionStorage.getItem("islogged"));
   }, []);
-
-
 
   if (islogged) {
     console.log('User bejelentkezve')
