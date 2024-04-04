@@ -8,7 +8,10 @@ const crypto = require("crypto");
 const stripe = require("stripe")(
   "sk_test_51OqjCM01VYY1Q06qZfwWtRUeaK7MLymRQpNnkBNiUferRL3QYxJMYJKLByKSzsBfIPoslTYtoH0KnJBkQwywdqWZ003w8byPBd"
 );
+const bodyParser = require('body-parser');
 
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({ extended: true }));
 router.use(cors());
 
 // Login to existing account
@@ -27,7 +30,6 @@ router.post("/login", function (req, res, next) {
     })
     .catch((error) => res.status(404).send(error));
 });
-
 
 // Get data about the profile
 router.get("/userprofile", [authJwt.verifyToken], (req, res) => {
@@ -53,7 +55,7 @@ router.post("/register", (req, res) => {
 // Delete account
 router.delete("/delete/:id", (req, res) => {
   const userId = req.params.id;
-  
+
   DB.deleteUser(userId)
     .then((data) => {
       if (data.affectedRows == 0)
@@ -120,7 +122,7 @@ router.get("/otp", (req, res) => {
 // Stripe payment - redirect to checkout
 router.post("/create-checkout-session", async (req, res) => {
   try {
-    const { cart, couponCode, formData } = req.body;
+    const { cart, couponCode, userData } = req.body;
 
     if (!cart || cart.length === 0) {
       return res.status(400).json({ error: "Cart is empty" });
@@ -136,15 +138,15 @@ router.post("/create-checkout-session", async (req, res) => {
       }
     }
 
-    console.log(formData)
-    // formData.push({})
+    console.log(userData);
 
     const shippingRate = await stripe.shippingRates.retrieve(
       "shr_1OxQHT01VYY1Q06qjJQ7b6cC"
     );
 
-    const taxRate = await stripe.taxRates.retrieve("txr_1OxPwc01VYY1Q06qWha8JHA5");
-
+    const taxRate = await stripe.taxRates.retrieve(
+      "txr_1OxPwc01VYY1Q06qWha8JHA5"
+    );
 
     const lineItems = cart.map((item) => {
       return {
@@ -160,6 +162,7 @@ router.post("/create-checkout-session", async (req, res) => {
     });
 
     const session = await stripe.checkout.sessions.create({
+      customer_email: userData.userEmail,
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
@@ -180,15 +183,12 @@ router.post("/create-checkout-session", async (req, res) => {
           },
         },
       ],
-      // shipping_address: {
-      //   line1: formData.address,
-      // },
       automatic_tax: {
         enabled: true,
       },
       discounts: discounts,
-      success_url: "http://localhost:3000/checkout/succeed",
-      cancel_url: "http://localhost:3000/checkout/failed",
+      success_url: "http://localhost:3000/auth/checkout/succeed?true&session_id={CHECKOUT_SESSION_ID}",
+      cancel_url: "http://localhost:3000/auth/checkout/failed?session_id={CHECKOUT_SESSION_ID}",
     });
 
     console.log(taxRate);
@@ -199,6 +199,25 @@ router.post("/create-checkout-session", async (req, res) => {
     res.json({ id: session.id });
   } catch (error) {
     console.error("Error creating checkout session:", error);
+    res.status(500).json({ Error: "Internal server error" });
+  }
+});
+
+router.get("/checkout/succeed", async (req, res) => {
+  try {
+    const sessionId = req.query.session_id;
+    
+    console.log("Random " + sessionId)
+
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    const lineItems = await stripe.checkout.sessions.listLineItems(sessionId);
+
+    console.log(lineItems);
+    res.json({ data: session });
+    console.log({ data: session });
+  } catch (error) {
+    console.error("Error retrieving checkout session:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });

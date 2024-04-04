@@ -300,7 +300,7 @@ function UserProfile({ islogged, setIslogged }) {
                             <p className="m-0">Cím</p>
                             <input className="form-control border border-white placeholder-info w-100 rounded-0 form-control-font px-0" type="text" placeholder={user.userAddress} value={userUpdate.userAddress} onChange={handleInputChange} onBlur={handleInputBlur} name="userAddress" id="address" />
                           </div>
-                            {/* <input
+                          {/* <input
                               className="form-control border border-white w-100 rounded-0 form-control-font px-0"
                               type="text"
                               value={userUpdate.userAddress}

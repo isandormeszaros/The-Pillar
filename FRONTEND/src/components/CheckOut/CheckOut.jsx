@@ -5,17 +5,30 @@ import locales from "../../utils/locales.json";
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import './CheckOut.css'
-
+import http from "../../http-common";
 
 function Checkout({ cart }) {
     const location = useLocation();
     const [couponCode, setCouponCode] = useState('');
-    const [formData, setFormData] = useState({
-        name: 'Példa Név',
-        email: 'ujemail@gmail.com',
-        address: 'Budapest, Kiss utca 10',
-        city: 'Budapes',
-    });
+    const [userData, setUserData] = useState({});
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        http.get("/auth/userprofile", {
+            headers: { "x-access-token": token },
+        })
+        .then((response) => {
+            setUserData(response.data[0]);
+        })
+        .catch((error) => {
+            setUserData(error);
+            if (error.response) {
+                toast.error(error.response.data.message);
+            } else {
+                console.log("Error", error);
+            }
+        });
+    }, []);
 
     const makePayment = async () => {
         const stripe = await loadStripe("pk_test_51OqjCM01VYY1Q06qzRZJ5ftluZMxe6FN1iZZpf7agPSgsZNoe8OqTxnc0wO0DDJfIZgzpIygQIJVcx4JQzsCv4vV00JpYY0CUo");
@@ -23,7 +36,7 @@ function Checkout({ cart }) {
         const body = {
             cart,
             couponCode: couponCode,
-            formData
+            userData
         }
 
         const headers = {
@@ -42,7 +55,7 @@ function Checkout({ cart }) {
             const session = await response.json();
 
             const result = await stripe.redirectToCheckout({
-                sessionId: session.id
+                sessionId: session.id,
             });
 
             console.log(result);
@@ -60,8 +73,6 @@ function Checkout({ cart }) {
         }
     }, []);
 
-    console.log(couponCode);
-
     if (couponCode && couponCode !== "teleki2024") {
         toast.error("Érvénytelen kupon");
     }
@@ -74,7 +85,7 @@ function Checkout({ cart }) {
                     product: item.watchName,
                     quantity: item.quantity
                 })),
-                userAddress: formData.address,
+                userAddress: userData.address,
                 orderDate: new Date(),
                 shippingDate: new Date(),
                 status: '0',
@@ -87,13 +98,9 @@ function Checkout({ cart }) {
         }
     };
 
-    console.log(formData.couponCode)
-    console.log(cart)
-
     return (
         <div className="checkout-container container text-lg-start text-md-center text-center mt-5 ">
             <div className="container p-3">
-                <span className='text-danger text-uppercase'>Disclaimer: A fizetés még fejlesztés alatt áll, így csak előre megadott adatokkal működik. Ez az formData-ban van megadva.</span>
                 <nav aria-label="breadcrumb custom-p-font">
                     <ol className="breadcrumb justify-content-center justify-content-lg-start">
                         <li className="breadcrumb-item custom-p-font"><a href="/home" className="breadcrumb-anchor-cart">Nyitóoldal</a></li>

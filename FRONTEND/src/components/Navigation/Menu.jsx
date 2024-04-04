@@ -88,8 +88,8 @@ function Menu() {
         <Route path="/allbrands/detailed" element={<Results />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/brands" element={<AllWatches />} />
-        <Route path="/checkout/succeed" element={<Success />} />
-        <Route path="/checkout/cancel" element={<Cancel />} />
+        <Route path="/auth/checkout/succeed" element={<Success />} />
+        <Route path="/auth/checkout/cancel" element={<Cancel />} />
         <Route path="/allwatches/watches/:id" element={<ProductDetailPage addToCartFunction={addToCartFunction} islogged={islogged} />} />
 
       </Routes>
