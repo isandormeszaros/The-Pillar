@@ -24,7 +24,7 @@ function Login({ islogged, setIslogged }) {
           localStorage.setItem("token", token);
 
           setIslogged(true);
-          sessionStorage.setItem("islogged", islogged); 
+          sessionStorage.setItem("islogged", islogged);
           toast.success("Sikeres bejelentkezés");
         } else {
           toast.error("Hibás bejelentkezés");
@@ -45,7 +45,8 @@ function Login({ islogged, setIslogged }) {
         <div className="row">
           <div className="col-lg-6 text-black d-flex align-items-center justify-content-center">
             <div className="d-flex align-items-center h-custom-2 ">
-              <form style={{ width: "20rem" }}>
+
+              <form style={{ width: "20rem" }} onKeyDown={(e) => e.keyCode === 13 && handleLogin()}>
                 <h3 className="mb-3 pb-3 custom-heading-font">Bejelentkezés</h3>
                 <div className="form-outline mb-2">
                   <p className="custom-p-font text-start small mb-0">

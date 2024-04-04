@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import http from "../../http-common";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -17,7 +17,7 @@ function UserProfile({ islogged, setIslogged }) {
   const [favourite, setFavourite] = useState([]);
   const [favouriteToDelete, setFavouriteToDelete] = useState([]);
   const images = "http://localhost:8080/images/";
-  const userId = response.data && response.data[0].id;
+  const userId = response.data && response.data.length > 0 ? response.data[0].id : null;
   const [userUpdate, setUserUpdate] = useState({
     name: "",
     userEmail: "",
@@ -26,7 +26,6 @@ function UserProfile({ islogged, setIslogged }) {
   })
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [openDeleteAllFavouriteModal, setOpenDeleteAllFavouriteModal] = useState(false);
-
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -65,7 +64,17 @@ function UserProfile({ islogged, setIslogged }) {
     }
   }, []);
 
+  const isEmailValid = (email) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  };
+
   const handleUserUpdate = () => {
+    if (userUpdate.userEmail.trim() !== "" && !isEmailValid(userUpdate.userEmail)) {
+      toast.error("Érvénytelen e-mail cím");
+      return;
+    }
+
     const token = localStorage.getItem("token");
     if (token) {
       http.patch(`/auth/patch/${userId}`, userUpdate, {
@@ -90,6 +99,9 @@ function UserProfile({ islogged, setIslogged }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    if (name === "userPhone" && !/^[0-9]*$/.test(value)) {
+      return; // Do not update state if input contains non-numeric characters
+    }
     setUserUpdate(prevState => ({
       ...prevState,
       [name]: value
@@ -97,7 +109,17 @@ function UserProfile({ islogged, setIslogged }) {
   };
 
   const handleModifyClick = () => {
-    handleUserUpdate();
+    const token = localStorage.getItem("token");
+    if (token) {
+      const modifiedData = { ...userUpdate };
+      const isModified = Object.values(modifiedData).some(value => value !== "");
+
+      if (isModified) {
+        handleUserUpdate();
+      } else {
+        toast.info("Nincs változás az adatokban");
+      }
+    }
   };
 
   const handleInputBlur = (e) => {
@@ -124,8 +146,6 @@ function UserProfile({ islogged, setIslogged }) {
   }
 
   const handleDeleteAllFavouriteConfirmation = () => {
-    const userId = response.data && response.data[0].id;
-
     setFavouriteToDelete(userId)
     setOpenDeleteAllFavouriteModal(true);
   };
@@ -137,7 +157,7 @@ function UserProfile({ islogged, setIslogged }) {
           localStorage.removeItem("token");
           setIslogged(false);
           sessionStorage.removeItem("islogged");
-          toast.success("Sikeres törlés");
+          toast.success("Fiókja sikeres törölve");
           navigate("/home");
         } else {
           toast.error("Hiba történt a törlés során");
@@ -152,9 +172,9 @@ function UserProfile({ islogged, setIslogged }) {
       })
   };
 
+
+  console.log(response.data)
   // const userAddress = response.data && response.data.length > 0 ? response.data[0].userAddress : '';
-
-
 
   useEffect(() => {
     WatchesServices.getFavouriteById(userId)
@@ -211,7 +231,7 @@ function UserProfile({ islogged, setIslogged }) {
       })
   };
 
-  console.log(favourite)
+  console.log(userUpdate)
 
   return (
     <div>
@@ -239,14 +259,6 @@ function UserProfile({ islogged, setIslogged }) {
           {Array.isArray(response.data) ? (
             response.data.map((user) => (
               <div key={user.id}>
-
-                <nav className="nav justify-content-center p-2">
-                  <a className="nav-link active" aria-current="page" href="#">Profil</a>
-                  <a className="nav-link" href="#">Megrendeléseim</a>
-                  <a className="nav-link" href="#">Kedvenceim</a>
-                  <a onClick={() => handleDeleteConfirmation(user.id)} className="delete-btn nav-link">Fiók törlése </a>
-                </nav>
-
                 <ul className="nav nav-pills nav-fill mb-3" id="pills-tab" role="tablist">
                   <li className="nav-item" role="presentation">
                     <button className="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Profilom</button>
@@ -258,7 +270,7 @@ function UserProfile({ islogged, setIslogged }) {
                     <button className="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Kedvenceim</button>
                   </li>
                   <li className="nav-item" role="presentation">
-                    <button className="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Fiók törlése</button>
+                    <button className="nav-link delete-btn" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false" onClick={() => handleDeleteConfirmation(user.id)}>Fiók törlése</button>
                   </li>
                 </ul>
 
@@ -271,36 +283,39 @@ function UserProfile({ islogged, setIslogged }) {
                         <div className="col-lg-4 p-0 text-start custom-p-font">
                           <div className="p-2 custom-border">
                             <p className="m-0">Teljes név</p>
-                            <input className="border border-white placeholder-info" type="text" placeholder={user.name} value={userUpdate.name} onChange={handleInputChange} onBlur={handleInputBlur} name="name" id="name" />
+                            <input className="form-control border border-white placeholder-info w-100 rounded-0 form-control-font px-0" type="text" placeholder={user.name} value={userUpdate.name} onChange={handleInputChange} onBlur={handleInputBlur} name="name" id="name" />
                           </div>
                           <div className="p-2 custom-border">
                             <p className="m-0">Email cím</p>
-                            <input className="border border-white placeholder-info" type="email" placeholder={user.userEmail} value={userUpdate.userEmail} onChange={handleInputChange} onBlur={handleInputBlur} name="userEmail" id="email" />
+                            <input className="form-control border border-white placeholder-info w-100 rounded-0 form-control-font px-0" type="email" placeholder={user.userEmail} value={userUpdate.userEmail} onChange={handleInputChange} onBlur={handleInputBlur} name="userEmail" id="email" />
                           </div>
                           <div className="p-2 custom-border">
                             <p className="m-0">Telefonszám</p>
-                            <input className="border border-white placeholder-info" type="tel" placeholder={user.userPhone} value={userUpdate.userPhone} onChange={handleInputChange} onBlur={handleInputBlur} name="userPhone" id="phone" />
+                            <input className="form-control border border-white placeholder-info w-100 rounded-0 form-control-font px-0" type="tel" placeholder={user.userPhone} value={userUpdate.userPhone} onChange={handleInputChange} onBlur={handleInputBlur} pattern="[0-9]*" name="userPhone" id="phone" />
                           </div>
 
                         </div>
                         <div className="col-lg-4 p-0 custom-p-font">
                           <div className="p-2 custom-border">
                             <p className="m-0">Cím</p>
-                            <input
-                              className="border border-white placeholder-error"
+                            <input className="form-control border border-white placeholder-info w-100 rounded-0 form-control-font px-0" type="text" placeholder={user.userAddress} value={userUpdate.userAddress} onChange={handleInputChange} onBlur={handleInputBlur} name="userAddress" id="address" />
+                          </div>
+                            {/* <input
+                              className="form-control border border-white w-100 rounded-0 form-control-font px-0"
                               type="text"
-                              value={userUpdate.userAddress} onChange={handleInputChange} onBlur={handleInputBlur}
+                              value={userUpdate.userAddress}
+                              onChange={handleInputChange}
+                              onBlur={handleInputBlur}
                               name="userAddress"
                               id="address"
-                              placeholder={!userUpdate.userAddress ? "Kérem adja meg a szállítási címet " : userUpdate.userAddress}
-                            />
-                          </div>
+                              placeholder={user.userAddress}
+                            /> */}
                           <div className="p-2 custom-border">
                             <p className="m-0">Fiók megerősítés</p>
                             <div> {user.userVerification === 0 ? (
-                              <input placeholder="Megerősítve" className="border border-white" disabled />
+                              <input placeholder="Megerősítve" className="border border-white input-padd" disabled />
                             ) : (
-                              <input placeholder="Nincs megerősítve" className="border border-white" disabled />
+                              <input placeholder="Nincs megerősítve" className="border border-white input-padd" disabled />
                             )}</div>
                           </div>
                           <div className="p-2 custom-border">
@@ -308,7 +323,7 @@ function UserProfile({ islogged, setIslogged }) {
                             {user.newsletter === 0 ? (
                               <i className="Feliratkozva"></i>
                             ) : (
-                              <input placeholder="Nincs feliratkozva" className="border border-white" disabled />
+                              <input placeholder="Nincs feliratkozva" className="border border-white input-padd" disabled />
                             )}
                           </div>
                         </div>
@@ -345,7 +360,7 @@ function UserProfile({ islogged, setIslogged }) {
                         <div className="container px-5">
                           <h1 className="custom-heading-font">Kedvenceim ({favourite.length})</h1>
                           <div className="d-flex flex-row-reverse bd-highlight">
-                            <button className="py-2 bd-highlight error pointer" onClick={() => handleDeleteAllFavouriteConfirmation(data.userId)}>Összes törlése</button>
+                            <button className="py-2 bd-highlight error pointer" onClick={() => handleDeleteAllFavouriteConfirmation(response.data.userId)}>Összes törlése</button>
                           </div>
 
                           <div className="row text-center">

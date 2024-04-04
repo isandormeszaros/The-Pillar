@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import "./ProductList.css"
 import AddFavourite from "../../utils/AddFavourite"
 
-function ProductList({ addToCartFunction }) {
+function ProductList({ addToCartFunction, islogged }) {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -154,11 +154,13 @@ function ProductList({ addToCartFunction }) {
   // console.log(random)
 
 
-
-
   const addToCart = (product) => {
-    addToCartFunction(product);
-    toast.success("Termék sikeresen hozzáadva a kosárhoz!");
+    if (!islogged) {
+      toast.error("A vásárláshoz kérjük jelentkezzen be!");
+    } else {
+      addToCartFunction(product);
+      toast.success("Termék sikeresen hozzáadva a kosárhoz!");
+    }
   };
 
   const userId = localStorage.getItem('userId');
@@ -170,11 +172,9 @@ function ProductList({ addToCartFunction }) {
   const handleAddToFavorite = (productId) => {
     AddFavourite(userId, productId)
       .then((response) => {
-        // Handle successful response
         console.log(response);
       })
       .catch((error) => {
-        // Handle error
         console.error(error);
       });
   };

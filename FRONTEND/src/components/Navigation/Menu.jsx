@@ -59,7 +59,7 @@ function Menu() {
           path="/allbrands"
           element={
             <div>
-              <ProductList addToCartFunction={addToCartFunction} />
+              <ProductList addToCartFunction={addToCartFunction} islogged={islogged} />
             </div>
           }
         />
@@ -82,7 +82,7 @@ function Menu() {
         <Route path="/search" element={<SearchResultsComponent />} />
         <Route path="/about" element={<About />} />
         <Route path="/faq" element={<Faq />} />
-        <Route path="/cart" element={<Cart cart={cart} setCart={setCart} updateQuantity={updateQuantity} removeAllItems={removeAllItems} removeFromCart={removeFromCart} />} />
+        <Route path="/cart" element={<Cart cart={cart} setCart={setCart} updateQuantity={updateQuantity} removeAllItems={removeAllItems} removeFromCart={removeFromCart} islogged={islogged} />} />
         <Route path="/timeout" element={<TimeOut />} />
         <Route path="/checkout" element={<CheckOut cart={cart} />} />
         <Route path="/allbrands/detailed" element={<Results />} />
@@ -90,7 +90,7 @@ function Menu() {
         <Route path="/brands" element={<AllWatches />} />
         <Route path="/checkout/succeed" element={<Success />} />
         <Route path="/checkout/cancel" element={<Cancel />} />
-        <Route path="/allwatches/watches/:id" element={<ProductDetailPage addToCartFunction={addToCartFunction} />} />
+        <Route path="/allwatches/watches/:id" element={<ProductDetailPage addToCartFunction={addToCartFunction} islogged={islogged} />} />
 
       </Routes>
       <Footer />

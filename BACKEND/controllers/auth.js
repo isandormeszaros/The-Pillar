@@ -17,8 +17,8 @@ router.post("/login", function (req, res, next) {
     .then((data) => data[0])
     .then((data) => {
       console.log(data);
-      const { userEmail, role } = data;
-      const token = authUtils.generateToken(userEmail, role);
+      const { id } = data;
+      const token = authUtils.generateToken(id);
 
       res.status(200).json({
         data: data,
@@ -28,9 +28,10 @@ router.post("/login", function (req, res, next) {
     .catch((error) => res.status(404).send(error));
 });
 
+
 // Get data about the profile
 router.get("/userprofile", [authJwt.verifyToken], (req, res) => {
-  DB.getUserProfile(req.userParams.email)
+  DB.getUserProfile(req.userParams.id)
     .then((data) => res.json(data))
     .catch((error) => res.send(error));
 });

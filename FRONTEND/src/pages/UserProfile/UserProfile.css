@@ -145,6 +145,14 @@ input:focus {
   background-color: crimson;
 }
 
+.form-control-font {
+  font-size: var(--small-font-size);
+}
+
+.input-padd{
+  padding: 3.45px 0 3.45px 0;
+}
+
 @media only screen and (max-width: 768px) {
   .modal-container .modal-footer button {
     min-width: 120px;

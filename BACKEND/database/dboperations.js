@@ -421,11 +421,11 @@ async function getSignIn(email, password) {
 }
 
 // Profil részletes adatai
-async function getUserProfile(email) {
+async function getUserProfile(id) {
   return new Promise((resolve, reject) => {
     pool.query(
-      "SELECT * FROM watches.users WHERE userEmail=?",
-      [email],
+      "SELECT id, name, userEmail, userPhone, newsletter, userAddress, userVerification FROM watches.users WHERE id=?",
+      [id],
       (error, elements) => {
         if (error) {
           return reject(error);
@@ -443,7 +443,7 @@ async function getUserProfile(email) {
 async function createUser(name, email, password, phone) {
   return new Promise((resolve, reject) => {
     pool.query(
-      "INSERT INTO watches.users (name, userEmail, password, userPhone) VALUES (?, ?, SHA2(?,256), ?)",
+      "INSERT INTO watches.users (name, userEmail, password, userPhone, role) VALUES (?, ?, SHA2(?,256), ?, 1)",
       [name, email, password, phone],
       (error, elements) => {
         if (error) {

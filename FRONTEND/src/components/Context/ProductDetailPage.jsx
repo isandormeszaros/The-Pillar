@@ -9,13 +9,13 @@ import { toast } from 'react-toastify';
 import "./ProductDetailPage.css"
 import AddFavourite from "../../utils/AddFavourite"
 
-function ProductDetailPage({ addToCartFunction }) {
+function ProductDetailPage({ addToCartFunction, islogged }) {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [splideReady, setSplideReady] = useState(false);
   const images = "http://localhost:8080/images/carouser/famouswatches/";
 
-  const splideRef = useRef(null); 
+  const splideRef = useRef(null);
 
   useEffect(() => {
     WatchesServices.getProductById(id)
@@ -28,8 +28,14 @@ function ProductDetailPage({ addToCartFunction }) {
   }, [id]);
 
   function addToCartSucceed() {
-    toast.success(product.watchName + " sikeresen hozzáadva a kosárhoz")
+    if (!islogged) {
+      toast.error("A vásárláshoz kérjük jelentkezzen be!");
+    } else {
+      toast.success(product.watchName + " sikeresen hozzáadva a kosárhoz")
+    }
   }
+
+
 
   const handleThumbnailClick = (index) => {
     // Ensure splide is ready before accessing it

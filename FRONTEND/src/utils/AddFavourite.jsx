@@ -19,7 +19,7 @@ function useFavourite(userId, productId) {
           toast.info("A terméket már hozzáadta a kedvencekhez");
         }
         else {
-          toast.error("Probléma adódott a művelet közben: ", error);
+          toast.error("Kérjük jelentkezzen be! ", error);
         }
         reject(error);
       });

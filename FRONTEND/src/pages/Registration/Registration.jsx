@@ -61,8 +61,6 @@ const Registration = () => {
         return;
       }
 
-
-
         if (!passwordRegex.test(password)) {
           toast.error("A jelszónak minimum 8 karakternek kell lennie, kis- és nagybetűket, számot és speciális karaktert kell tartalmaznia.");
           return;
