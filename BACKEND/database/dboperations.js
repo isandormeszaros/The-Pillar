@@ -98,11 +98,11 @@ async function selectPageProduct(page) {
   });
 }
 
-// GET /allwatches/all/brands - Óramárka megjelenítése
+// GET /allwatches/brands - Óramárka megjelenítése
 async function selectJustBrands() {
   return new Promise((resolve, reject) => {
     pool.query(
-      "SELECT brand, watch_count FROM watches.allbrandscount;",
+      "SELECT * FROM watches.brand;",
       (error, elements) => {
         if (error) {
           reject(error);
@@ -553,50 +553,43 @@ async function patchUser(id, userData) {
 
 // Rendelés leadása
 async function placeOrder(data) {
-  const { cart, orderDate, shippingDate, status, paymentId, userAddress } =
-    data;
+  const { cart, orderDate, status, paymentId, userAddress } = data;
 
   try {
     await pool.query("START TRANSACTION");
 
     // Beszúrás az orders táblába
     const insertOrderResult = await pool.query(
-      "INSERT INTO orders (orderDate, shippingDate, status, paymentId, userAddress) VALUES (?, ?, ?, ?, ?)",
-      [orderDate, shippingDate, status, paymentId, userAddress]
+      "INSERT INTO orders (orderDate, status, paymentId, userAddress) VALUES (?, ?, 1, ?)",
+      [orderDate, status, paymentId, userAddress]
     );
 
-    const orderId = insertOrderResult.insertId; // Az új rendelés azonosítója
+    const orderId = insertOrderResult.insertId;
 
     const insertOrderQuery =
       "INSERT INTO orderconnbase (orderId, productId, quantity, price) VALUES (?, ?, ?, ?)";
 
     const productValues = cart.map((item) => [
-      item.productId,
       orderId,
+      item.productId,
       item.quantity,
       item.price,
     ]);
 
-    await pool.query(insertOrderQuery, [productValues]);
+    await pool.query(insertOrderQuery, productValues);
 
-    // // Beszúrás az orderconnbase táblába
-    // for (const item of cart) {
-    //   await pool.query(
-    //     "INSERT INTO orderconnbase (productId,, orderId, quantity, price) VALUES (?, ?, ?, ?)",
-    //     [item.productId, orderId, item.quantity, item.price]
-    //   );
-    // }
-    // console.log("Succes Y");
-
+    console.log("Sikeres");
+    
     await pool.query("COMMIT");
     console.log("Megrendelés sikeresen rögzítve!");
-    return orderId; // Visszaadjuk az új rendelés azonosítóját
+    return orderId; // Az új rendelésszám visszaadása
   } catch (error) {
     await pool.query("ROLLBACK");
     console.error("Hiba a megrendelés rögzítése közben:", error);
     throw error;
   }
 }
+
 
 async function selectUser(email, password) {
   return new Promise((resolve, reject) => {

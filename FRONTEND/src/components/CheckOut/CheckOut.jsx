@@ -80,7 +80,7 @@ function Checkout({ cart }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:8080/allwatches/orders', {
+            const response = await axios.post('http://localhost:8080/auth/orders', {
                 cart: cart.map(item => ({
                     product: item.watchName,
                     quantity: item.quantity

@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import './Success.css'
 import { loadStripe } from '@stripe/stripe-js';
+import { toast } from 'react-toastify';
 
 function Status() {
     const getData = async () => {
@@ -21,18 +22,23 @@ function Status() {
             });
 
             const session = await response.json();
-        
-            console.log("Add " + JSON.stringify(session.data));
 
+            console.log("Add " + JSON.stringify(session.data));
 
             console.log(sessionId)
 
-        } 
+        }
         catch (error) {
             console.log(error);
         }
+        
     }
 
+    useEffect(() => {
+        toast.success("Sikeres megrendelés! Kérjük tekintse meg a rendeléseit a megrendeléseim gombra kattintva!");
+    }, [])
+
+    
     return (
         <div className="success-container text-white">
             <div className="success-content">
@@ -40,7 +46,7 @@ function Status() {
                 <h1 className="custom-heading-font">
                     Megrendelését sikeresen rögzítettük.
                 </h1>
-                <h5 className="mb-5">Köszönjük a bizalmat.</h5>
+                <h5 className="mb-1 custom-p-font text-white">Köszönjük a bizalmat. Email-ben megtalálja a rendelés részletes adatait.</h5>
                 <div className="row gx-5 m-a pt-3 pb-5 justify-content-center">
                     <div className="col-lg-4 col-md-12 d-flex p-2 justify-content-center justify-content-lg-start">
                         <button className="default-button w-75 order-status-button" onClick={getData}><i className="pi pi-home"></i>Kezdőlap</button>

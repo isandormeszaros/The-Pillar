@@ -5,10 +5,11 @@ var DB = require("../database/dboperations");
 const authJwt = require("../middleware/authjwt");
 var authUtils = require("../utils/authUtils");
 const crypto = require("crypto");
+const bodyParser = require('body-parser');
+const sgMail = require("@sendgrid/mail");
 const stripe = require("stripe")(
   "sk_test_51OqjCM01VYY1Q06qZfwWtRUeaK7MLymRQpNnkBNiUferRL3QYxJMYJKLByKSzsBfIPoslTYtoH0KnJBkQwywdqWZ003w8byPBd"
 );
-const bodyParser = require('body-parser');
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
@@ -220,6 +221,42 @@ router.get("/checkout/succeed", async (req, res) => {
     console.error("Error retrieving checkout session:", error);
     res.status(500).json({ error: "Internal server error" });
   }
+});
+
+// POST /allwatches/orders - Place an order
+router.post("/orders", (req, res) => {
+  const orders = req.body;
+  
+  DB.placeOrder(orders)
+    .then((result) => {
+      console.log(orders);
+
+      res.json({
+        success: true,
+        message: "Megrendelés sikeresen rögzítve",
+        orderId: result,
+      });
+    })
+    .catch((error) => {
+      console.log(orders);
+      for (const item of orders.cart) {
+        console.log("Item OrderId:", item.orderId);
+        console.log("Item ID:", item.id);
+        console.log("Item Quantity:", item.quantity);
+        console.log("Item Price:", item.price);
+        console.log("---------------------");
+      }
+      //  orderDate, shippingDate, status, paymentId, userData.address
+      console.log("orderDate:", orders.orderDate);
+      console.log("status:", orders.status);
+      console.log("payment:", orders.paymentId);
+      console.log("address:", orders.userAddress);
+
+      console.error("Hiba a megrendelés rögzítése közben:", error);
+      res
+        .status(500)
+        .json({ success: false, error: "Hiba a megrendelés rögzítése közben" });
+    });
 });
 
 router.get(

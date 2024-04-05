@@ -51,7 +51,7 @@ function AllWatches() {
 
                                 <div className="card custom-border h-100">
                                     <div className="view overlay">
-                                        <Link to={`/allbrands?watchName=${product.brand}`} className="text-decoration-none custom-p-font">
+                                    <Link to={`/allbrands?watchName=${encodeURIComponent(product.brand)}`} className="text-decoration-none custom-p-font">
                                             <img
                                                 className="card-img-top custom-brand-image rounded-0"
                                                 src={images + `${product.brand}` + "/1.avif"}

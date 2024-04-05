@@ -21,6 +21,7 @@ function ProductList({ addToCartFunction, islogged }) {
   const queryParams = new URLSearchParams(location.search);
   const [random, setRandom] = useState(null);
   const [updatedSzures, setUpdatedSzures] = useState([]);
+  const [brand, setBrand] = useState([]);
 
   useEffect(() => {
     const updatedSzures = {}; // alapértelmezett üres szűrők
@@ -32,13 +33,6 @@ function ProductList({ addToCartFunction, islogged }) {
     });
 
     console.log(updatedSzures)
-
-    // // ha a queryParams üres, akkor használjuk az alapértelmezett üres szűrőket
-    // if (Object.keys(updatedSzures).length === 0) {
-    //   setUpdatedSzures({}); // Üres objektum beállítása
-    // } else {
-    //   setUpdatedSzures(updatedSzures);
-    // }
 
     WatchesServices.postSearch(updatedSzures)
       .then(response => {
@@ -58,7 +52,6 @@ function ProductList({ addToCartFunction, islogged }) {
 
   console.log(updatedSzures)
   console.log(random)
-
 
   const fetchData = () => {
     setIsLoading(true);
@@ -179,7 +172,21 @@ function ProductList({ addToCartFunction, islogged }) {
       });
   };
 
-  console.log(userId)
+  useEffect(() => {
+    WatchesServices.getJustBrands()
+      .then(response => {
+        setBrand(response.data);
+        console.log("Sikeres");
+      })
+      .catch(error => {
+        console.error("Hiba történt", error);
+      });
+  }, []);
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const encodedName = urlParams.get("watchName");
+  const name = decodeURIComponent(encodedName);
+  console.log(name);
 
   return (
     <div>
@@ -194,25 +201,46 @@ function ProductList({ addToCartFunction, islogged }) {
           alt="Card image cap"
           style={{ objectFit: "cover", height: "375px" }}
         /> */}
-        <div className="text-center">
-          <h1 className="custom-heading-font pt-4">All Watches</h1>
-          <p
-            className="small"
-            style={{
-              maxWidth: "90%",
-              margin: "0 auto",
-              textAlign: "center",
-            }}
-          >
-            With thousands of pre-owned luxury watches from the best brands
-            around the world, we are dedicated to bringing collectors and
-            enthusiasts an unrivaled selection of timepieces. Our in-house team
-            of Swiss-trained watchmakers, technicians, and refinishers are
-            highly skilled and have a passion for quality, authenticity, and
-            craftsmanship—so you never have to worry about compromising value or
-            provenance.
-          </p>
-        </div>
+        {random && random.data.length === totalWatchesCount ? (
+          <div className="text-center">
+            <h1 className="custom-heading-font pt-4">All Watches</h1>
+            <p
+              className="small"
+              style={{
+                maxWidth: "90%",
+                margin: "0 auto",
+                textAlign: "center",
+              }}
+            >
+              With thousands of pre-owned luxury watches from the best brands around the world, we are dedicated to bringing collectors and enthusiasts an unrivaled selection of timepieces. Our in-house team of Swiss-trained watchmakers, technicians, and refinishers are highly skilled and have a passion for quality, authenticity, and craftsmanship—so you never have to worry about compromising value or provenance.
+            </p>
+          </div>
+        ) : (
+          <div className="text-center">
+            <p
+              className="small"
+              style={{
+                maxWidth: "90%",
+                margin: "0 auto",
+                textAlign: "center",
+              }}
+            >
+              {brand.map(brand => {
+                if (brand.brand === name) {
+                  return (
+                    <div key={brand.brandId}>
+                      <h2 className="custom-heading-font pt-4">{brand.brand}</h2>
+                      <p className="custom-p-font">{brand.description}</p>
+                    </div>
+                  );
+                } else {
+                  return null; // Visszaad null-t, ha a feltétel nem teljesül
+                }
+              })}
+            </p>
+          </div>
+        )}
+
       </section>
 
       <SearchComponent />

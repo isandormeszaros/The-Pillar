@@ -40,6 +40,11 @@ const getPage = (page) => {
   return http.get(`/allwatches/page/${page}`);
 };
 
+// GET BRANDS FOR VIEW
+const getJustBrands = () => {
+  return http.get("/allwatches/brands");
+};
+
 // GET PAGES FOR COMPOUND FILTERS
 const getBrands = () => {
   return http.get("/allwatches/all/brands");
@@ -121,6 +126,7 @@ const update = (id, data) => {
 const WatchesServices = {
   getAll,
   get,
+  getJustBrands,
   getProductById,
   getFiltered,
   getDetailedFiltered,

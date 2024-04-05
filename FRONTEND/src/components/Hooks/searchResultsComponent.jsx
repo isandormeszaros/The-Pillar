@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import WatchesServices from "../../services/WatchesServices";
 import SearchComponent from "./searchComponent";
 import AddFavourite from "../../utils/AddFavourite"
+import "./searchResultsComponent.css"
 
 const SearchResultsComponent = () => {
   const location = useLocation();
@@ -57,14 +58,27 @@ const SearchResultsComponent = () => {
 
   return (
     <div>
+    <section className="parallax parallax-search">
+          <div className="parallax-inner">
+          </div>
+        </section>
       <SearchComponent />
-      <h2 className="custom-heading-font">Keresési eredmények</h2>
       {loading ? (
         <p>Betöltés...</p>
       ) : error ? (
-        <p>Hiba történt: {message}</p>
+        <div className="container py-5">
+          <div className="row">
+            <div className="col-12">
+              <h1 className="custom-heading-font">Hoppá, nincs találat.</h1>
+              <p className="custom-p-font">
+                Sajnáljuk, úgy tűnik <strong>{keyword}</strong> keresésére nem volt találat.
+              </p>
+            </div>
+          </div>
+        </div>
       ) : (
         <div>
+        <h2 className="custom-heading-font">Keresési eredmények</h2>
           <div className="container">
             <div className="row">
               <div className="d-flex flex-row-reverse bd-highlight">

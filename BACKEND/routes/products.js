@@ -65,6 +65,13 @@ router.get("/page/:page", (req, res) => {
     .catch((error) => console.log(error));
 });
 
+// GET /allwatches/brands - Óramárka megjelenítése leírással
+router.get("/brands", (req, res) => {
+  db.selectJustBrands()
+    .then((adat) => res.json(adat))
+    .catch((error) => console.log(error));
+});
+
 // GET /allwatches/all/brands - Óramárka megjelenítése
 router.get("/all/brands", (req, res) => {
   db.selectByBrands()
@@ -199,43 +206,6 @@ router.delete("/favourite/all/delete", (req, res) => {
     })
     .catch((error) => {
       res.send(error);
-    });
-});
-
-// GET /allwatches/orders - Rendelés leadása
-router.post("/orders", (req, res) => {
-  const orders = req.body;
-
-  db.placeOrder(orders)
-    .then((result) => {
-      console.log(orders);
-
-      res.json({
-        success: true,
-        message: "Megrendelés sikeresen rögzítve",
-        orderId: result,
-      });
-    })
-    .catch((error) => {
-      console.log(orders);
-      for (const item of orders.cart) {
-        console.log("Item OrderId:", item.orderId);
-        console.log("Item ID:", item.id);
-        console.log("Item Quantity:", item.quantity);
-        console.log("Item Price:", item.price);
-        console.log("---------------------");
-      }
-      //  orderDate, shippingDate, status, paymentId, userData.address
-      console.log("orderDate:", orders.orderDate);
-      console.log("shippingDate:", orders.shippingDate);
-      console.log("status:", orders.status);
-      console.log("payment:", orders.paymentId);
-      console.log("address:", orders.userAddress);
-
-      console.error("Hiba a megrendelés rögzítése közben:", error);
-      res
-        .status(500)
-        .json({ success: false, error: "Hiba a megrendelés rögzítése közben" });
     });
 });
 
