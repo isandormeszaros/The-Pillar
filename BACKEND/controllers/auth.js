@@ -5,8 +5,10 @@ var DB = require("../database/dboperations");
 const authJwt = require("../middleware/authjwt");
 var authUtils = require("../utils/authUtils");
 const crypto = require("crypto");
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 const sgMail = require("@sendgrid/mail");
+const jwt = require('jsonwebtoken');
+const { secret } = require('../config/authconfig');
 const stripe = require("stripe")(
   "sk_test_51OqjCM01VYY1Q06qZfwWtRUeaK7MLymRQpNnkBNiUferRL3QYxJMYJKLByKSzsBfIPoslTYtoH0KnJBkQwywdqWZ003w8byPBd"
 );
@@ -20,14 +22,14 @@ router.post("/login", function (req, res, next) {
   DB.getSignIn(req.body.email, req.body.password)
     .then((data) => data[0])
     .then((data) => {
-      console.log(data);
-      const { id } = data;
-      const token = authUtils.generateToken(id);
-
+      const { id, userEmail } = data;
+      console.log(data)
+      const token = authUtils.generateToken(id, userEmail);
       res.status(200).json({
         data: data,
         token: token,
       });
+      console.log(token);
     })
     .catch((error) => res.status(404).send(error));
 });
@@ -188,8 +190,10 @@ router.post("/create-checkout-session", async (req, res) => {
         enabled: true,
       },
       discounts: discounts,
-      success_url: "http://localhost:3000/auth/checkout/succeed?true&session_id={CHECKOUT_SESSION_ID}",
-      cancel_url: "http://localhost:3000/auth/checkout/failed?session_id={CHECKOUT_SESSION_ID}",
+      success_url:
+        "http://localhost:3000/auth/checkout/succeed?true&session_id={CHECKOUT_SESSION_ID}",
+      cancel_url:
+        "http://localhost:3000/auth/checkout/failed?session_id={CHECKOUT_SESSION_ID}",
     });
 
     console.log(taxRate);
@@ -207,30 +211,28 @@ router.post("/create-checkout-session", async (req, res) => {
 router.get("/checkout/succeed", async (req, res) => {
   try {
     const sessionId = req.query.session_id;
-    
-    console.log("Random " + sessionId)
+
+    console.log("Random " + sessionId);
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     const lineItems = await stripe.checkout.sessions.listLineItems(sessionId);
 
     console.log(lineItems);
-    res.json({ data: session });
-    console.log({ data: session });
+    res.json({ data: session, lineItems: lineItems.data });
   } catch (error) {
     console.error("Error retrieving checkout session:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
-// POST /allwatches/orders - Place an order
+// POST /auth/orders - Place an order
 router.post("/orders", (req, res) => {
-  const orders = req.body;
-  
-  DB.placeOrder(orders)
-    .then((result) => {
-      console.log(orders);
+  const header = req.body.header;
+  const body = req.body.body;
 
+  DB.placeOrder(header, body)
+    .then((result) => {
       res.json({
         success: true,
         message: "Megrendelés sikeresen rögzítve",
@@ -238,26 +240,28 @@ router.post("/orders", (req, res) => {
       });
     })
     .catch((error) => {
-      console.log(orders);
-      for (const item of orders.cart) {
-        console.log("Item OrderId:", item.orderId);
-        console.log("Item ID:", item.id);
-        console.log("Item Quantity:", item.quantity);
-        console.log("Item Price:", item.price);
-        console.log("---------------------");
-      }
-      //  orderDate, shippingDate, status, paymentId, userData.address
-      console.log("orderDate:", orders.orderDate);
-      console.log("status:", orders.status);
-      console.log("payment:", orders.paymentId);
-      console.log("address:", orders.userAddress);
-
       console.error("Hiba a megrendelés rögzítése közben:", error);
-      res
-        .status(500)
-        .json({ success: false, error: "Hiba a megrendelés rögzítése közben" });
+      res.status(500).json({
+        success: false,
+        error: "Hiba a megrendelés rögzítése közben",
+        error,
+      });
     });
 });
+
+// GET /auth/orders/all - Place an order
+router.get("/orders/all", [authJwt.verifyToken], async (req, res) => {
+  try {
+    let token = req.headers["x-access-token"];
+    const decodedToken = jwt.verify(token, secret);
+    const userId = decodedToken.id;
+    const data = await DB.getAllOrders(userId);
+    res.json(data);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
 
 router.get(
   "/test",

@@ -2,7 +2,6 @@ const { response } = require("express");
 var express = require("express");
 var router = express.Router();
 var db = require("../database/dboperations");
-const { ToastBody } = require("react-bootstrap");
 
 // GET /allwatches - Az összes elérhető óramárka lekérdezése
 router.get("/", (req, res) => {

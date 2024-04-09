@@ -52,6 +52,7 @@ function Menu() {
     <BrowserRouter>
       <Navbar cart={cart} islogged={islogged} />
       <Separator />
+      <ScrollToTop />
       <Routes>
         <Route path="/home" element={<Home />} />
         <Route path="/" element={<Navigate to="/home" />} />

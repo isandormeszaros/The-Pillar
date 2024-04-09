@@ -33,8 +33,6 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems, islogged }
 
 
     console.log(applyCoupon().totalPriceWithShipping)
-    console.log(couponCode)
-
 
     const jsonCoupon = JSON.stringify(couponCode)
 
@@ -66,6 +64,13 @@ const Cart = ({ cart, updateQuantity, removeFromCart, removeAllItems, islogged }
     }
 
     const couponClass = couponError ? 'invalid-coupon' : 'valid-coupon';
+
+    if(couponCode === "teleki2024"){
+        localStorage.setItem('couponBool', "true");
+    }
+    else{
+        localStorage.setItem('couponBool', "false");
+    }
 
     if (!islogged) {
         return (

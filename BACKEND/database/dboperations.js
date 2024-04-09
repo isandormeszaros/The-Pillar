@@ -101,16 +101,13 @@ async function selectPageProduct(page) {
 // GET /allwatches/brands - Óramárka megjelenítése
 async function selectJustBrands() {
   return new Promise((resolve, reject) => {
-    pool.query(
-      "SELECT * FROM watches.brand;",
-      (error, elements) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(elements);
-        }
+    pool.query("SELECT * FROM watches.brand;", (error, elements) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(elements);
       }
-    );
+    });
   });
 }
 
@@ -358,15 +355,15 @@ async function deleteAllFavourites(userId) {
 }
 
 async function selectProductWhere(whereConditions) {
-  let whereClause = ""; // Kezdetben üres string
+  let whereClause = "";
   let values = [];
 
   if (whereConditions.watchName) {
-    let watchNames = whereConditions.watchName.split(", "); // Split the watchName string into an array
-    let watchNameClause = watchNames.map(() => "watchName LIKE ?").join(" OR "); // Create a clause for each watchName
-    whereClause += `WHERE (${watchNameClause})`; // Add the watchName clause to the SQL query
+    let watchNames = whereConditions.watchName.split(", ");
+    let watchNameClause = watchNames.map(() => "watchName LIKE ?").join(" OR ");
+    whereClause += `WHERE (${watchNameClause})`;
     for (let name of watchNames) {
-      values.push("%" + name + "%"); // Add each watchName value to the values array
+      values.push("%" + name + "%");
     }
   }
 
@@ -374,13 +371,12 @@ async function selectProductWhere(whereConditions) {
     if (whereClause !== "") {
       whereClause += " AND";
     } else {
-      whereClause += "WHERE"; // Ha még nem volt feltétel, akkor WHERE-t kell hozzáadni
+      whereClause += "WHERE";
     }
     whereClause += " dialMaterial LIKE ?";
     values.push("%" + whereConditions.dialMaterial + "%");
   }
 
-  // SQL lekérdezés összeállítása csak akkor, ha van feltétel
   const sqlQuery = `SELECT * FROM watches.alltablesview ${whereClause}`;
 
   console.log(values);
@@ -402,7 +398,6 @@ async function selectProductWhere(whereConditions) {
 // --- FELHASZNÁLÓK KEZELÉSE ---
 // Bejelentkezés
 async function getSignIn(email, password) {
-  console.log(email, password);
   return new Promise((resolve, reject) => {
     pool.query(
       "SELECT * FROM watches.users WHERE userEmail=? and password=SHA2(?,256)",
@@ -552,42 +547,125 @@ async function patchUser(id, userData) {
 }
 
 // Rendelés leadása
-async function placeOrder(data) {
-  const { cart, orderDate, status, paymentId, userAddress } = data;
-
-  try {
-    await pool.query("START TRANSACTION");
-
-    // Beszúrás az orders táblába
-    const insertOrderResult = await pool.query(
-      "INSERT INTO orders (orderDate, status, paymentId, userAddress) VALUES (?, ?, 1, ?)",
-      [orderDate, status, paymentId, userAddress]
+async function placeOrder(header, items) {
+  const getPrice = await new Promise((resolve, reject) => {
+    pool.query(
+      `SELECT id, price FROM watches.base WHERE id IN (${items
+        .map((item) => item.productId)
+        .join(",")})`,
+      (error, result) => {
+        if (error) {
+          reject("Hiba történt az ár lekérdezése során: ", error);
+        } else {
+          resolve(result);
+        }
+      }
     );
+  });
+  // console.log(getPrice);
 
-    const orderId = insertOrderResult.insertId;
+  const aggregatedItems = items.map((item) => {
+    const foundPrice = getPrice.find((row) => row.id === item.productId);
+    if (foundPrice) {
+      return {
+        ...item,
+        price: foundPrice.price,
+      };
+    } else {
+      throw new Error(`Nincs ilyen adat az adatbázisban.`);
+    }
+  });
+  // console.log(aggregatedItems);
 
-    const insertOrderQuery =
-      "INSERT INTO orderconnbase (orderId, productId, quantity, price) VALUES (?, ?, ?, ?)";
+  let totalAmount = 0;
+  const vat = 0.27;
+  const couponDiscount = 0.1;
 
-    const productValues = cart.map((item) => [
-      orderId,
-      item.productId,
-      item.quantity,
-      item.price,
-    ]);
-
-    await pool.query(insertOrderQuery, productValues);
-
-    console.log("Sikeres");
-    
-    await pool.query("COMMIT");
-    console.log("Megrendelés sikeresen rögzítve!");
-    return orderId; // Az új rendelésszám visszaadása
-  } catch (error) {
-    await pool.query("ROLLBACK");
-    console.error("Hiba a megrendelés rögzítése közben:", error);
-    throw error;
+  if (aggregatedItems.length > 0) {
+    totalAmount = aggregatedItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
+  } else {
+    throw new Error(`Az aggregatedItems nem tartalmaz adatot.`);
   }
+
+  let totalPriceVAT = totalAmount * (1 + vat); 
+
+  if (header.coupon === true) {
+    totalPriceVAT -= totalPriceVAT * couponDiscount;
+  }
+
+  const totalPrice = totalPriceVAT;
+
+  let orderId;
+  const orderIdResult = await new Promise((resolve, reject) => {
+    pool.query(
+      "INSERT INTO orders (userId, status, paymentId, orderDate, userAddress, totalPrice) VALUES (?, 0, 1, NOW(), ?, ?)",
+      [header.userId, header.userAddress, totalPrice],
+      (error, result) => {
+        if (error) {
+          reject("Hiba a megrendelés rögzítése közben: " + error);
+        } else {
+          if (result.insertId > 0) {
+            orderId = result.insertId;
+          } else {
+            console.error(
+              "Hiba történt a megrendelés azonosítójának lekérdezés során: No insertId in result."
+            );
+          }
+          resolve({ result });
+        }
+      }
+    );
+  });
+  // console.log(orderIdResult)
+
+  const insertItemsToSwitchBoard = await new Promise((resolve, reject) => {
+    const orderItemsValue = aggregatedItems
+      .map(
+        (item) =>
+          `(${item.productId}, ${orderId},  ${item.quantity}, ${item.price})`
+      )
+      .join(",");
+    const orderItemsQuery = `INSERT INTO orderconnbase (productId, orderId, quantity, price) VALUES ${orderItemsValue}`;
+    pool.query(orderItemsQuery, (error, result) => {
+      if (error) {
+        reject("Hiba a megrendelés beállításakor: " + error);
+      } else {
+        resolve({ result });
+      }
+    });
+  });
+  // console.log(insertItemsToSwitchBoard)
+
+  const updateQuantity = await new Promise((resolve, reject) => {
+    aggregatedItems.forEach((item) => {
+      pool.query(
+        "UPDATE watches.base SET quantity = quantity - ? WHERE id = ?",
+        [item.quantity, item.productId],
+        (error, result) => {
+          if (error) {
+            reject("Hiba a kiszámításakor: " + error);
+          } else {
+            resolve({ result });
+          }
+        }
+      );
+    });
+  });
+  // console.log(updateQuantity)
+}
+
+async function getAllOrders(id) {
+  return new Promise((resolve, reject) => {
+    pool.query("SELECT * FROM allfullordersview where userId = ?", [id] , (error, elements) => {
+      if (error) {
+        return reject(error);
+      }
+      return resolve(elements);
+    });
+  });
 }
 
 
@@ -640,4 +718,5 @@ module.exports = {
   patchUser: patchUser,
   selectUser: selectUser,
   placeOrder: placeOrder,
+  getAllOrders : getAllOrders
 };

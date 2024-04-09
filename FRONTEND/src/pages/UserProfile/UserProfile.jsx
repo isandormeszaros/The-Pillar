@@ -15,9 +15,11 @@ function UserProfile({ islogged, setIslogged }) {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [favourite, setFavourite] = useState([]);
+  const [orderData, setOrderData] = useState([]);
   const [favouriteToDelete, setFavouriteToDelete] = useState([]);
   const images = "http://localhost:8080/images/";
   const userId = response.data && response.data.length > 0 ? response.data[0].id : null;
+  const [orders, setOrders] = useState([]);
   const [userUpdate, setUserUpdate] = useState({
     name: "",
     userEmail: "",
@@ -172,10 +174,6 @@ function UserProfile({ islogged, setIslogged }) {
       })
   };
 
-
-  console.log(response.data)
-  // const userAddress = response.data && response.data.length > 0 ? response.data[0].userAddress : '';
-
   useEffect(() => {
     WatchesServices.getFavouriteById(userId)
       .then((response) => setFavourite(response.data))
@@ -231,7 +229,24 @@ function UserProfile({ islogged, setIslogged }) {
       })
   };
 
-  console.log(userUpdate)
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    http.get("/auth/orders/all", {headers: { "x-access-token": token }})
+      .then((response) => {
+        setOrders(response.data);
+      })
+      .catch((error) => {
+        if (error.response) {
+          toast.error(error.response.data.error);
+        } else {
+          toast.error("Hiba a szerverrel való kommunikáció során");
+        }
+      });
+  }, []);
+
+
+  console.log(orders);
 
   return (
     <div>
@@ -264,7 +279,7 @@ function UserProfile({ islogged, setIslogged }) {
                     <button className="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Profilom</button>
                   </li>
                   <li className="nav-item" role="presentation">
-                    <button className="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Megrendeléseim</button>
+                    <button className="nav-link" id="pills-order-tab" data-bs-toggle="pill" data-bs-target="#pills-order" type="button" role="tab" aria-controls="pills-order" aria-selected="false">Megrendeléseim</button>
                   </li>
                   <li className="nav-item" role="presentation">
                     <button className="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Kedvenceim</button>
@@ -341,8 +356,14 @@ function UserProfile({ islogged, setIslogged }) {
                     </div>
                   </div>
 
-                  <div className="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-                    <h1>Section</h1>
+                  <div className="tab-pane fade" id="pills-order" role="tabpanel" aria-labelledby="pills-order-tab">
+                    <div className="container">
+                      <div className="row">
+                        <div className="col-12">
+                          <h1 className="custom-heading-font">Megrendeléseim</h1>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">

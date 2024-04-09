@@ -186,7 +186,7 @@ function ProductDetailPage({ addToCartFunction, islogged }) {
                   <p className="mb-2">Tok vastagsága: {product.caseThickness}mm</p>
                   <p className="mb-2">Tok Diaméter: {product.caseDiameter}mm</p>
                   <p className="mb-2">Számlap anyaga: {product.dialMaterial}</p>
-                  <p className="mb-2">Sámlap színe: {product.dialColor}</p>
+                  <p className="mb-2">Számlap színe: {product.dialColor}</p>
                   <h2 className="custom-heading-font detail-title">Szíj</h2>
                   <hr />
                   <p className="mb-2">Szíj anyaga: {product.strapMaterial}</p>

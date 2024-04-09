@@ -1,17 +1,12 @@
-import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom'; // Use built-in hook for location
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
-function ScrollToTop({ children }) { // Accept children for wrapping
+export default function ScrollToTop() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth', // Smooth scrolling
-    });
-  }, [pathname]); // Update scroll only when pathname changes
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
-  return children; // Render children for seamless wrapping
+  return null;
 }
-
-export default ScrollToTop; // No need for withRouter
