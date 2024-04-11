@@ -232,7 +232,7 @@ function UserProfile({ islogged, setIslogged }) {
   useEffect(() => {
     const token = localStorage.getItem('token');
 
-    http.get("/auth/orders/all", {headers: { "x-access-token": token }})
+    http.get("/auth/orders/all", { headers: { "x-access-token": token } })
       .then((response) => {
         setOrders(response.data);
       })
@@ -359,8 +359,38 @@ function UserProfile({ islogged, setIslogged }) {
                   <div className="tab-pane fade" id="pills-order" role="tabpanel" aria-labelledby="pills-order-tab">
                     <div className="container">
                       <div className="row">
-                        <div className="col-12">
-                          <h1 className="custom-heading-font">Megrendeléseim</h1>
+                        <div className="col-md-12 col-sm-12">
+                          <h1 className="custom-heading-font pb-4">Megrendeléseim ({orders.length})</h1>
+
+                          <div class="table-responsive">
+                            <table className="table table-hover">
+                              <thead>
+                                <tr>
+                                  <th scope="col">Rendelés azonosítója</th>
+                                  <th scope="col">Rendelés dátuma</th>
+                                  <th scope="col">Termék neve</th>
+                                  <th scope="col">Mennyiség</th>
+                                  <th scope="col">Ár</th>
+                                  <th scope="col">Szállítási cím</th>
+                                  <th scope="col">Rendelés állapota</th>
+                                </tr>
+                              </thead>
+                              {orders.map(order => (
+                                <tbody>
+                                  <tr>
+                                    <th scope="row">{order.orderId}</th>
+                                    <td>{order.orderDate}</td>
+                                    <td>{order.productName}</td>
+                                    <td>{order.quantity}</td>
+                                    <td>{order.price}</td>
+                                    <td>{order.shippingAddress}</td>
+                                    <td>{order.status}</td>
+                                  </tr>
+                                </tbody>
+                              ))}
+                            </table>
+                          </div>
+
                         </div>
                       </div>
                     </div>

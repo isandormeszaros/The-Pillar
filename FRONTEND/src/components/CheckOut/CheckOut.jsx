@@ -182,7 +182,6 @@ function Checkout({ cart }) {
                         <div className="d-flex justify-content-center align-items-center cart-total-summary">
                             <button onClick={makePayment} className="default-button d-flex w-100">Checkout</button>
                         </div>
-                        <button className='default-button mt-3 w-100' onClick={handleSubmit}>Rendelés leadása</button>
                     </div>
                 </div>
             </div>
