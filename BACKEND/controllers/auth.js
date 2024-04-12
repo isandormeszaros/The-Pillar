@@ -23,7 +23,6 @@ router.post("/login", function (req, res, next) {
     .then((data) => data[0])
     .then((data) => {
       const { id, userEmail } = data;
-      console.log(data)
       const token = authUtils.generateToken(id, userEmail);
       res.status(200).json({
         data: data,

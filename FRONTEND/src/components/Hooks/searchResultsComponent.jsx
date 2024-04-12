@@ -90,7 +90,7 @@ const SearchResultsComponent = () => {
                     <div className="view overlay">
                       <img
                         className="card-img-top rounded-0"
-                        src={watch.image}
+                        src={"http://localhost:8080/images/346/1.avif"}
                         alt="Card"
                       />
                       <a href="#!">
@@ -98,6 +98,7 @@ const SearchResultsComponent = () => {
                       </a>
                       <div className="card-body">
                         <h4 className="custom-card-title custom-heading-font mb-0">{watch.watchName}</h4>
+                        <p className="text-muted mb-0">-</p>
                         <p className="card-text text-muted">
                           Price:{" "}
                           {watch.price.toLocaleString("en-US", {
