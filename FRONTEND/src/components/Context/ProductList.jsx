@@ -121,32 +121,6 @@ function ProductList({ addToCartFunction, islogged }) {
   }, [updatedSzures]);
 
 
-
-  // Előző szures paraméter állapotának tárolása előző érték változóban
-  const prevSzures = useRef(updatedSzures);
-
-  // useEffect(() => {
-  //   // Szures változásának ellenőrzése
-  //   const szuresChanged = JSON.stringify(updatedSzures) !== JSON.stringify(prevSzures.current);
-  //   if (szuresChanged) {
-  //     WatchesServices.postSearch(updatedSzures)
-  //       .then(response => {
-  //         setRandom(response.random);
-  //         console.log("Sikeres");
-  //       })
-  //       .catch(error => {
-  //         console.error("Hiba történt", error);
-  //       });
-
-  //     // Az aktuális szures paraméter értékének frissítése az előző értékre
-  //     prevSzures.current = updatedSzures;
-  //     console.log(random)
-  //   }
-  // }, [updatedSzures]); // Dependency array includes szures parameter
-
-  // console.log(random)
-
-
   const addToCart = (product) => {
     if (!islogged) {
       toast.error("A vásárláshoz kérjük jelentkezzen be!");
@@ -297,10 +271,6 @@ function ProductList({ addToCartFunction, islogged }) {
             </div>
           </div>
         </div>
-      </section>
-
-      <section id="data-display">
-        <p>Useref érték: {prevSzures.current && Object.keys(prevSzures.current).length > 0 ? JSON.stringify(prevSzures.current) : "Nincs adat"}</p>
       </section>
 
       <div className="text-center">

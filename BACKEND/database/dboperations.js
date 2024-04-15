@@ -367,14 +367,29 @@ async function selectProductWhere(whereConditions) {
     }
   }
 
-  if (whereConditions.dialMaterial) {
+  if (whereConditions.dialColor) {
+    let dialColors = whereConditions.dialColor.split(", ");
+    let dialColorClause = dialColors.map(() => "dialColor LIKE ?").join(" OR ");
+    if (whereClause !== "") {
+      whereClause += " OR ";
+    } else {
+      whereClause += " WHERE ";
+    }
+    whereClause += `(${dialColorClause})`;
+    for (let color of dialColors) {
+      values.push("%" + color + "%");
+    }
+  }
+
+  if (whereConditions.minPrice && whereConditions.maxPrice) {
     if (whereClause !== "") {
       whereClause += " AND";
     } else {
-      whereClause += "WHERE";
+      whereClause += " WHERE";
     }
-    whereClause += " dialMaterial LIKE ?";
-    values.push("%" + whereConditions.dialMaterial + "%");
+    whereClause += " price BETWEEN ? AND ? ORDER BY price ASC";
+    values.push(whereConditions.minPrice);
+    values.push(whereConditions.maxPrice);
   }
 
   const sqlQuery = `SELECT * FROM watches.alltablesview ${whereClause}`;
@@ -590,7 +605,7 @@ async function placeOrder(header, items) {
     throw new Error(`Az aggregatedItems nem tartalmaz adatot.`);
   }
 
-  let totalPriceVAT = totalAmount * (1 + vat); 
+  let totalPriceVAT = totalAmount * (1 + vat);
 
   if (header.coupon === true) {
     totalPriceVAT -= totalPriceVAT * couponDiscount;
@@ -659,15 +674,18 @@ async function placeOrder(header, items) {
 
 async function getAllOrders(id) {
   return new Promise((resolve, reject) => {
-    pool.query("SELECT * FROM allfullordersview where userId = ?", [id] , (error, elements) => {
-      if (error) {
-        return reject(error);
+    pool.query(
+      "SELECT * FROM allfullordersview where userId = ?",
+      [id],
+      (error, elements) => {
+        if (error) {
+          return reject(error);
+        }
+        return resolve(elements);
       }
-      return resolve(elements);
-    });
+    );
   });
 }
-
 
 async function selectUser(email, password) {
   return new Promise((resolve, reject) => {
@@ -718,5 +736,5 @@ module.exports = {
   patchUser: patchUser,
   selectUser: selectUser,
   placeOrder: placeOrder,
-  getAllOrders : getAllOrders
+  getAllOrders: getAllOrders,
 };

@@ -90,14 +90,14 @@ function Status() {
                 <h1 className="custom-heading-font">
                     Megrendelését sikeresen rögzítettük.
                 </h1>
-                <h5 className="mb-1 custom-p-font text-white">Köszönjük a bizalmat. Email-ben megtalálja a rendelés részletes adatait.</h5>
-                <div className="row gx-5 m-a pt-3 pb-5 justify-content-center">
-                    <div className="col-lg-4 col-md-12 d-flex p-2 justify-content-center justify-content-lg-start">
+                <h5 className="mb-1 custom-p-font text-white">Köszönjük a bizalmat. A megrendelések megjelenítése megnüpontban megtalálja a rendelés részletes adatait.</h5>
+                <div className="row pt-3 pb-5 m-0 justify-content-center">
+                    <div className="col-lg-4 col-md-12 d-flex py-2 px-0 justify-content-center justify-content-lg-start">
                         <button className="default-button w-75 order-status-button" onClick={getData}><i className="pi pi-home"></i>Kezdőlap</button>
 
 
                     </div>
-                    <div className="col-lg-4 col-md-12 d-flex p-2 justify-content-center justify-content-lg-end">
+                    <div className="col-lg-4 col-md-12 d-flex py-2 px-0 justify-content-center justify-content-lg-end">
                         <button className="default-button w-75 order-status-button">Megrendeléseim<i className="pi pi-box"></i></button>
                     </div>
                 </div>

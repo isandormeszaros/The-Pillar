@@ -92,6 +92,7 @@ function FilterSection() {
   const location = useLocation();
   const navigate = useNavigate();
   const [queryBrands, setQueryBrands] = useState('')
+  const [queryDialColors, setQueryDialColors] = useState('')
 
   const [brands, setBrands] = useState([]);
   const [dialColors, setdialColors] = useState([]);
@@ -103,6 +104,23 @@ function FilterSection() {
   const [bandWidthes, setBandWidthes] = useState([]);
   const [dialMaterials, setDialMaterials] = useState([]);
   const [countries, setCountries] = useState([]);
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(0);
+  const [prices, setPrices] = useState([]);
+
+
+  // const [state, setState] = useState({
+  //   brands: [],
+  //   dialColors: [],
+  //   dates: [],
+  //   caseMaterials: [],
+  //   strapMaterials: [],
+  //   movements: [],
+  //   resistances: [],
+  //   bandWidthes: [],
+  //   dialMaterials: [],
+  //   countries: []
+  // });
 
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedDialColors, setSelectedDialColors] = useState([]);
@@ -221,19 +239,9 @@ function FilterSection() {
     WatchesServices.getCountries()
       .then((response) => setCountries(response.data))
       .catch((error) =>
-        console.error("Hiba történt a számlap anyagok lekérdezésekor:", error)
+        console.error("Hiba történt a gyártási hely lekérdezésekor:", error)
       );
   }, []);
-
-  const updateQueryParams = () => {
-    const queryParams = {
-      brand: selectedBrands,
-      dialColor: selectedDialColors,
-    };
-
-    const updatedParams = queryString.stringify(queryParams);
-    navigate(`?${updatedParams}`);
-  };
 
 
   //   // BRAND ACTUAL CHECKBOX IS SELECTED
@@ -247,15 +255,19 @@ function FilterSection() {
     }
   }
 
-  //   // DIAL COLOR ACTUAL CHECKBOX IS SELECTED
+  // DIAL COLOR ACTUAL CHECKBOX IS SELECTED
   const handleDialColorChange = (event) => {
     const { checked, value } = event.target;
-    setSelectedDialColors(
-      checked
-        ? [...selectedDialColors, value]
-        : selectedDialColors.filter((color) => color !== value)
-    );
+    if (checked) {
+      setSelectedDialColors((prevSelectedDialColors) => [...prevSelectedDialColors, value]);
+    } else {
+      setSelectedDialColors((prevSelectedDialColors) => prevSelectedDialColors.filter((color) => color !== value));
+    }
   };
+
+
+
+
 
   //   // DIAL COLOR ACTUAL CHECKBOX IS SELECTED
   const handleDatesChange = (event) => {
@@ -330,12 +342,14 @@ function FilterSection() {
   //   // COUNTRY ACTUAL CHECKBOX IS SELECTED
   const handleCountryChange = (event) => {
     const { checked, value } = event.target;
-    setCountries(
-      checked
-        ? [...selectedCountries, value]
-        : selectedCountries.filter((country) => country !== value)
-    );
+    if (checked) {
+      setSelectedCountries([...selectedCountries, value]);
+    } else {
+      setSelectedCountries(selectedCountries.filter((country) => country !== value));
+    }
   };
+
+
 
   //   // SHOW ALL BRANDS
   const toggleShowAllBrands = () => {
@@ -400,9 +414,19 @@ function FilterSection() {
       fil['watchName'] = selectedBrands.join(", ");
       setQueryBrands(queryParams.brand || '');
     }
+    if (selectedDialColors.length > 0) {
+      fil['dialColor'] = selectedDialColors.join(", ");
+      setQueryDialColors(queryParams.dialColor || '');
+    }
+    if (minPrice && maxPrice) {
+    fil['minPrice'] = minPrice;
+    fil['maxPrice'] = maxPrice;
+  }
     const searchQuery = queryString.stringify(fil);
     navigate(`/allbrands?${searchQuery}`);
     setQueryBrands(fil['watchName']);
+    setQueryDialColors(fil['dialColor']);
+
 
     // function createSearchParams(params) {
     //   return new URLSearchParams(Object.entries(params).flatMap(([key, values]) => Array.isArray(values) ? values.map((value) => [key, value]) : [[key, values]]));
@@ -418,12 +442,19 @@ function FilterSection() {
 
 
 
-
-
-
-
   // ACCORDION ITEMS JSON
   const accordionItems = [
+    {
+      title: "Ár",
+      content: (
+        <>
+          <label className="custom-p-font pt-2">Minimum ár</label>
+          <input className="form-control rounded-0" type="number" placeholder="Min" style={{ fontSize: ".85rem" }} onChange={(e) => setMinPrice(parseInt(e.target.value))} />
+          <label className="pt-2">Maximum ár</label>
+          <input className="form-control rounded-0" type="number" placeholder="Max" style={{ fontSize: ".85rem" }} onChange={(e) => setMaxPrice(parseInt(e.target.value))} />
+        </>
+      ),
+    },
     {
       title: "Márka",
       content: (
@@ -461,7 +492,7 @@ function FilterSection() {
                 type="checkbox"
                 className="mx-1"
                 id={dialColor.id}
-                value={dialColor.X}
+                value={dialColor.color}
                 checked={selectedDialColors.includes(dialColor.color)}
                 onChange={handleDialColorChange}
               />
@@ -515,7 +546,7 @@ function FilterSection() {
                 type="checkbox"
                 className="mx-1"
                 id={countries.id}
-                value={countries.X}
+                value={countries.country}
                 checked={selectedCountries.includes(countries.country)}
                 onChange={handleCountryChange}
               />
@@ -693,7 +724,7 @@ function FilterSection() {
           )}
         </>
       ),
-    },
+    }
   ];
 
   //   return (

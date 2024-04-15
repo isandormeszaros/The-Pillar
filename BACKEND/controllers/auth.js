@@ -261,7 +261,6 @@ router.get("/orders/all", [authJwt.verifyToken], async (req, res) => {
   }
 });
 
-
 router.get(
   "/test",
   authJwt.verifyToken, //pl: megrendelés

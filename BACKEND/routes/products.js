@@ -141,10 +141,6 @@ router.get("/all/countries", (req, res) => {
     .catch((error) => console.log(error));
 });
 
-// TODO: • GET: Retrieve favorite items - /favourite/get
-// TODO: • POST: Add item to favorites - /favourite/post
-// TODO: • DELETE: Remove item from favorites - /favourite/delete
-
 // GET /allwatches/favourite/2 - Kedvenc termékek megjelenítése
 router.get("/favourite/:id", (req, res) => {
   const userId = req.params.id;
@@ -157,7 +153,7 @@ router.get("/favourite/:id", (req, res) => {
 // POST /allwatches/favourite/add/2 - Kedvenc termékek hozzáadása
 router.post("/favourite/add", (req, res) => {
   const { userId, productId } = req.body;
-  
+
   db.addToFavourite(userId, productId)
     .then((data) => {
       res.json(data);
@@ -194,7 +190,7 @@ router.delete("/favourite/delete/:id", (req, res) => {
 router.delete("/favourite/all/delete", (req, res) => {
   const userId = req.body.userId;
 
-  db.deleteAllFavourites(userId )
+  db.deleteAllFavourites(userId)
     .then((data) => {
       if (data.affectedRows == 0) res.status(404).send("Nincs ilyen rekord!");
       else

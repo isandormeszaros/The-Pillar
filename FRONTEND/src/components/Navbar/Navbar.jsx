@@ -79,7 +79,7 @@ const Navbar = ({ cart, islogged }) => {
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 <Link to="/allbrands" className="nav-link" onClick={closeMenu}>
-                  Összes óra
+                  Kollekciónk
                 </Link>
               </li>
               <li className="nav-item">
