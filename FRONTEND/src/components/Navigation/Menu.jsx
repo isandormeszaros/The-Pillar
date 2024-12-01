@@ -26,6 +26,7 @@ import useCart from "../Hooks/useCart";
 import Success from "../CheckOut/Success/Success";
 import Cancel from "../CheckOut/Cancel/Cancel";
 import ProductDetailPage from "../Context/ProductDetailPage";
+import ForgetPassword  from "../../pages/ForgetPass/ForgetPassword";
 
 const SearchResultPage = () => {
   const { sText } = useParams();
@@ -92,7 +93,7 @@ function Menu() {
         <Route path="/auth/checkout/succeed" element={<Success />} />
         <Route path="/auth/checkout/cancel" element={<Cancel />} />
         <Route path="/allwatches/watches/:id" element={<ProductDetailPage addToCartFunction={addToCartFunction} islogged={islogged} />} />
-
+        <Route path="/forgetpassword" element={<ForgetPassword />} />
       </Routes>
       <Footer />
       <ToastContainer />

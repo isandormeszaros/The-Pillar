@@ -1,5 +1,6 @@
 .border-color {
-  border: 0.8px solid var(--ultra-light-grey) !important;
+  /* border: 0.8px solid var(--ultra-light-grey) !important; */
+  border: 0.8px solid red;
   border-radius: 1.5px;
 }
 
@@ -33,7 +34,7 @@
 .faq-header,
 .faq-header-support {
   position: absolute;
-  top: 35%;
+  top: 23%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -42,7 +43,16 @@
   top: 30%;
 }
 
-.active-pills {
+.nav-pills:hover  {
   color: white;
-  background-color: var(--dark-gold);
+}
+
+.nav-pills .nav-link.active{
+  background-color: var(--black);
+  color: var(--ultra-light-grey);
+}
+
+.button-image-text{
+  margin-bottom: 0rem;
+  padding: 0.2rem 0.8rem;
 }

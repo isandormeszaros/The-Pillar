@@ -1,73 +1,154 @@
-// import WatchesServices from '../../services/WatchesServices';
-// import { useState } from 'react';
+import { useState } from 'react';
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
+import { initializeApp } from 'firebase/app';
+import { Link } from 'react-router-dom';
+import PhoneInput from 'react-phone-input-2';
 
-// // SendGrid API kulcs beállítása
-// sgMail.setApiKey('your-sendgrid-api-key');
+const firebaseConfig = {
+    apiKey: "AIzaSyCc_UWwGg3sje2n1327NpOP7-MSBnXM4sQ",
+    authDomain: "the-pillar-c782c.firebaseapp.com",
+    projectId: "the-pillar-c782c",
+    storageBucket: "the-pillar-c782c.firebasestorage.app",
+    messagingSenderId: "617155671097",
+    appId: "1:617155671097:web:a6d2372b8f3cb82a7e09e8",
+    measurementId: "G-VZQR6GPZBH"
+};
+const images = "http://localhost:8080/images/forgetpassword/"
 
-// function ForgetPassword() {
-//   const [email, setEmail] = useState('');
-//   const [otpSent, setOtpSent] = useState(false);
-//   const [error, setError] = useState('');
+// Initialize Firebase app and auth
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
+const ForgetPassword = () => {
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [verificationCode, setVerificationCode] = useState('');
+    const [verificationId, setVerificationId] = useState('');
+    const [error, setError] = useState('');
+    const [otpSent, setOtpSent] = useState(false);
 
-//     // Ellenőrizzük, hogy az e-mail cím helyes formátumban van-e
-//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-//     if (!emailRegex.test(email)) {
-//       setError('Invalid email address');
-//       return;
-//     }
+    const setUpRecaptcha = () => {
+        if (typeof window !== 'undefined' && !window.recaptchaVerifier) {
+            window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                size: 'normal', // Can also be 'normal'
+                callback: (response) => {
+                    console.log('reCAPTCHA verified:', response);
+                },
+                'expired-callback': () => {
+                    console.error('reCAPTCHA expired');
+                }
+            }
+        );
+        }
+    };
 
-//     WatchesServices.getOtp()
-//       .then(response => {
-//         // Ha az OTP generálása sikeres
-//         if (response.data && response.data.otp) {
-//           const otp = response.data.otp;
+    const handleSendCode = async (e) => {
+        e.preventDefault();
+        setError('');
+        setOtpSent(false);
+    
+        setUpRecaptcha();
+    
+        try {
+            const appVerifier = window.recaptchaVerifier;
+            // Ensure reCAPTCHA is rendered before attempting to send OTP
+            await window.recaptchaVerifier.render();
+            const confirmationResult = await signInWithPhoneNumber(auth, "+" + phoneNumber, appVerifier);
+            setVerificationId(confirmationResult.verificationId);
+            setOtpSent(true);
+        } catch (error) {
+            console.error("Error sending OTP:", error);
+            setError('Error sending OTP: ' + error.message);
+        }
+    };
 
-//           // Az e-mail üzenet összeállítása
-//           const msg = {
-//             to: email,
-//             from: 'your-email@example.com', // Küldő e-mail címe, amit ellenőriznie kell a SendGrid-nek
-//             subject: 'OTP for password reset',
-//             text: `Your OTP for password reset is: ${otp}`
-//           };
+    const handleVerifyCode = async (e) => {
+        e.preventDefault();
+        try {
+            const credential = auth.PhoneAuthProvider.credential(verificationId, verificationCode);
+            await auth.signInWithCredential(credential);
+            alert('Phone number verified successfully!');
+        } catch (error) {
+            console.error("Error verifying code:", error);
+            setError('Error verifying code: ' + error.message);
+        }
+    };
 
-//           // Elküldjük az e-mailt a SendGrid segítségével
-//           sgMail.send(msg)
-//             .then(() => {
-//               console.log('Email sent'); // Sikeres e-mail küldésének jelzése a konzolon
-//               setOtpSent(true); // Állítsuk be a flag-et, hogy az OTP-t sikeresen elküldték
-//             })
-//             .catch(error => {
-//               setError('Error sending email: ' + error.message); // Hibajelzés, ha az e-mail küldése nem sikerült
-//             });
-//         } else {
-//           setError('Failed to generate OTP'); // Hibajelzés, ha az OTP generálása nem sikerült
-//         }
-//       })
-//       .catch(error => {
-//         setError('Error generating OTP: ' + error.message); // Hibajelzés, ha valamilyen hiba történt az OTP generálása közben
-//       });
-//   };
+    const handlePhoneNumberChange = (value) => {
+        setPhoneNumber(value); // Now `phoneNumber` is the plain phone number string
+    };
+    
 
-//   return (
-//     <div>
-//       <h2>Forgot Password</h2>
-//       <form onSubmit={handleSubmit}>
-//         <input
-//           type="email"
-//           placeholder="Enter your email"
-//           value={email}
-//           onChange={(e) => setEmail(e.target.value)}
-//           required
-//         />
-//         <button type="submit">Send OTP</button>
-//       </form>
-//       {error && <p style={{ color: 'red' }}>{error}</p>}
-//       {otpSent && <p>OTP sent successfully to your email.</p>}
-//     </div>
-//   );
-// }
+    console.log("+" + phoneNumber)
 
-// export default ForgetPassword;
+    return (
+        <section className="login-section">
+            <div className="container-fluid">
+                <div className="row">
+                    <div className="col-lg-6 text-black d-flex align-items-center justify-content-center">
+                        <div className="d-flex align-items-center h-custom-2 ">
+
+                            <form>
+                                <h3 className="mb-3 pb-3 custom-heading-font">Forgotten password?</h3>
+                                <div className="form-outline mb-2">
+                                    <p className="custom-p-font text-start small mb-0">
+                                        Telefonszám*
+                                    </p>
+                                    <PhoneInput
+                                        className="form-control form-control-lg phone-password-form-control input-phone-number"
+                                        country={'hu'}
+                                        value={phoneNumber}
+                                        onChange={handlePhoneNumberChange}
+                                        keyboardType="phone-pad"
+                                        require
+                                        rules={{
+                                            required: "Phone is required",
+                                        }}
+                                        inputStyle={{
+                                            border: "none",
+                                            color: "#4b4b4b",
+                                        }}
+                                        placeholder="Telefonszám"
+                                    />
+                                </div>
+
+                                <div className="row pt-1 mb-4">
+                                    <div className="col">
+                                        <a onClick={handleSendCode} className="d-flex default-button">
+                                            SEND CODE
+                                        </a>
+                                    </div>
+                                </div>
+
+                                {otpSent && <p className="text-success">OTP sent successfully!</p>}
+                                {error && <p className="text-danger">{error}</p>}
+                                <div id="recaptcha-container"></div>
+
+                                <p className="custom-p-font small mb-5 pb-lg-2">
+                                    Vissza a{" "}
+                                    <Link
+                                        to="/Login"
+                                        className="text-decoration-none register-info"
+                                    >
+                                        bejelentkezéshez
+                                    </Link>
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div className="col-lg-6 px-0 d-none d-lg-block bg-image-vertical">
+                        <img
+                            src={images + "forget-password.jpg"}
+                            alt="Login"
+                            className="w-100 vh-100"
+                            style={{ objectFit: "cover", objectPosition: "left" }}
+                        />
+                        <div className="image-shadow"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+}
+
+export default ForgetPassword;

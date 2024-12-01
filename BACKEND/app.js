@@ -15,6 +15,7 @@ var app = express();
 var corsOption = {
   origin: "http://localhost:3000" 
 }
+
 app.use(cors(corsOption));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

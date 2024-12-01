@@ -27,12 +27,13 @@ function Login({ islogged, setIslogged }) {
           sessionStorage.setItem("islogged", islogged);
           toast.success("Sikeres bejelentkezés");
         } else {
-          toast.error("Hibás bejelentkezés");
+          toast.error("Hibás adat");
         }
       })
       .catch((error) => {
         if (error.response) {
-          toast.error(error.response.data.message);
+          // toast.error(error.response.data.message);
+          toast.error("Hibás bejelentkezési adatok");
         } else {
           toast.error("Hiba a szerverrel való kommunikáció során");
         }

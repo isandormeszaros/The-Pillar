@@ -292,8 +292,7 @@ async function selectByFavourite(userId) {
 async function addToFavourite(userId, productId) {
   return new Promise((resolve, reject) => {
     pool.query(
-      (random =
-        "SELECT * FROM watches.favourite WHERE userIdFK = ? AND productIdFK = ?"),
+      ("SELECT * FROM watches.favourite WHERE userIdFK = ? AND productIdFK = ?"),
       [userId, productId],
       (error, result) => {
         if (error) {
@@ -390,6 +389,20 @@ async function selectProductWhere(whereConditions) {
     whereClause += " price BETWEEN ? AND ? ORDER BY price ASC";
     values.push(whereConditions.minPrice);
     values.push(whereConditions.maxPrice);
+  }
+
+  if (whereConditions.date) {
+    let dates = whereConditions.date.split(", ");
+    let datesClause = dates.map(() => "date LIKE ?").join(" OR ");
+    if (whereClause !== "") {
+      whereClause += " OR ";
+    } else {
+      whereClause += " WHERE ";
+    }
+    whereClause += `(${datesClause})`;
+    for (let date of dates) {
+      values.push("%" + date + "%");
+    }
   }
 
   const sqlQuery = `SELECT * FROM watches.alltablesview ${whereClause}`;

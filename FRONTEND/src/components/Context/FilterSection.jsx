@@ -1,85 +1,3 @@
-// import React, { useState, useEffect } from "react";
-// import http from "../../http-common";
-// import WatchesServices from "../../services/WatchesServices";
-// import queryString from "query-string";
-// import { useNavigate, useLocation } from "react-router-dom"; // Import missing dependencies
-
-// function FilterSection() {
-//   const [brands, setBrands] = useState([]);
-//   const [selectedBrand, setSelectedBrand] = useState("");
-//   const [searchTrigger, setSearchTrigger] = useState(0);
-//   const [products, setProducts] = useState([]);
-//   const [showAllBrands, setShowAllBrands] = useState(false);
-//   const navigate = useNavigate();
-//   const location = useLocation();
-//   const [searchTerm, setSearchTerm] = useState(""); // Define and set searchTerm
-
-//   const fetchProducts = () => {
-//     return http.post(`http://localhost:8080/allwatches/filter`, {
-//       'termek': searchTerm
-//     });
-//   };
-
-//   useEffect(() => {
-//     fetchProducts().then((response) => setProducts(response.data)).catch((error) => console.error('Error fetching products:', error));
-
-//     let searchParams = {};
-//     if (searchTerm) searchParams["search"] = searchTerm;
-
-//     navigate({ search: queryString.stringify(searchParams) });
-//   }, [navigate, location.search, searchTrigger, searchTerm]);
-
-//   const handleSearch = () => {
-//     fetchProducts();
-//     setSearchTrigger((prev) => prev + 1);
-//   };
-
-//   useEffect(() => {
-//     WatchesServices.getBrands()
-//       .then((response) => setBrands(response.data))
-//       .catch((error) =>
-//         console.error("Error occurred while fetching brands:", error)
-//       );
-//   }, []);
-
-//   const handleChange = (event) => {
-//     console.log(event.target.value)
-//   }
-
-//   const toggleShowAllBrands = () => {
-//     setShowAllBrands(!showAllBrands);
-//   };
-
-//   return (
-//     <section id="filter-section" className="col-lg-3 col-md-4 text-justify">
-//       <h2 className="custom-heading-font" onClick={toggleShowAllBrands}>
-//         Márka
-//       </h2>
-//       <div>
-//         <div>
-//           {brands.slice(0, showAllBrands ? brands.length : 3).map((brand) => (
-//             <div key={brand.id}>
-//               <input
-//                 type="checkbox"
-//                 id={brand.id}
-//                 value={brand.brand}
-//                 // checked={selectedBrand === brand.brand}
-//                 onChange={handleChange}
-//               />
-//               <label htmlFor={brand.id}>
-//                 {brand.brand} ({brand.watch_count})
-//               </label>
-//             </div>
-//           ))}
-//         </div>
-//         <button onClick={handleSearch}>Search</button>
-//       </div>
-//     </section>
-//   );
-// };
-
-// export default FilterSection;
-
 import React, { useState, useEffect } from "react";
 import WatchesServices from "../../services/WatchesServices";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -87,13 +5,14 @@ import queryString from "query-string";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./FilterSection.css"
 
-
 function FilterSection() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [queryBrands, setQueryBrands] = useState('')
-  const [queryDialColors, setQueryDialColors] = useState('')
-
+ 
+  const [queryBrands, setQueryBrands] = useState('');
+  const [queryDialColors, setQueryDialColors] = useState('');
+  const [queryDates, setQueryDates] = useState('');
+  
   const [brands, setBrands] = useState([]);
   const [dialColors, setdialColors] = useState([]);
   const [dates, setDates] = useState([]);
@@ -265,19 +184,15 @@ function FilterSection() {
     }
   };
 
-
-
-
-
   //   // DIAL COLOR ACTUAL CHECKBOX IS SELECTED
   const handleDatesChange = (event) => {
     const { checked, value } = event.target;
-    setSelectedDates(
-      checked
-        ? [...selectedDates, value]
-        : selectedDates.filter((dates) => dates !== value)
-    );
-  };
+    if (checked) {
+        setSelectedDates((prevSelectedDates) => [...prevSelectedDates, value]);
+    } else {
+        setSelectedDates((prevSelectedDates) => prevSelectedDates.filter((date) => date !== value));
+    }
+};
 
   //   // CASE MATERIAL ACTUAL CHECKBOX IS SELECTED
   const handleCaseMaterialChange = (event) => {
@@ -349,8 +264,6 @@ function FilterSection() {
     }
   };
 
-
-
   //   // SHOW ALL BRANDS
   const toggleShowAllBrands = () => {
     setShowAllBrands(!showAllBrands);
@@ -421,6 +334,10 @@ function FilterSection() {
     if (minPrice && maxPrice) {
     fil['minPrice'] = minPrice;
     fil['maxPrice'] = maxPrice;
+    if (selectedDates.length > 0) {
+      fil['date'] = selectedDates.join(", ");
+      setQueryDates(queryParams.date || '');
+    }
   }
     const searchQuery = queryString.stringify(fil);
     navigate(`/allbrands?${searchQuery}`);
@@ -439,8 +356,6 @@ function FilterSection() {
     //   ['watchName']: selectedBrands
     // }).toString());
   };
-
-
 
   // ACCORDION ITEMS JSON
   const accordionItems = [
@@ -519,7 +434,7 @@ function FilterSection() {
                 type="checkbox"
                 className="mx-1"
                 id={date.id}
-                value={date.X}
+                value={date.date}
                 checked={selectedDates.includes(date.date)}
                 onChange={handleDatesChange}
               />
@@ -746,6 +661,8 @@ function FilterSection() {
   //     </section>
   //   );
   // }
+
+  console.log(selectedDates);
 
   return (
     <section id="filter-section">
